@@ -23,21 +23,14 @@ const User = sequelize.define('User', {
     type: DataTypes.STRING(30),
     allowNull: true,
   },
-  roles: {
-    type: DataTypes.STRING(30),
+  CP: {
+    type: DataTypes.NUMBER(5),
     allowNull: false,
-    get() {
-      const rawValue = this.getDataValue('roles');
-      if (!rawValue) {
-        console.log('Valor de roles es undefined o null');
-        return [];
-      }
-      return rawValue.split(',');
-    },
-    set(value) {
-      this.setDataValue('roles', value.join(','));
-    }
   },
+  distance: {
+    type: DataTypes.NUMBER(8),
+    allowNull: false,
+  },  
   photo: {
     type: DataTypes.STRING(30),
     allowNull: true,
@@ -50,3 +43,19 @@ const User = sequelize.define('User', {
 });
 
 export default User;
+
+// roles: {
+//   type: DataTypes.STRING(30),
+//   allowNull: false,
+//   get() {
+//     const rawValue = this.getDataValue('roles');
+//     if (!rawValue) {
+//       console.log('Valor de roles es undefined o null');
+//       return [];
+//     }
+//     return rawValue.split(',');
+//   },
+//   set(value) {
+//     this.setDataValue('roles', value.join(','));
+//   }
+// }
