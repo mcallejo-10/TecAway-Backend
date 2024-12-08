@@ -1,4 +1,4 @@
-import Book from '../models/bookModel.js';
+import Book from '../models/userSectionModel.js';
 import { validationResult } from 'express-validator';
 
 export const getBooks = async (req, res) => {

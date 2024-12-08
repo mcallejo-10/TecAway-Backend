@@ -11,6 +11,7 @@ export const getUser = async (req, res) => {
     const user_data = {
       "id_user": req.user.id_user,
       "email": req.user.email,
+      "password": req.user.password,
       "name": req.user.name,
       "surname": req.user.surname,
       "photo": req.user.photo,

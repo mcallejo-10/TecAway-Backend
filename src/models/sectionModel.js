@@ -1,19 +1,22 @@
 import { DataTypes } from 'sequelize';
 import { sequelize } from '../db.js';
 
-const Role = sequelize.define('Role', {
-    id_role: {
+const Section = sequelize.define('Section', {
+    id_section: {
         type: DataTypes.INTEGER(8).UNSIGNED,
         primaryKey: true,
         autoIncrement: true,
     },
-    role: {
+    section: {
         type: DataTypes.STRING(30),
         allowNull: false,
     },
     },{
-    indexes: [{ unique: true, fields: ['role'] }],
+    indexes: [{ unique: true, fields: ['section'] }],
     timestamps: false, // Activa la creación automática de createdAt y updatedAt
     updatedAt: 'updated_at',
     createdAt: 'created_at'
 });
+
+
+export default Section;

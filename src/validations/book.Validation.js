@@ -3,16 +3,16 @@ import { body, check } from 'express-validator';
 //check():se utiliza para validar los campos en el cuerpo (body), los parámetros de la ruta (params)
 
 export const bookValidator = [
-    body("title")
+    body("section")
         .exists()
-        .withMessage("Title is required")
+        .withMessage("Section is required")
         .isString()
-        .withMessage("Title should be a string")
+        .withMessage("Section should be a string")
         .isLength({ min: 5 })
-        .withMessage("Title should be at least 5 characters"),
-    body("year")
-        .exists()
-        .withMessage("Year is required")
-        .isInt({ min: 1000, max: new Date().getFullYear() })  // Establecer el rango de años válido
-        .withMessage("Year should be a valid year")
+        .withMessage("Section should be at least 5 characters"),
+    // body("year")
+    //     .exists()
+    //     .withMessage("Year is required")
+    //     .isInt({ min: 1000, max: new Date().getFullYear() })  // Establecer el rango de años válido
+    //     .withMessage("Year should be a valid year")
 ]
