@@ -14,7 +14,7 @@ export const getUser = async (req, res) => {
       "password": req.user.password,
       "name": req.user.name,
       "surname": req.user.surname,
-      "CP": req.user.CP,
+      "cp": req.user.cp,
       "distance": req.user.distance,
       "photo": req.user.photo,
       "roles": req.user.roles,

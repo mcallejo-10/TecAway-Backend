@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: localhost
--- Tiempo de generación: 08-12-2024 a las 19:02:33
+-- Tiempo de generación: 08-12-2024 a las 20:12:15
 -- Versión del servidor: 10.4.28-MariaDB
 -- Versión de PHP: 8.2.4
 
@@ -45,6 +45,21 @@ CREATE TABLE `Sections` (
   `section` varchar(30) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Volcado de datos para la tabla `Sections`
+--
+
+INSERT INTO `Sections` (`id_section`, `section`) VALUES
+(8, 'caracterizacion'),
+(5, 'escenografia'),
+(1, 'iluminacion'),
+(6, 'maquinaria'),
+(9, 'produccion'),
+(4, 'regiduria'),
+(3, 'sonido'),
+(7, 'vestuario'),
+(2, 'video');
+
 -- --------------------------------------------------------
 
 --
@@ -57,12 +72,24 @@ CREATE TABLE `Users` (
   `password` varchar(100) NOT NULL,
   `name` varchar(30) NOT NULL,
   `surname` varchar(30) DEFAULT NULL,
-  `CP` int(5) NOT NULL,
+  `cp` int(5) NOT NULL,
   `distance` int(8) NOT NULL,
   `photo` varchar(30) DEFAULT NULL,
+  `roles` varchar(30) NOT NULL,
   `created_at` datetime NOT NULL,
   `updated_at` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `Users`
+--
+
+INSERT INTO `Users` (`id_user`, `email`, `password`, `name`, `surname`, `cp`, `distance`, `photo`, `roles`, `created_at`, `updated_at`) VALUES
+(1, 'ismael.academy@gmail.com', '$2b$10$tXrqo7VdSPCLAsIUhrVsYejYeMt9FLo9J4OchgCKwuDvpeDK6Xf1q', 'Ismael', NULL, 8023, 1000, NULL, 'user', '2024-12-08 18:57:26', '2024-12-08 18:57:26'),
+(2, 'laura@hotmail.com', '$2b$10$tXrqo7VdSPCLAsIUhrVsYejYeMt9FLo9J4OchgCKwuDvpeDK6Xf1q', 'Laura', NULL, 8023, 1000, NULL, 'user', '2024-12-08 18:57:26', '2024-12-08 18:57:26'),
+(3, 'maria@hotmail.com', '$2b$10$tXrqo7VdSPCLAsIUhrVsYejYeMt9FLo9J4OchgCKwuDvpeDK6Xf1q', 'Maria', 'kale', 8023, 1000, NULL, 'mod,admin', '2024-12-08 18:57:26', '2024-12-08 18:57:26'),
+(4, 'mod@hotmail.com', '$2b$10$tXrqo7VdSPCLAsIUhrVsYejYeMt9FLo9J4OchgCKwuDvpeDK6Xf1q', 'Moderador', 'kale', 8023, 1000, NULL, 'admin', '2024-12-08 18:57:26', '2024-12-08 18:57:26'),
+(5, 'admin@hotmail.com', '$2b$10$tXrqo7VdSPCLAsIUhrVsYejYeMt9FLo9J4OchgCKwuDvpeDK6Xf1q', 'Admin', 'kale', 8023, 1000, NULL, 'admin', '2024-12-08 18:57:26', '2024-12-08 18:57:26');
 
 -- --------------------------------------------------------
 
@@ -76,6 +103,39 @@ CREATE TABLE `UserSections` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
+-- Volcado de datos para la tabla `UserSections`
+--
+
+INSERT INTO `UserSections` (`user_id`, `section_id`) VALUES
+(1, NULL),
+(2, NULL),
+(3, NULL),
+(4, NULL),
+(5, NULL),
+(6, NULL),
+(7, NULL),
+(8, NULL),
+(9, NULL),
+(10, NULL),
+(11, NULL),
+(12, NULL),
+(13, NULL),
+(14, NULL),
+(15, NULL),
+(16, NULL),
+(17, NULL),
+(18, NULL),
+(19, NULL),
+(20, NULL),
+(21, NULL),
+(22, NULL),
+(23, NULL),
+(24, NULL),
+(25, NULL),
+(26, NULL),
+(27, NULL);
+
+--
 -- Índices para tablas volcadas
 --
 
@@ -85,6 +145,24 @@ CREATE TABLE `UserSections` (
 ALTER TABLE `RecoveryTokens`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `token` (`token`),
+  ADD UNIQUE KEY `token_2` (`token`),
+  ADD UNIQUE KEY `token_3` (`token`),
+  ADD UNIQUE KEY `token_4` (`token`),
+  ADD UNIQUE KEY `token_5` (`token`),
+  ADD UNIQUE KEY `token_6` (`token`),
+  ADD UNIQUE KEY `token_7` (`token`),
+  ADD UNIQUE KEY `token_8` (`token`),
+  ADD UNIQUE KEY `token_9` (`token`),
+  ADD UNIQUE KEY `token_10` (`token`),
+  ADD UNIQUE KEY `token_11` (`token`),
+  ADD UNIQUE KEY `token_12` (`token`),
+  ADD UNIQUE KEY `token_13` (`token`),
+  ADD UNIQUE KEY `token_14` (`token`),
+  ADD UNIQUE KEY `token_15` (`token`),
+  ADD UNIQUE KEY `token_16` (`token`),
+  ADD UNIQUE KEY `token_17` (`token`),
+  ADD UNIQUE KEY `token_18` (`token`),
+  ADD UNIQUE KEY `token_19` (`token`),
   ADD KEY `user_id` (`user_id`);
 
 --
@@ -122,19 +200,19 @@ ALTER TABLE `RecoveryTokens`
 -- AUTO_INCREMENT de la tabla `Sections`
 --
 ALTER TABLE `Sections`
-  MODIFY `id_section` int(8) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id_section` int(8) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT de la tabla `Users`
 --
 ALTER TABLE `Users`
-  MODIFY `id_user` int(8) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id_user` int(8) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=41;
 
 --
 -- AUTO_INCREMENT de la tabla `UserSections`
 --
 ALTER TABLE `UserSections`
-  MODIFY `user_id` int(8) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `user_id` int(8) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
 
 --
 -- Restricciones para tablas volcadas
@@ -150,8 +228,7 @@ ALTER TABLE `RecoveryTokens`
 -- Filtros para la tabla `UserSections`
 --
 ALTER TABLE `UserSections`
-  ADD CONSTRAINT `usersections_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `Users` (`id_user`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `usersections_ibfk_2` FOREIGN KEY (`section_id`) REFERENCES `Users` (`id_user`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `usersections_ibfk_1` FOREIGN KEY (`section_id`) REFERENCES `Users` (`id_user`) ON DELETE CASCADE ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
