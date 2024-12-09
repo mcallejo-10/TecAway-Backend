@@ -1,7 +1,7 @@
-import Section from '../models/userSectionModel.js';
+import Knowledge from '../models/knowledgeModel.js';
 import { validationResult } from 'express-validator';
 
-export const getSections = async (req, res) => {
+export const getKnowledge = async (req, res) => {
   try {
     const errors = validationResult(req);
 
@@ -11,24 +11,24 @@ export const getSections = async (req, res) => {
     }
 
     // Obtener todos los usuarios de la base de datos
-    const sections = await Section.findAll();
+    const knowledge = await Knowledge.findAll();
 
     // Enviar una respuesta al cliente
     res.status(200).json({
       code: 1,
-      message: 'Sections List',
-      data: sections
+      message: 'Knowledge List',
+      data: knowledge
     });
   } catch (error) {
     console.error(error);
     res.status(500).json({
       code: -100,
-      message: 'Ha ocurrido un error al obtener las secciones',
+      message: 'Ha ocurrido un error al obtener los concimientos',
     });
   }
 };
 
-export const getSectionById = async (req, res) => {
+export const getKnowledgeById = async (req, res) => {
   try {
     const errors = validationResult(req);
 
@@ -40,30 +40,30 @@ export const getSectionById = async (req, res) => {
     const { id } = req.params;
 
     // Buscar un usuario por su ID en la base de datos
-    const section = await Section.findByPk(id);
-    if (!section) {
+    const knowledge = await Knowledge.findByPk(id);
+    if (!knowledge) {
       return res.status(404).json({
         code: -6,
-        message: 'Sección no encontrada'
+        message: 'Conocimiento no encontrado'
       });
     }
 
     // Enviar una respuesta al cliente
     res.status(200).json({
       code: 1,
-      message: 'Section Detail',
-      data: section
+      message: 'Knowledge Detail',
+      data: knowledge
     });
   } catch (error) {
     console.error(error);
     res.status(500).json({
       code: -100,
-      message: 'Ha ocurrido un error al obtener sección'
+      message: 'Ha ocurrido un error al obtener conocimiento'
     });
   }
 };
 
-export const addSection = async (req, res) => {
+export const addKnowledge = async (req, res) => {
   try {
     const errors = validationResult(req);
 
@@ -72,43 +72,43 @@ export const addSection = async (req, res) => {
       return res.status(400).json({ errors: errors.array() });
     }
 
-    const { section} = req.body;
-    let newSection;
+    const { knowledge} = req.body;
+    let newKnowledge;
     try {
-      newSection = await Section.create({ section: section });
+      newKnowledge = await Knowledge.create({ knowledge: knowledge });
     } catch (error) {
       // Si hay un error de duplicación de clave única (por ejemplo, título duplicado)
       if (error.name === 'SequelizeUniqueConstraintError') {
         res.status(400).json({
           code: -61,
-          message: 'Duplicate Section name'
+          message: 'Duplicate Knowledge name'
         });
       }
     }
 
-    if (!newSection) {
+    if (!newKnowledge) {
       return res.status(404).json({
         code: -6,
-        message: 'Error When Adding The Section'
+        message: 'Error When Adding The knowledge'
       });
     }
 
     // Enviar una respuesta al cliente
     res.status(200).json({
       code: 1,
-      message: 'Section Added Successfully',
-      data: newSection
+      message: 'Knowledge Added Successfully',
+      data: newKnowledge
     });
   } catch (error) {
     console.error(error);
     res.status(500).json({
       code: -100,
-      message: 'Ha ocurrido un error al añadir la sección'
+      message: 'Ha ocurrido un error al añadir el conocimiento'
     });
   }
 };
 
-export const updateSection = async (req, res) => {
+export const updateKnowledge = async (req, res) => {
   try {
     const errors = validationResult(req);
 
@@ -118,38 +118,38 @@ export const updateSection = async (req, res) => {
     }
 
     const { id } = req.params;
-    const { sectionName } = req.body;
+    const { knowledgeName } = req.body;
 
     // Buscar un usuario por su ID en la base de datos
-    const section = await Section.findByPk(id);
-    if (!section) {
+    const knowledge = await Knowledge.findByPk(id);
+    if (!knowledge) {
       return res.status(404).json({
         code: -3,
-        message: 'Section no encontrado'
+        message: 'Knowledge no encontrado'
       });
     }
 
     // Actualizar el correo electrónico y la contraseña del usuario
-    section.section = sectionName;
+    knowledge.knowledge = knowledgeName;
     
-    await section.save();
+    await knowledge.save();
 
     // Enviar una respuesta al cliente
     res.status(200).json({
       code: 1,
-      message: 'Section Updated Successfully',
-      data: section
+      message: 'Knowledge Updated Successfully',
+      data: knowledge
     });
   } catch (error) {
     console.error(error);
     res.status(500).json({
       code: -100,
-      message: 'Ha ocurrido un error al actualizar la sección'
+      message: 'Ha ocurrido un error al actualizar el conocimiento'
     });
   }
 };
 
-export const deleteSection = async (req, res) => {
+export const deleteKnowledge = async (req, res) => {
   try {
     const errors = validationResult(req);
 
@@ -160,28 +160,28 @@ export const deleteSection = async (req, res) => {
 
     const { id } = req.params;
 
-    // Buscar una sección por su ID en la base de datos y eliminarlo
-    const deletedSection = await Section.destroy({ where: { id_section: id } });
+    // Buscar un libro por su ID en la base de datos y eliminarlo
+    const deletedKnowledge = await Knowledge.destroy({ where: { id_knowledge: id } });
 
-    // Verificar si la sección fue encontrado y eliminado
-    if (!deletedSection) {
+    // Verificar si el libro fue encontrado y eliminado
+    if (!deletedKnowledge) {
       return res.status(404).json({
         code: -100,
-        message: 'Section Not Found'
+        message: 'Knowledge Not Found'
       });
      }
  
     // Enviar una respuesta al cliente
     res.status(200).json({
       code: 1,
-      message: 'Section Deleted Successfully'
+      message: 'Knowledge Deleted Successfully'
     });
 
   } catch (error) {
     console.error(error);
     res.status(500).json({
       code: -100,
-      message: 'Ha ocurrido un error al eliminar la sección'
+      message: 'Ha ocurrido un error al eliminar el conocimiento'
     });
   }
 };

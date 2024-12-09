@@ -19,10 +19,9 @@ const UserSection = sequelize.define('UserSection', {
   createdAt: 'created_at'
 });
 User.hasMany(UserSection, { foreignKey: 'user_id' });
-UserSection.belongsTo(User, { foreignKey: 'user_id' });
+// UserSection.belongsTo(User, { foreignKey: 'user_id' });
 
 Section.hasMany(UserSection, { foreignKey: 'section_id' });
-UserSection.belongsTo(Section, { foreignKey: 'section_id' });
-
+// UserSection.belongsTo(Section, { foreignKey: 'section_id' });
 
 export default UserSection;

@@ -62,7 +62,7 @@ const insertInitialUserData = async () => {
     { section: "produccion" },
   ];
 
-  const knoledgeData = [
+  const knowledgeData = [
     // siatemas de iluminacion
     { knowledge: "LT"},
     { knowledge: "Avolites"},
@@ -95,7 +95,6 @@ const insertInitialUserData = async () => {
     // regiduria
     { knowledge: "StageManager"},
     { knowledge: "Asistente de direccion"},
-    { knowledge: "Regidor"},
     // escenografia
     { knowledge: "Carpinteria"},
     { knowledge: "Pintura"},
@@ -129,28 +128,26 @@ const insertInitialUserData = async () => {
     { konwledge: "PRL"},
     { konwledge: "Trabajo en altura"},
     { konwledge: "Trabajo en plataformas elevadoras"},
-    
-
-    
+      
 
   ]
   const userSectionData = [
-    { userId: 1, sectionId: 1 },
-    { userId: 1, sectionId: 2 },
-    { userId:2, sectionId: 3 },
-    { userId:2, sectionId: 2 },
-    { userId:3, sectionId: 5 },
-    { userId:3, sectionId: 6 },
-    { userId:4, sectionId: 7 },
-    { userId:4, sectionId: 8 },
-    { userId:5, sectionId: 9 },
+    { user_id: 1, section_id: 1 },
+    { user_id: 1, section_id: 2 },
+    { user_id: 2, section_id: 3 },
+    { user_id: 2, section_id: 2 },
+    { user_id: 3, section_id: 5 },
+    { user_id: 3, section_id: 6 },
+    { user_id: 4, section_id: 7 },
+    { user_id: 4, section_id: 8 },
+    { user_id: 5, section_id: 9 },
   ];
 
 
   // Insertar datos con opción ignoreDuplicates
   // Para actualizar todas las filas: updateOnDuplicate: Object.keys(User.rawAttributes)
   await User.bulkCreate(userData, { ignoreDuplicates: true });
-  await Knowledge.bulkCreate(knoledgeData, { ignoreDuplicates: true });
+  await Knowledge.bulkCreate(knowledgeData, { ignoreDuplicates: true });
   await Section.bulkCreate(sectionData, { ignoreDuplicates: true });
   await UserSection.bulkCreate(userSectionData, { ignoreDuplicates: true });
 };

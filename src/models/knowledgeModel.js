@@ -11,7 +11,6 @@ const Knowledge = sequelize.define('Knowledge', {
         type: DataTypes.STRING(30),
         allowNull: false,
     },
-
 },
     {
         timestamps: false, // Activa la creación automática de createdAt y updatedAt
