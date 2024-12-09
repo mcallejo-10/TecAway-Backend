@@ -12,7 +12,6 @@ const Section = sequelize.define('Section', {
         allowNull: false,
     },
     },{
-    indexes: [{ unique: true }],
     timestamps: false, // Activa la creación automática de createdAt y updatedAt
     updatedAt: 'updated_at',
     createdAt: 'created_at'

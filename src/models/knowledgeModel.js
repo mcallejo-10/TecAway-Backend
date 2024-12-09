@@ -7,14 +7,13 @@ const Knowledge = sequelize.define('Knowledge', {
         primaryKey: true,
         autoIncrement: true,
     },
-    Knowledge: {
+    knowledge: {
         type: DataTypes.STRING(30),
         allowNull: false,
     },
 
 },
     {
-        indexes: [{ unique: true }],
         timestamps: false, // Activa la creación automática de createdAt y updatedAt
         updatedAt: 'updated_at',
         createdAt: 'created_at'

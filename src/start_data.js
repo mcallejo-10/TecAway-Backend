@@ -1,6 +1,7 @@
 import User from "./models/userModel.js";
 import Section from "./models/sectionModel.js";
 import Knowledge from "./models/knowledgeModel.js";
+import UserSection from "./models/userSectionModel.js";
 
 const insertInitialUserData = async () => {
   const userData = [
@@ -80,7 +81,6 @@ const insertInitialUserData = async () => {
     { knowledge: "Allen&Heath"},
     { knowledge: "Tascam"},
     { knowledge: "Waves"},
-    { knowledge: "Qlab"},
     { knowledge: "Protools"},
     // video
     { knowledge: "Resolume"},
@@ -120,6 +120,17 @@ const insertInitialUserData = async () => {
     { knowledge: "FX"},
     { knowledge: "Protesis"},
     { knowledge: "Caracterizacion"},
+    //otros
+    { knowledge: "Qlab"},
+
+    { konwledge: "Carnet de conducir B"},
+    { konwledge: "Carnet de conducir C"},
+
+    { konwledge: "PRL"},
+    { konwledge: "Trabajo en altura"},
+    { konwledge: "Trabajo en plataformas elevadoras"},
+    
+
     
 
   ]
