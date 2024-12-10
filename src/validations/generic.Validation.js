@@ -7,4 +7,3 @@ export const idValidator = [
 export const nameValidator = [
     body('name').isString().withMessage('Invalid Name file')
 ]
-

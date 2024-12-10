@@ -5,6 +5,8 @@ import cors from 'cors'; //para poder hacer puts, y tal desde el cliente al serv
 import authRoutes from './routes/authRoutes.js';
 import userRoutes from './routes/userRoutes.js';
 import sectionRoutes from './routes/sectionsRoutes.js';
+import userSectionRoutes from './routes/userSectionRoutes.js';
+import knowlegdeRoutes from './routes/knowledgeRoutes.js';
 import testRoutes from './routes/testRoutes.js';
 import { testConnection } from './db.js';
 import dotenv from 'dotenv';
@@ -43,3 +45,4 @@ app.use('/test', testRoutes);
 app.listen(3000, () => {
   console.log("Servidor iniciado en el puerto 3000");
 });
+
