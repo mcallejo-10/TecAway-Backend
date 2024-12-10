@@ -8,11 +8,11 @@ import { idValidator } from '../validations/generic.Validation.js'
 const router = Router();
 
 // Rutas para obtener y modificar los datos de los usuarios
-router.get('/', authenticateToken(['user']), getSections);
-router.get('/:id', authenticateToken(['user','mod','admin']), idValidator, getSectionById);
-router.post('/', authenticateToken(['user','mod','admin']), sectionValidator, addSection);
-router.patch('/:id', authenticateToken(['user','mod','admin']), idValidator, sectionValidator, updateSection);
-router.delete('/:id', authenticateToken(['user','mod','admin']), idValidator, deleteSection);
+// router.get('/', authenticateToken(['user']), getUserSections);
+// router.get('/:id', authenticateToken(['user','mod','admin']), idValidator, getUserSectionById);
+// router.post('/', authenticateToken(['user','mod','admin']), userSectionValidator, addUserSection);
+// router.patch('/:id', authenticateToken(['user','mod','admin']), idValidator, userSectionValidator, updateUserSection);
+// router.delete('/:id', authenticateToken(['user','mod','admin']), idValidator, deleteUserSection);
 
 
 export default router;

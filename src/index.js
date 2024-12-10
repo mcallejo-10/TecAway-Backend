@@ -35,7 +35,8 @@ await insertInitialUserData();
 app.use('/auth', authRoutes);
 app.use('/user', userRoutes);
 app.use('/section', sectionRoutes);
-
+app.use('/userSection', userSectionRoutes);
+app.use('/knowledge', knowlegdeRoutes);
 app.use('/test', testRoutes);
 
 // Iniciar el servidor

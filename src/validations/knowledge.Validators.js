@@ -1,9 +1,9 @@
-import { body, check } from 'express-validator';
+import { body } from 'express-validator';
 //body():se utiliza para validar los campos en el cuerpo (body)
-//check():se utiliza para validar los campos en el cuerpo (body), los parámetros de la ruta (params)
+
 
 export const sectionValidator = [
-    body("section")
+    body("knowledge")
         .exists()
         .withMessage("Section is required")
         .isString()
