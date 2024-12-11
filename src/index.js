@@ -9,9 +9,17 @@ import userSectionRoutes from './routes/userSectionRoutes.js';
 import knowlegdeRoutes from './routes/knowledgeRoutes.js';
 import testRoutes from './routes/testRoutes.js';
 import { testConnection } from './db.js';
-import dotenv from 'dotenv';
 import { insertInitialUserData } from './start_data.js';
-dotenv.config();
+import dotenv from 'dotenv';
+const result = dotenv.config({ path: './environment.env' });
+
+if (result.error) {
+  console.error('Error al cargar el archivo .env:', result.error);
+} else {
+  console.log('.env cargado correctamente:', result.parsed);
+}
+
+
 
 const app = express();
 

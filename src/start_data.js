@@ -106,7 +106,7 @@ const insertInitialUserData = async () => {
     { knowledge: "Polipastos"},
     { knowledge: "Truss"},
     { knowledge: "Estructuras"},
-    { knowledge: "Mecanica"},
+    { knowledge: "Mecánica"},
     // vestuario
     { knowledge: "Patronaje"},
     { knowledge: "Confeccion"},

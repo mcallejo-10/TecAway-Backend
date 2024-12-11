@@ -5,9 +5,12 @@ import User from '../models/userModel.js';
 import RecoveryToken from '../models/recoveryTokenModel.js';
 import sendEmail from "../utils/email/sendEmail.js";
 import { validationResult } from 'express-validator';
-import { serialize } from 'cookie';
+import { serialize} from "cookie"
+
+
 // Creación de funciones personalizadas
 import { esPar, contraseniasCoinciden } from '../utils/utils.js';
+import { log } from 'console';
 
 const clietURL = process.env.CLIENT_URL;
 
@@ -61,9 +64,12 @@ export const register = async (req, res) => {
   }
 };
 
+
 export const login = async (req, res) => {
   try {
+    console.log(req.body);
     const errors = validationResult(req);
+    
 
     // If there are validation errors, respond with a 400 Bad Request status
     if (!errors.isEmpty()) {
@@ -88,9 +94,10 @@ export const login = async (req, res) => {
         message: 'Credenciales incorrectas'
       });
     }
-
+    
     // Generar un token de acceso y lo guardo en un token seguro (httpOnly)
     const accessToken = jwt.sign({ id_user: user.id_user, name: user.name }, process.env.JWT_SECRET);
+    console.log('JWT_SECRET:', process.env.JWT_SECRET);
     const token = serialize('token', accessToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
