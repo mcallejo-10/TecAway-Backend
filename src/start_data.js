@@ -2,6 +2,7 @@ import User from "./models/userModel.js";
 import Section from "./models/sectionModel.js";
 import Knowledge from "./models/knowledgeModel.js";
 import UserSection from "./models/userSectionModel.js";
+import GeneralCompetence from "./models/generalCompetenceModel.js";
 
 const insertInitialUserData = async () => {
   const userData = [
@@ -120,14 +121,7 @@ const insertInitialUserData = async () => {
     { knowledge: "Protesis"},
     { knowledge: "Caracterizacion"},
     //otros
-    { knowledge: "Qlab"},
 
-    { konwledge: "Carnet de conducir B"},
-    { konwledge: "Carnet de conducir C"},
-
-    { konwledge: "PRL"},
-    { konwledge: "Trabajo en altura"},
-    { konwledge: "Trabajo en plataformas elevadoras"},
       
 
   ]
@@ -143,6 +137,15 @@ const insertInitialUserData = async () => {
     { user_id: 5, section_id: 238 },
   ];
 
+  const generalCompeteceData = [
+    { generalCompetence: "Qlab"},
+    { generalCompetence: "Carnet de conducir B"},
+    { generalCompetence: "Carnet de conducir C"},
+    { generalCompetence: "PRL"},
+    { generalCompetence: "Trabajo en altura"},
+    { generalCompetence: "Trabajo en plataformas elevadoras"},
+
+  ];
 
   // Insertar datos con opción ignoreDuplicates
   // Para actualizar todas las filas: updateOnDuplicate: Object.keys(User.rawAttributes)
@@ -150,6 +153,7 @@ const insertInitialUserData = async () => {
   await User.bulkCreate(userData, { ignoreDuplicates: true });
   await Knowledge.bulkCreate(knowledgeData, { ignoreDuplicates: true });
   await Section.bulkCreate(sectionData, { ignoreDuplicates: true });
+  await GeneralCompetence.bulkCreate(generalCompeteceData, { ignoreDuplicates: true });
 };
 
 export { insertInitialUserData };

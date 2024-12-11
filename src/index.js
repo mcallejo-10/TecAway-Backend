@@ -5,8 +5,9 @@ import cors from 'cors'; //para poder hacer puts, y tal desde el cliente al serv
 import authRoutes from './routes/authRoutes.js';
 import userRoutes from './routes/userRoutes.js';
 import sectionRoutes from './routes/sectionRoutes.js';
-import userSectionRoutes from './routes/userSectionRoutes.js';
 import knowlegdeRoutes from './routes/knowledgeRoutes.js';
+import userSectionRoutes from './routes/userSectionRoutes.js';
+import generalCompetenceRoutes from './routes/generalCompetenceRoutes.js';
 import testRoutes from './routes/testRoutes.js';
 import { testConnection } from './db.js';
 import { insertInitialUserData } from './start_data.js';
@@ -44,9 +45,10 @@ await insertInitialUserData();
 // Configurar rutas
 app.use('/auth', authRoutes);
 app.use('/user', userRoutes);
-app.use('/userSection', userSectionRoutes);
+app.use('/user_Section', userSectionRoutes);
 app.use('/section', sectionRoutes);
 app.use('/knowledge', knowlegdeRoutes);
+app.use('/general_Competence', generalCompetenceRoutes);
 app.use('/test', testRoutes);
 
 // Iniciar el servidor
