@@ -1,4 +1,4 @@
-import Section from '../models/userSectionModel.js';
+import Section from '../models/SectionModel.js';
 import { validationResult } from 'express-validator';
 
 export const getSections = async (req, res) => {
@@ -12,6 +12,7 @@ export const getSections = async (req, res) => {
 
     // Obtener todos los usuarios de la base de datos
     const sections = await Section.findAll();
+console.log('SECCIONS???');
 
     // Enviar una respuesta al cliente
     res.status(200).json({

@@ -6,18 +6,19 @@ import Section from './sectionModel.js';
 const UserSection = sequelize.define('UserSection', {
   user_id: {
     type: DataTypes.INTEGER(8).UNSIGNED,
-    
+    primaryKey: true
   },
   section_id: {
-    type: DataTypes.INTEGER(8).UNSIGNED
+    type: DataTypes.INTEGER(8).UNSIGNED,
+    primaryKey: true
   },
-
 },
 {
   timestamps: false, 
   updatedAt: 'updated_at',
   createdAt: 'created_at'
 });
+
 User.hasMany(UserSection, { foreignKey: 'user_id' });
 // UserSection.belongsTo(User, { foreignKey: 'user_id' });
 

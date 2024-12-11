@@ -12,6 +12,7 @@ export const getUserSections = async (req, res) => {
 
     // Obtener todos los usuarios de la base de datos
     const userSections = await UserSection.findAll();
+console.log('-------USER SECTIONS???------' );
 
     // Enviar una respuesta al cliente
     res.status(200).json({

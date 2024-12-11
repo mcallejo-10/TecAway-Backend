@@ -4,7 +4,7 @@ import cookieParser from "cookie-parser";
 import cors from 'cors'; //para poder hacer puts, y tal desde el cliente al servidor
 import authRoutes from './routes/authRoutes.js';
 import userRoutes from './routes/userRoutes.js';
-import sectionRoutes from './routes/sectionsRoutes.js';
+import sectionRoutes from './routes/sectionRoutes.js';
 import userSectionRoutes from './routes/userSectionRoutes.js';
 import knowlegdeRoutes from './routes/knowledgeRoutes.js';
 import testRoutes from './routes/testRoutes.js';
@@ -44,8 +44,8 @@ await insertInitialUserData();
 // Configurar rutas
 app.use('/auth', authRoutes);
 app.use('/user', userRoutes);
-app.use('/section', sectionRoutes);
 app.use('/userSection', userSectionRoutes);
+app.use('/section', sectionRoutes);
 app.use('/knowledge', knowlegdeRoutes);
 app.use('/test', testRoutes);
 
