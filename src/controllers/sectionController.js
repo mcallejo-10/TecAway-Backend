@@ -109,20 +109,23 @@ export const addSection = async (req, res) => {
   }
 };
 
+
+
 export const updateSection = async (req, res) => {
   try {
     const errors = validationResult(req);
-
-    // Si hay errores de validación, responde con un estado 400 Bad Request
+      // Si hay errores de validación, responde con un estado 400 Bad Request
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
 
     const { id } = req.params;
-    const { sectionName } = req.body;
-
-    // Buscar un usuario por su ID en la base de datos
+    const sectionName = req.body.section;
+    console.log('--------------+ sectionName', sectionName);
+    
+   // Buscar un usuario por su ID en la base de datos
     const section = await Section.findByPk(id);
+    
     if (!section) {
       return res.status(404).json({
         code: -3,
@@ -131,9 +134,13 @@ export const updateSection = async (req, res) => {
     }
 
     // Actualizar el correo electrónico y la contraseña del usuario
-    section.section = sectionName;
-    
+    section.section = sectionName;   
+    console.log('--------------+ section+++section', section.section);
+     
+    console.log('++++++++++++ updated 1 section', section);
     await section.save();
+    console.log('++++++++++++ updated 2section', section);
+
 
     // Enviar una respuesta al cliente
     res.status(200).json({

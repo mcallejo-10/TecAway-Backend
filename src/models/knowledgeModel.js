@@ -10,6 +10,7 @@ const Knowledge = sequelize.define('Knowledge', {
     knowledge: {
         type: DataTypes.STRING(30),
         allowNull: false,
+        unique: true,
     },
 },
     {

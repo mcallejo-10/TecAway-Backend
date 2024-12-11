@@ -10,6 +10,7 @@ const Section = sequelize.define('Section', {
     section: {
         type: DataTypes.STRING(30),
         allowNull: false,
+        unique: true,
     },
     },{
     timestamps: false, // Activa la creación automática de createdAt y updatedAt
@@ -17,5 +18,4 @@ const Section = sequelize.define('Section', {
     createdAt: 'created_at'
 });
 
-
-export default Section;
+export default Section;  
