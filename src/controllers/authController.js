@@ -18,13 +18,14 @@ export const register = async (req, res) => {
   try {
 
     const errors = validationResult(req);
+    console.log('-+-+-+-+-+-++-+-+-+-+++-+-+-+-+-   errors:', req.body);   
 
     // Si hay errores de validación, responde con un estado 400 Bad Request
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
    
-    const { email, password, name, surname } = req.body;
+    const { email, password, name, surname, cp , distance, roles } = req.body;
     // Verificar si ya existe un usuario con el mismo correo electrónico
     const existingUser = await User.findOne({ where: { email }});
     if (existingUser) {
@@ -35,7 +36,7 @@ export const register = async (req, res) => {
     }
     // Crear un nuevo usuario
     const hashedPassword = await bcrypt.hash(password, Number(process.env.BCRYPT_SALT));
-    const newUser = new User({ email, password: hashedPassword, name, surname, status: 1 });
+    const newUser = new User({ email, password: hashedPassword, name, surname, cp, distance, roles, status: 1 });
     await newUser.save();
 
     // Generar un token de acceso y lo guardo en un token seguro (httpOnly)

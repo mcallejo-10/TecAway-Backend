@@ -1,13 +1,41 @@
+import e from 'express';
 import User from '../models/userModel.js';
 import { validationResult } from 'express-validator';
 import fs from 'fs';
 import path from 'path';
 //https://www.bezkoder.com/node-js-express-file-upload/
 
+export const getAllUsers = async (req, res) => {
+  try {
+    const errors = validationResult(req);
+
+    // Si hay errores de validación, responde con un estado 400 Bad Request
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
+    // Obtener todos los usuarios de la base de datos
+    const users = await User.findAll();
+
+
+    // Enviar una respuesta al cliente
+    res.status(200).json({
+      code: 1,
+      message: 'users List',
+      data: users
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      code: -100,
+      message: 'Ha ocurrido un error al obtener los usuarios',
+    });
+  }
+
+}
 
 export const getUser = async (req, res) => {
   try {
-
     const user_data = {
       "id_user": req.user.id_user,
       "email": req.user.email,
@@ -36,6 +64,8 @@ export const getUser = async (req, res) => {
     });
   }
 };
+
+
 
 export const uploadPhoto = async (req, res) => {
   try {

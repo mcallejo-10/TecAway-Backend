@@ -132,15 +132,15 @@ const insertInitialUserData = async () => {
 
   ]
   const userSectionData = [
-    { user_id: 1, section_id: 1 },
-    { user_id: 1, section_id: 2 },
-    { user_id: 2, section_id: 3 },
-    { user_id: 2, section_id: 2 },
-    { user_id: 3, section_id: 5 },
-    { user_id: 3, section_id: 6 },
-    { user_id: 4, section_id: 7 },
-    { user_id: 4, section_id: 8 },
-    { user_id: 5, section_id: 9 },
+    { user_id: 1, section_id: 238 },
+    { user_id: 1, section_id: 239 },
+    { user_id: 2, section_id: 243 },
+    { user_id: 2, section_id: 240 },
+    { user_id: 3, section_id: 238 },
+    { user_id: 3, section_id: 245 },
+    { user_id: 4, section_id: 238 },
+    { user_id: 4, section_id: 243 },
+    { user_id: 5, section_id: 238 },
   ];
 
 

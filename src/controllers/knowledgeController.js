@@ -118,10 +118,11 @@ export const updateKnowledge = async (req, res) => {
     }
 
     const { id } = req.params;
-    const { knowledgeName } = req.body;
+    const knowledgeName = req.body.knowledge;
 
     // Buscar un usuario por su ID en la base de datos
     const knowledge = await Knowledge.findByPk(id);
+
     if (!knowledge) {
       return res.status(404).json({
         code: -3,

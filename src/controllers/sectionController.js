@@ -121,7 +121,7 @@ export const updateSection = async (req, res) => {
 
     const { id } = req.params;
     const sectionName = req.body.section;
-    console.log('--------------+ sectionName', sectionName);
+    
     
    // Buscar un usuario por su ID en la base de datos
     const section = await Section.findByPk(id);
@@ -135,12 +135,7 @@ export const updateSection = async (req, res) => {
 
     // Actualizar el correo electrónico y la contraseña del usuario
     section.section = sectionName;   
-    console.log('--------------+ section+++section', section.section);
-     
-    console.log('++++++++++++ updated 1 section', section);
     await section.save();
-    console.log('++++++++++++ updated 2section', section);
-
 
     // Enviar una respuesta al cliente
     res.status(200).json({
