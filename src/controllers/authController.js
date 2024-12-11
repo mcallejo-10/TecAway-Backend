@@ -18,8 +18,6 @@ export const register = async (req, res) => {
   try {
 
     const errors = validationResult(req);
-    console.log('-+-+-+-+-+-++-+-+-+-+++-+-+-+-+-   errors:', req.body);   
-
     // Si hay errores de validación, responde con un estado 400 Bad Request
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
@@ -158,6 +156,7 @@ export const forgotPassword = async (req, res) => {
     }).save();
 
     const link = `${clietURL}/change-password?token=${resetToken}&id=${user.id_user}`;
+console.log('----resetToken:-----------', resetToken);
 
     await sendEmail(
       user.email,
