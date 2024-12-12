@@ -12,13 +12,10 @@ import testRoutes from './routes/testRoutes.js';
 import { testConnection } from './db.js';
 import { insertInitialUserData } from './start_data.js';
 import dotenv from 'dotenv';
-const result = dotenv.config({ path: './environment.env' });
 
-if (result.error) {
-  console.error('Error al cargar el archivo .env:', result.error);
-} else {
-  console.log('.env cargado correctamente:', result.parsed);
-}
+dotenv.config({ path: './environment.env' });
+
+
 
 
 

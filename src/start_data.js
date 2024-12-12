@@ -26,7 +26,8 @@ const insertInitialUserData = async () => {
       email: "maria@hotmail.com",
       password: "$2b$10$tXrqo7VdSPCLAsIUhrVsYejYeMt9FLo9J4OchgCKwuDvpeDK6Xf1q", //pass: ismael123
       name: "Maria",
-      surname: "kale",
+      title: "Ha de ser un titulo entre 30 y 130 caracteresm",      
+      description: "lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam nec purus nec nunc  lorem i skjd",
       cp: 8023,
       distance: 1000,
       roles: ["mod", "admin"],
@@ -40,6 +41,7 @@ const insertInitialUserData = async () => {
       distance: 1000,
       roles: ["admin"],
     },
+
     {
       email: "admin@hotmail.com",
       password: "$2b$10$tXrqo7VdSPCLAsIUhrVsYejYeMt9FLo9J4OchgCKwuDvpeDK6Xf1q", //pass: ismael123

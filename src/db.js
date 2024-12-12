@@ -5,7 +5,9 @@ dotenv.config();
 
 const sequelize = new Sequelize('tecaway', 'root', '', {
     host: 'localhost',
-    dialect: 'mysql'
+    dialect: 'mysql',
+    logging: console.log, // Habilita logs SQL
+
   }
 );
 

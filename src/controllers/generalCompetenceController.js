@@ -28,6 +28,7 @@ export const getGeneralCompetences = async (req, res) => {
   }
 };
 
+
 export const getGeneralCompetenceById = async (req, res) => {
   try {
     const errors = validationResult(req);

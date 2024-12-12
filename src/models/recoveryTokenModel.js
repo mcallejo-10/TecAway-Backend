@@ -5,6 +5,7 @@ import User from './userModel.js';
 const RecoveryToken = sequelize.define('RecoveryToken', {
   token: {
     type: DataTypes.STRING,
+    primaryKey: true,
     allowNull: false,
     unique: true
   },

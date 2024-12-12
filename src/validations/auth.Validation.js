@@ -28,7 +28,21 @@ export const registerValidator = [
             return true;
         }),
     body("name").isString(),
-    body("surname").isString()
+    body("title")
+        .exists()
+        .withMessage("Title is required")
+        .isString()
+        .withMessage("Title should be string")
+        .isLength({ min: 3, max: 130 })
+        .withMessage("Title should be at least 30 characters"),
+
+    body("description")
+        .exists()
+        .withMessage("Description is required")
+        .isString()
+        .withMessage("Description should be string")
+        .isLength({ min: 3, max: 2400 })
+        .withMessage("Description should be at least 30 characters")
 ]
 
 export const forgotPasswordValidator = [

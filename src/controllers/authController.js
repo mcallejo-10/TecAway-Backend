@@ -23,7 +23,7 @@ export const register = async (req, res) => {
       return res.status(400).json({ errors: errors.array() });
     }
    
-    const { email, password, name, surname, cp , distance, roles } = req.body;
+    const { email, password, name, title, description, cp , distance, roles } = req.body;
     // Verificar si ya existe un usuario con el mismo correo electrónico
     const existingUser = await User.findOne({ where: { email }});
     if (existingUser) {
@@ -34,8 +34,10 @@ export const register = async (req, res) => {
     }
     // Crear un nuevo usuario
     const hashedPassword = await bcrypt.hash(password, Number(process.env.BCRYPT_SALT));
-    const newUser = new User({ email, password: hashedPassword, name, surname, cp, distance, roles, status: 1 });
+    const newUser = new User({ email, password: hashedPassword, name, title, description, cp, distance, roles, status: 1 });
+    console.log('--------------------------newUser:', newUser);
     await newUser.save();
+    
 
     // Generar un token de acceso y lo guardo en un token seguro (httpOnly)
     const accessToken = jwt.sign({ id_user: newUser.id_user, name: newUser.name }, process.env.JWT_SECRET);

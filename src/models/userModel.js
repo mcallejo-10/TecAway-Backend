@@ -1,5 +1,6 @@
 import { DataTypes } from 'sequelize';
 import { sequelize } from '../db.js';
+import { title } from 'process';
 
 const User = sequelize.define('User', {
   id_user: {
@@ -19,9 +20,13 @@ const User = sequelize.define('User', {
     type: DataTypes.STRING(30),
     allowNull: false,
   },
-  surname: {
-    type: DataTypes.STRING(30),
-    allowNull: true,
+  title: {
+    type: DataTypes.STRING(130),
+    allowNull: false,
+  },
+  description: {
+    type: DataTypes.STRING(2400),
+    allowNull: false,
   },
   cp: {
     type: DataTypes.INTEGER(5),
@@ -56,6 +61,7 @@ const User = sequelize.define('User', {
   updatedAt: 'updated_at',
   createdAt: 'created_at'
 });
+
 
 export default User;
 
