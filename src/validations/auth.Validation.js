@@ -33,15 +33,15 @@ export const registerValidator = [
         .withMessage("Title is required")
         .isString()
         .withMessage("Title should be string")
-        .isLength({ min: 3, max: 130 })
-        .withMessage("Title should be at least 30 characters"),
+        .isLength({ min: 20, max: 130 })
+        .withMessage("Title should be at least 20 characters"),
 
     body("description")
         .exists()
         .withMessage("Description is required")
         .isString()
         .withMessage("Description should be string")
-        .isLength({ min: 3, max: 2400 })
+        .isLength({ min: 30, max: 2400 })
         .withMessage("Description should be at least 30 characters")
 ]
 

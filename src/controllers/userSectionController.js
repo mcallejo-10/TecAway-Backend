@@ -1,3 +1,4 @@
+import Section from '../models/sectionModel.js';
 import UserSection from '../models/userSectionModel.js';
 import { validationResult } from 'express-validator';
 
@@ -12,7 +13,6 @@ export const getUserSections = async (req, res) => {
 
     // Obtener todos los usuarios de la base de datos
     const userSections = await UserSection.findAll();
-console.log('-------USER SECTIONS???------' );
 
     // Enviar una respuesta al cliente
     res.status(200).json({
@@ -38,10 +38,18 @@ export const getUerSectionById = async (req, res) => {
       return res.status(400).json({ errors: errors.array() });
     }
 
-    const { id } = req.params;
-
+    const userId  = req.params.id;
     // Buscar un usuario por su ID en la base de datos
-    const UserSection = await UserSection.findByPk(id);
+    const userSection = await UserSection.findAll({
+          where: { user_id: userId },
+          include: [
+            {
+              model: Section,
+              attributes: ['id_section', 'section']
+            },
+          ]
+    });
+
     if (!userSection) {
       return res.status(404).json({
         code: -6,
@@ -109,80 +117,3 @@ export const addUserSection = async (req, res) => {
   }
 };
 
-// export const updateUserSection = async (req, res) => {
-//   try {
-//     const errors = validationResult(req);
-
-//     // Si hay errores de validación, responde con un estado 400 Bad Request
-//     if (!errors.isEmpty()) {
-//       return res.status(400).json({ errors: errors.array() });
-//     }
-
-//     const { user_id } = req.params;
-//     const { userSectionName } = req.body;
-
-//     // Buscar un usuario por su ID en la base de datos
-//     const userSection = await UserSection.findByPk(id);
-//     if (!userSection) {
-//       return res.status(404).json({
-//         code: -3,
-//         message: 'UserSection no encontrado'
-//       });
-//     }
-
-//     // Actualizar el correo electrónico y la contraseña del usuario
-//     userSection.userSection = userSectionName;
-    
-//     await userSection.save();
-
-//     // Enviar una respuesta al cliente
-//     res.status(200).json({
-//       code: 1,
-//       message: 'UserSection Updated Successfully',
-//       data: userSection
-//     });
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).json({
-//       code: -100,
-//       message: 'Ha ocurrido un error al actualizar la sección'
-//     });
-//   }
-// };
-
-// export const deleteUserSection = async (req, res) => {
-//   try {
-//     const errors = validationResult(req);
-
-//     // Si hay errores de validación, responde con un estado 400 Bad Request
-//     if (!errors.isEmpty()) {
-//       return res.status(400).json({ errors: errors.array() });
-//     }
-
-//     const { id } = req.params;
-
-//     // Buscar una sección por su ID en la base de datos y eliminarlo
-//     const deletedUserSection = await UserSection.destroy({ where: { id_UserSection: id } });
-
-//     // Verificar si la sección fue encontrado y eliminado
-//     if (!deletedUserSection) {
-//       return res.status(404).json({
-//         code: -100,
-//         message: 'UserSection Not Found'
-//       });
-//      }
- 
-//     // Enviar una respuesta al cliente
-//     res.status(200).json({
-//       code: 1,
-//       message: 'UserSection Deleted Successfully'
-//     });
-
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).json({
-//       code: -100,
-//       message: 'Ha ocurrido un error al eliminar la sección'
-//     });
-//   }
-// };

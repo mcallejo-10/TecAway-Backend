@@ -6,11 +6,19 @@ import Section from './sectionModel.js';
 const UserSection = sequelize.define('UserSection', {
   user_id: {
     type: DataTypes.INTEGER(8).UNSIGNED,
-    primaryKey: true
+    primaryKey: true,
+    references: {
+      model: User,   // Relación con el modelo User
+      key: 'id_user',
+    }
   },
   section_id: {
     type: DataTypes.INTEGER(8).UNSIGNED,
-    primaryKey: true
+    primaryKey: true,
+    eferences: {
+      model: Section,   // Relación con el modelo Section
+      key: 'id_section',
+    }
   },
 },
 {
@@ -19,10 +27,8 @@ const UserSection = sequelize.define('UserSection', {
   createdAt: 'created_at'
 });
 
-User.hasMany(UserSection, { foreignKey: 'user_id' });
-// UserSection.belongsTo(User, { foreignKey: 'user_id' });
+UserSection.belongsTo(User, { foreignKey: 'user_id' });
 
-Section.hasMany(UserSection, { foreignKey: 'section_id' });
-// UserSection.belongsTo(Section, { foreignKey: 'section_id' });
+UserSection.belongsTo(Section, { foreignKey: 'section_id' });
 
 export default UserSection;

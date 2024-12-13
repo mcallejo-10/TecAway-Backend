@@ -10,6 +10,8 @@ const insertInitialUserData = async () => {
       email: "ismael.academy@gmail.com",
       password: "$2b$10$tXrqo7VdSPCLAsIUhrVsYejYeMt9FLo9J4OchgCKwuDvpeDK6Xf1q", //pass: ismael123
       name: "Ismael",
+      title: "Ha de ser un titulo entre 30 y 130 caracteresm",      
+      description: "lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam nec purus nec nunc  lorem i skjd",
       cp: 8023,
       distance: 1000,
       roles: ["user"],
@@ -18,6 +20,8 @@ const insertInitialUserData = async () => {
       email: "laura@hotmail.com",
       password: "$2b$10$tXrqo7VdSPCLAsIUhrVsYejYeMt9FLo9J4OchgCKwuDvpeDK6Xf1q", //pass: ismael123
       name: "Laura",
+      title: "Ha de ser un titulo entre 30 y 130 caracteresm",      
+      description: "lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam nec purus nec nunc  lorem i skjd Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam nec purus nec nunc  lorem i skjd",
       cp: 8023,
       distance: 1000,
       roles: ["user"],
@@ -36,7 +40,8 @@ const insertInitialUserData = async () => {
       email: "mod@hotmail.com",
       password: "$2b$10$tXrqo7VdSPCLAsIUhrVsYejYeMt9FLo9J4OchgCKwuDvpeDK6Xf1q", //pass: ismael123
       name: "Moderador",
-      surname: "kale",
+      title: "Ha de ser un titulo entre 30 y 130 caracteresm",      
+      description: "Aquí un texto de ejemplo: lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam nec purus nec nunc  lorem i skjd",
       cp: 8023,
       distance: 1000,
       roles: ["admin"],

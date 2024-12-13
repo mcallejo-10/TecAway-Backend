@@ -35,7 +35,7 @@ export const register = async (req, res) => {
     // Crear un nuevo usuario
     const hashedPassword = await bcrypt.hash(password, Number(process.env.BCRYPT_SALT));
     const newUser = new User({ email, password: hashedPassword, name, title, description, cp, distance, roles, status: 1 });
-    console.log('--------------------------newUser:', newUser);
+  
     await newUser.save();
     
 

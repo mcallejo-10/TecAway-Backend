@@ -42,10 +42,10 @@ await insertInitialUserData();
 // Configurar rutas
 app.use('/auth', authRoutes);
 app.use('/user', userRoutes);
-app.use('/user_Section', userSectionRoutes);
+app.use('/user_section', userSectionRoutes);
 app.use('/section', sectionRoutes);
 app.use('/knowledge', knowlegdeRoutes);
-app.use('/general_Competence', generalCompetenceRoutes);
+app.use('/general_competence', generalCompetenceRoutes);
 app.use('/test', testRoutes);
 
 // Iniciar el servidor

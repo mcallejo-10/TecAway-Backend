@@ -4,7 +4,10 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 const sequelize = new Sequelize('tecaway', 'root', '', {
-    host: 'localhost',
+    username: process.env.USER_NAME,
+    password: process.env.PASSWORD,
+    database: process.env.DATABASE,
+    host: process.env.HOST_NAME,
     dialect: 'mysql',
     logging: console.log, // Habilita logs SQL
 
