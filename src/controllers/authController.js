@@ -158,7 +158,7 @@ export const forgotPassword = async (req, res) => {
     }).save();
 
     const link = `${clietURL}/change-password?token=${resetToken}&id=${user.id_user}`;
-console.log('----resetToken:-----------', resetToken);
+    console.log('----resetToken:-----------', resetToken);
 
     await sendEmail(
       user.email,
@@ -166,8 +166,8 @@ console.log('----resetToken:-----------', resetToken);
       {
         name: user.name,
         link: link,
-      },
-      "email/template/requestResetPassword.handlebars"
+      },"/email/template/requestResetPassword.handlebars"
+      
     ).then(response => {
       console.log("Resultado del envío del correo:", response);
       res.status(200).json({

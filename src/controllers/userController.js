@@ -68,6 +68,7 @@ export const getUser = async (req, res) => {
 
 
 
+
 export const uploadPhoto = async (req, res) => {
   try {
     const rutaArchivo = "./src/uploads/"; // Ruta completa al archivo que deseas eliminar
