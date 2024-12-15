@@ -1,3 +1,4 @@
+
 import Section from '../models/sectionModel.js';
 import { validationResult } from 'express-validator';
 
@@ -157,6 +158,7 @@ export const updateSection = async (req, res) => {
 export const deleteSection = async (req, res) => {
   try {
     const errors = validationResult(req);
+    console.log('++++++++++++++++++++++++++++++', errors);
 
     // Si hay errores de validación, responde con un estado 400 Bad Request
     if (!errors.isEmpty()) {
@@ -176,6 +178,7 @@ export const deleteSection = async (req, res) => {
       });
      }
  
+    
     // Enviar una respuesta al cliente
     res.status(200).json({
       code: 1,

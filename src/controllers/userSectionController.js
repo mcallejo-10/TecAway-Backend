@@ -75,7 +75,6 @@ export const getUerSectionById = async (req, res) => {
 export const addUserSection = async (req, res) => {
   try {
     const errors = validationResult(req);
-    console.log("---------req--------------", req);
 
     // Si hay errores de validación, responde con un estado 400 Bad Request
     if (!errors.isEmpty()) {
@@ -83,12 +82,12 @@ export const addUserSection = async (req, res) => {
     }
 
     const { user_id, section_id } = req.body;
-    
+
     let newUserSection;
     try {
       const existingUser = await UserSection.findOne({
         where: { user_id, section_id },
-      });     
+      });
 
       if (existingUser) {
         return res.status(400).json({
@@ -125,6 +124,42 @@ export const addUserSection = async (req, res) => {
     res.status(500).json({
       code: -100,
       message: "Ha ocurrido un error al añadir la sección",
+    });
+  }
+};
+
+export const deleteUserSection = async (req, res) => {
+  try {
+    const errors = validationResult(req);
+
+    // Si hay errores de validación, responde con un estado 400 Bad Request
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
+    const { user_id, section_id } = req.body;
+
+    const deletedUserSection = await UserSection.destroy({
+      where: { user_id, section_id },
+    });
+
+    if (!deletedUserSection) {
+      return res.status(400).json({
+        code: -100,
+        message: "No existe un esta sección para este usuario",
+      });
+    }
+        // Enviar una respuesta al cliente
+        res.status(200).json({
+          code: 1,
+          message: 'UserSection Deleted Successfully'
+        });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      code: -100,
+      message: "Ha ocurrido un error al eliminar la sección del usuario",
     });
   }
 };
