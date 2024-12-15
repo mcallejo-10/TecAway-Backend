@@ -134,15 +134,15 @@ const insertInitialUserData = async () => {
 
   ]
   const userSectionData = [
-    { user_id: 1, section_id: 238 },
-    { user_id: 1, section_id: 239 },
-    { user_id: 2, section_id: 243 },
-    { user_id: 2, section_id: 240 },
-    { user_id: 3, section_id: 238 },
-    { user_id: 3, section_id: 245 },
-    { user_id: 4, section_id: 238 },
-    { user_id: 4, section_id: 243 },
-    { user_id: 5, section_id: 238 },
+    { user_id: 1, section_id: 1 },
+    { user_id: 1, section_id: 2 },
+    { user_id: 2, section_id: 3 },
+    { user_id: 2, section_id: 9 },
+    { user_id: 3, section_id: 8 },
+    { user_id: 3, section_id: 5 },
+    { user_id: 4, section_id: 4 },
+    { user_id: 4, section_id: 3 },
+    { user_id: 5, section_id: 8 },
   ];
 
   const generalCompeteceData = [
@@ -173,7 +173,7 @@ const insertInitialUserData = async () => {
   await Knowledge.bulkCreate(knowledgeData, { ignoreDuplicates: true });
   await Section.bulkCreate(sectionData, { ignoreDuplicates: true });
   await GeneralCompetence.bulkCreate(generalCompeteceData, { ignoreDuplicates: true });
-  await UserCompetence.bulkCreate(generalCompeteceData, { ignoreDuplicates: true });
+  await UserCompetence.bulkCreate(userCompetenceData, { ignoreDuplicates: true });
 };
 
 export { insertInitialUserData };

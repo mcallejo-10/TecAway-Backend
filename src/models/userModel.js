@@ -1,6 +1,6 @@
 import { DataTypes } from 'sequelize';
 import { sequelize } from '../db.js';
-import { title } from 'process';
+
 
 const User = sequelize.define('User', {
   id_user: {
