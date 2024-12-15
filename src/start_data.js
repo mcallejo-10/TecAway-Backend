@@ -2,6 +2,7 @@ import User from "./models/userModel.js";
 import Section from "./models/sectionModel.js";
 import Knowledge from "./models/knowledgeModel.js";
 import UserSection from "./models/userSectionModel.js";
+import UserCompetence from "./models/userCompetenceModel.js";
 import GeneralCompetence from "./models/generalCompetenceModel.js";
 
 const insertInitialUserData = async () => {
@@ -151,7 +152,18 @@ const insertInitialUserData = async () => {
     { generalCompetence: "PRL"},
     { generalCompetence: "Trabajo en altura"},
     { generalCompetence: "Trabajo en plataformas elevadoras"},
+  ];
 
+  const userCompetenceData = [
+    { user_id: 1, competence_id: 1 },
+    { user_id: 1, competence_id: 2 },
+    { user_id: 2, competence_id: 3 },
+    { user_id: 2, competence_id: 4 },
+    { user_id: 3, competence_id: 1 },
+    { user_id: 3, competence_id: 6 },
+    { user_id: 4, competence_id: 1 },
+    { user_id: 4, competence_id: 2 },
+    { user_id: 5, competence_id: 1 },
   ];
 
   // Insertar datos con opción ignoreDuplicates
@@ -161,6 +173,7 @@ const insertInitialUserData = async () => {
   await Knowledge.bulkCreate(knowledgeData, { ignoreDuplicates: true });
   await Section.bulkCreate(sectionData, { ignoreDuplicates: true });
   await GeneralCompetence.bulkCreate(generalCompeteceData, { ignoreDuplicates: true });
+  await UserCompetence.bulkCreate(generalCompeteceData, { ignoreDuplicates: true });
 };
 
 export { insertInitialUserData };

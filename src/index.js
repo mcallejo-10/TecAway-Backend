@@ -7,6 +7,7 @@ import userRoutes from './routes/userRoutes.js';
 import sectionRoutes from './routes/sectionRoutes.js';
 import knowlegdeRoutes from './routes/knowledgeRoutes.js';
 import userSectionRoutes from './routes/userSectionRoutes.js';
+import userCompetenceRoutes from './routes/userCompetenceRoutes.js';
 import generalCompetenceRoutes from './routes/generalCompetenceRoutes.js';
 import testRoutes from './routes/testRoutes.js';
 import { testConnection } from './db.js';
@@ -42,6 +43,7 @@ await insertInitialUserData();
 // Configurar rutas
 app.use('/auth', authRoutes);
 app.use('/user_section', userSectionRoutes);
+app.use('/user_competence', userCompetenceRoutes);
 app.use('/user', userRoutes);
 app.use('/section', sectionRoutes);
 app.use('/knowledge', knowlegdeRoutes);

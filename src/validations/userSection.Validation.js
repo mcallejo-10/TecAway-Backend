@@ -3,7 +3,7 @@ import { body } from "express-validator";
 export const userSectionValidator = [
   body("user_id")
     .exists()
-    .withMessage("Section is required")
+    .withMessage("User_id is required")
     .isInt()
     .withMessage("Invalid user_id"),
 
