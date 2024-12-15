@@ -1,16 +1,16 @@
 // src/routes/userRoutes.js
 import { Router } from 'express';
-import { getUserSections, getUerSectionById } from '../controllers/userSectionController.js';
+import { getUserSections, getUerSectionById , addUserSection} from '../controllers/userSectionController.js';
 import { authenticateToken } from '../middlewares/authenticateToken.js';
-// import { UserSectionValidator } from '../validations/section.Validation.js';
+import { userSectionValidator } from '../validations/userSection.Validation.js';
 import { idValidator } from '../validations/generic.Validation.js'
 
 const router = Router();
 
 // Rutas para obtener y modificar los datos de los usuarios
 router.get('/', authenticateToken(['user', 'admin']), getUserSections);
-router.get('/:id', authenticateToken(['user','mod','admin']), idValidator, getUerSectionById);
-// router.post('/', authenticateToken(['user','mod','admin']), userSectionValidator, addUserSection);
+router.get('/:id', authenticateToken(['user', 'admin']), idValidator, getUerSectionById);
+router.post('/',  addUserSection);
 // router.patch('/:id', authenticateToken(['user','mod','admin']), idValidator, userSectionValidator, updateUserSection);
 // router.delete('/:id', authenticateToken(['user','mod','admin']), idValidator, deleteUserSection);
 

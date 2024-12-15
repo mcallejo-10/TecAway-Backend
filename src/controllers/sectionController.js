@@ -67,6 +67,8 @@ export const getSectionById = async (req, res) => {
 export const addSection = async (req, res) => {
   try {
     const errors = validationResult(req);
+    console.log('++++++++++++++++++++++++++++++', errors);
+    
 
     // Si hay errores de validación, responde con un estado 400 Bad Request
     if (!errors.isEmpty()) {
