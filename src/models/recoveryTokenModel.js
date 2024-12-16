@@ -2,7 +2,7 @@ import { DataTypes } from 'sequelize';
 import { sequelize } from '../db.js';
 import User from './userModel.js';
 
-const RecoveryToken = sequelize.define('RecoveryToken', {
+const RecoveryToken = sequelize.define('Recovery_Token', {
   token: {
     type: DataTypes.STRING,
     primaryKey: true,

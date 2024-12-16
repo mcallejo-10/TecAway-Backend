@@ -2,7 +2,7 @@ import User from "./models/userModel.js";
 import Section from "./models/sectionModel.js";
 import Knowledge from "./models/knowledgeModel.js";
 import UserSection from "./models/userSectionModel.js";
-import UserCompetence from "./models/userCompetenceModel.js";
+import UserCompetence from "./models/userKnowledgeModel.js";
 import GeneralCompetence from "./models/generalCompetenceModel.js";
 
 const insertInitialUserData = async () => {
@@ -69,6 +69,7 @@ const insertInitialUserData = async () => {
     { section: "vestuario" },
     { section: "caracterizacion" },
     { section: "produccion" },
+    { section: "general" },
   ];
 
   const knowledgeData = [
@@ -128,11 +129,17 @@ const insertInitialUserData = async () => {
     { knowledge: "FX"},
     { knowledge: "Protesis"},
     { knowledge: "Caracterizacion"},
-    //otros
+    //general
+    { knowledge: "PRL"},
+    { knowledge: "Trabajo en altura"},
+    { knowledge: "Trabajo en plataformas elevadoras"},
+    { knowledge: "Carnet de conducir B"},
+    { knowledge: "Carnet de conducir C"},
+    { knowledge: "Qlab"},
+    { knowledge: "Carnet de carretillero"},    
 
-      
+  ];
 
-  ]
   const userSectionData = [
     { user_id: 1, section_id: 1 },
     { user_id: 1, section_id: 2 },
@@ -145,14 +152,7 @@ const insertInitialUserData = async () => {
     { user_id: 5, section_id: 8 },
   ];
 
-  const generalCompeteceData = [
-    { generalCompetence: "Qlab"},
-    { generalCompetence: "Carnet de conducir B"},
-    { generalCompetence: "Carnet de conducir C"},
-    { generalCompetence: "PRL"},
-    { generalCompetence: "Trabajo en altura"},
-    { generalCompetence: "Trabajo en plataformas elevadoras"},
-  ];
+
 
   const userCompetenceData = [
     { user_id: 1, competence_id: 1 },
@@ -172,8 +172,7 @@ const insertInitialUserData = async () => {
   await User.bulkCreate(userData, { ignoreDuplicates: true });
   await Knowledge.bulkCreate(knowledgeData, { ignoreDuplicates: true });
   await Section.bulkCreate(sectionData, { ignoreDuplicates: true });
-  await GeneralCompetence.bulkCreate(generalCompeteceData, { ignoreDuplicates: true });
-  await UserCompetence.bulkCreate(userCompetenceData, { ignoreDuplicates: true });
+ 
 };
 
 export { insertInitialUserData };

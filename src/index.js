@@ -7,7 +7,7 @@ import userRoutes from './routes/userRoutes.js';
 import sectionRoutes from './routes/sectionRoutes.js';
 import knowlegdeRoutes from './routes/knowledgeRoutes.js';
 import userSectionRoutes from './routes/userSectionRoutes.js';
-import userCompetenceRoutes from './routes/userCompetenceRoutes.js';
+import userCompetenceRoutes from './routes/userKnowledgeRoutes.js';
 import generalCompetenceRoutes from './routes/generalCompetenceRoutes.js';
 import testRoutes from './routes/testRoutes.js';
 import { testConnection } from './db.js';
@@ -44,10 +44,10 @@ await insertInitialUserData();
 app.use('/auth', authRoutes);
 app.use('/user', userRoutes);
 app.use('/section', sectionRoutes);
-app.use('/general_competence', generalCompetenceRoutes);
+app.use('/general-competence', generalCompetenceRoutes);
 app.use('/knowledge', knowlegdeRoutes);
 app.use('/userSection', userSectionRoutes);
-app.use('/userCompetence', userCompetenceRoutes);
+app.use('/user-competence', userCompetenceRoutes);
 app.use('/test', testRoutes);
 
 // Iniciar el servidor

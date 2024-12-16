@@ -8,8 +8,8 @@ import { uploadFileMiddleware } from '../middlewares/upload.js';
 const router = Router();
 
 // Rutas para obtener y modificar los datos de los usuarios
-router.get('/get_all_users', authenticateToken(['user','admin' ]), getAllUsers);
+router.get('/get-all-users', authenticateToken(['user','admin' ]), getAllUsers);
 router.get('/', authenticateToken(['user','admin' ]), getUser);
-router.post('/upload_photo', authenticateToken(['user', 'admin']), uploadFileMiddleware, uploadPhoto);
+router.post('/upload-photo', authenticateToken(['user', 'admin']), uploadFileMiddleware, uploadPhoto);
 
 export default router;

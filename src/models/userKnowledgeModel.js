@@ -1,9 +1,9 @@
 import { DataTypes } from 'sequelize';
 import { sequelize } from '../db.js';
 import User from './userModel.js';
-import GeneralCompetence from './generalCompetenceModel.js';
+import Knowledge from './knowledgeModel.js';
 
-const UserCompetence = sequelize.define('User_Competences', {
+const UserKnowledge = sequelize.define('User_Competences', {
   user_id: {
     type: DataTypes.INTEGER(8).UNSIGNED,
     primaryKey: true,
@@ -12,11 +12,11 @@ const UserCompetence = sequelize.define('User_Competences', {
       key: 'id_user',
     }
   },
-  competence_id: {
+  knowledge_id: {
     type: DataTypes.INTEGER(8).UNSIGNED,
     primaryKey: true,
     references: {
-      model: GeneralCompetence,   // Relación con el modelo GeneralCompetence
+      model: Knowledge,   // Relación con el modelo GeneralCompetence
       key: 'id_generalCompetence',
     }
   },
@@ -28,8 +28,8 @@ const UserCompetence = sequelize.define('User_Competences', {
 });
 
 
-UserCompetence.belongsTo(User, { foreignKey: 'user_id' });
+UserKnowledge.belongsTo(User, { foreignKey: 'user_id' });
 
-UserCompetence.belongsTo(GeneralCompetence, { foreignKey: 'competence_id' });
+UserKnowledge.belongsTo(Knowledge, { foreignKey: 'knowledge_id' });
 
-export default UserCompetence;
+export default UserKnowledge;

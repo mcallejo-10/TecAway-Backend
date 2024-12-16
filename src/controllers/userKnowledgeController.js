@@ -1,4 +1,4 @@
-import UserCompetence from '../models/userCompetenceModel.js';
+import UserKowledge from '../models/userKnowledgeModel.js';
 import { validationResult } from "express-validator";
 
 export const getUserCompetences = async (req, res) => {
