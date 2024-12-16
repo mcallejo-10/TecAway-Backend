@@ -1,7 +1,7 @@
 import { DataTypes } from 'sequelize';
 import { sequelize } from '../db.js';
 
-const GeneralCompetence = sequelize.define('General_Competence', {
+const GeneralCompetence = sequelize.define('general_Competence', {
     id_generalCompetence: {
         type: DataTypes.INTEGER(8).UNSIGNED,
         primaryKey: true,

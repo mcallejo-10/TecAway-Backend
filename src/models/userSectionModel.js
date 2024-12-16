@@ -3,7 +3,7 @@ import { sequelize } from '../db.js';
 import User from './userModel.js';
 import Section from './sectionModel.js';
 
-const UserSection = sequelize.define('UserSection', {
+const UserSection = sequelize.define('User_Section', {
   user_id: {
     type: DataTypes.INTEGER(8).UNSIGNED,
     primaryKey: true,

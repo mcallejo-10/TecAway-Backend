@@ -73,10 +73,10 @@ export const addGeneralCompetence = async (req, res) => {
       return res.status(400).json({ errors: errors.array() });
     }
 
-    const { generalCompetece} = req.body;
+    const { generalCompetence } = req.body;
     let newGeneralCompetence;
     try {
-      newGeneralCompetence = await GeneralCompetence.create({ generalCompetece: generalCompetece });
+      newGeneralCompetence = await GeneralCompetence.create({ generalCompetence: generalCompetence });
     } catch (error) {
       // Si hay un error de duplicación de clave única (por ejemplo, título duplicado)
       if (error.name === 'SequelizeUniqueConstraintError') {
@@ -98,7 +98,7 @@ export const addGeneralCompetence = async (req, res) => {
     res.status(200).json({
       code: 1,
       message: 'GeneralCompetence Added Successfully',
-      data: newKnowledge
+      data: newGeneralCompetence
     });
   } catch (error) {
     console.error(error);
@@ -119,12 +119,12 @@ export const updateGeneralCompetence = async (req, res) => {
     }
 
     const { id } = req.params;
-    const generalCompetenceName = req.body.generalCompetece;
+    const generalCompetenceName = req.body.generalCompetence;
 
     // Buscar un usuario por su ID en la base de datos
-    const generalCompetece = await GeneralCompetence.findByPk(id);
+    const generalCompetence = await GeneralCompetence.findByPk(id);
 
-    if (!generalCompetece) {
+    if (!generalCompetence) {
       return res.status(404).json({
         code: -3,
         message: 'GeneralCompetence no encontrado'
@@ -132,15 +132,15 @@ export const updateGeneralCompetence = async (req, res) => {
     }
 
     // Actualizar el correo electrónico y la contraseña del usuario
-    generalCompetece.generalCompetece = generalCompeteceName;
+    generalCompetence.generalCompetence = generalCompetenceName;
     
-    await generalCompetece.save();
+    await generalCompetence.save();
 
     // Enviar una respuesta al cliente
     res.status(200).json({
       code: 1,
       message: 'GeneralCompetence Updated Successfully',
-      data: generalCompetece
+      data: generalCompetence
     });
   } catch (error) {
     console.error(error);

@@ -3,7 +3,7 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-const sequelize = new Sequelize('tecaway', 'root', '', {
+const sequelize = new Sequelize('tecaway', 'root',  '', {
     username: process.env.USER_NAME,
     password: process.env.PASSWORD,
     database: process.env.DATABASE,

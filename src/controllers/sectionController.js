@@ -68,15 +68,13 @@ export const getSectionById = async (req, res) => {
 export const addSection = async (req, res) => {
   try {
     const errors = validationResult(req);
-    console.log('++++++++++++++++++++++++++++++', errors);
     
-
     // Si hay errores de validación, responde con un estado 400 Bad Request
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
 
-    const { section} = req.body;
+    const { section } = req.body;
     let newSection;
     try {
       newSection = await Section.create({ section: section });

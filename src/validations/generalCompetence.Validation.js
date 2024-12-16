@@ -8,7 +8,7 @@ export const generalCompetenceValidator = [
         .withMessage("General competence is required")
         .isString()
         .withMessage("General competence should be a string")
-        .isLength({ min: 5 })
-        .withMessage("General competence should be at least 5 characters"),
+        .isLength({ min: 3 })
+        .withMessage("General competence should be at least 3 characters"),
 ]
 
