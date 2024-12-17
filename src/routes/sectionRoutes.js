@@ -11,7 +11,7 @@ const router = Router();
 router.get('/', authenticateToken(['user', 'admin']), getSections);
 router.get('/:id', authenticateToken(['user','admin']), idValidator, getSectionById);
 router.post('/', authenticateToken(['admin']), sectionValidator, addSection);
-router.patch('/:id', authenticateToken(['admin']), idValidator, sectionValidator, updateSection);
+router.put('/:id', authenticateToken(['admin']), idValidator, sectionValidator, updateSection);
 router.delete('/:id', authenticateToken(['admin']), idValidator, deleteSection);
 
 

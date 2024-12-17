@@ -27,3 +27,4 @@ RecoveryToken.belongsTo(User, { foreignKey: { name: 'user_id', allowNull: false 
 export default RecoveryToken;
 
 
+

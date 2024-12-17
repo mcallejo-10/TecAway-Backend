@@ -1,5 +1,6 @@
 import { validationResult } from "express-validator";
 import UserKnowledge from "../models/userKnowledgeModel.js";
+import Knowledge from "../models/knowledgeModel.js";
 
 
 export const getUserKnowledge = async (req, res) => {
@@ -45,7 +46,7 @@ export const getUserKnowledgeById = async (req, res) => {
         include: [
           {
             model: Knowledge,
-            attributes: ["Knowledge"],
+            attributes: ["knowledge"],
           },
         ],
       });
@@ -81,12 +82,12 @@ export const getUserKnowledgeById = async (req, res) => {
         return res.status(400).json({ errors: errors.array() });
       }
   
-      const { user_id, Knowledge_id } = req.body;
+      const { user_id, knowledge_id } = req.body;
   
       let newUserKnowledge;
       try {
         const existingUserKnowledge = await UserKnowledge.findOne({
-          where: { user_id, Knowledge_id },
+          where: { user_id, knowledge_id },
         });
   
         if (existingUserKnowledge) {
@@ -95,7 +96,7 @@ export const getUserKnowledgeById = async (req, res) => {
             message: "Ya existe un esta competencia para este usuario",
           });
         }
-        newUserKnowledge = await UserKnowledge.create({ user_id, Knowledge_id });
+        newUserKnowledge = await UserKnowledge.create({ user_id, knowledge_id });
       } catch (error) {
         // Si hay un error de duplicación de clave única (por ejemplo, título duplicado)
         if (error.name === "SequelizeUniqueConstraintError") {

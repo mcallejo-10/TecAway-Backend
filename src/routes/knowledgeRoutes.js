@@ -11,7 +11,7 @@ const router = Router();
 router.get('/', authenticateToken(['user', 'admin']), getKnowledge);
 router.get('/:id', authenticateToken(['user', 'admin']), idValidator, getKnowledgeById);
 router.post('/', authenticateToken(['admin']), knowledgeValidator, addKnowledge);
-router.patch('/:id', authenticateToken(['admin']), idValidator, knowledgeValidator, updateKnowledge);
+router.put('/:id', authenticateToken(['user', 'admin']), idValidator, knowledgeValidator, updateKnowledge);
 router.delete('/:id', authenticateToken(['admin']), idValidator, deleteKnowledge);
 
 
