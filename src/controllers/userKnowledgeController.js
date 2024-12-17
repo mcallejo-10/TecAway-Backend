@@ -1,7 +1,8 @@
-import UserKowledge from '../models/userKnowledgeModel.js';
 import { validationResult } from "express-validator";
+import UserKnowledge from "../models/userKnowledgeModel.js";
 
-export const getUserCompetences = async (req, res) => {
+
+export const getUserKnowledge = async (req, res) => {
   try {
     const errors = validationResult(req);
 
@@ -11,13 +12,13 @@ export const getUserCompetences = async (req, res) => {
     }
 
     // Obtener todos los usuarios de la base de datos
-    const userCompetences = await UserCompetence.findAll();
+    const userKnowledges = await UserKnowledge.findAll();
 
     // Enviar una respuesta al cliente
     res.status(200).json({
       code: 1,
-      message: "UserCompetences List",
-      data: userCompetences,
+      message: "UserKnowledges List",
+      data: userKnowledges,
     });
   } catch (error) {
     console.error(error);
@@ -28,7 +29,7 @@ export const getUserCompetences = async (req, res) => {
   }
 };
 
-export const getUserCompetenceById = async (req, res) => {
+export const getUserKnowledgeById = async (req, res) => {
     try {
       const errors = validationResult(req);
   
@@ -39,17 +40,17 @@ export const getUserCompetenceById = async (req, res) => {
   
       const userId = req.params.id;
       // Buscar un usuario por su ID en la base de datos
-      const userCompetence = await UserCompetence.findAll({
+      const userKnowledge = await UserKnowledge.findAll({
         where: { user_id: userId },
         include: [
           {
-            model: Competence,
-            attributes: ["Competence"],
+            model: Knowledge,
+            attributes: ["Knowledge"],
           },
         ],
       });
   
-      if (!userCompetence) {
+      if (!userKnowledge) {
         return res.status(404).json({
           code: -6,
           message: "Competencia del usuario no encontrada",
@@ -59,8 +60,8 @@ export const getUserCompetenceById = async (req, res) => {
       // Enviar una respuesta al cliente
       res.status(200).json({
         code: 1,
-        message: "UserCompetence Detail",
-        data: userCompetence,
+        message: "UserKnowledge Detail",
+        data: userKnowledge,
       });
     } catch (error) {
       console.error(error);
@@ -71,7 +72,7 @@ export const getUserCompetenceById = async (req, res) => {
     }
   };
   
-  export const addUserCompetence = async (req, res) => {
+  export const addUserKnowledge = async (req, res) => {
     try {
       const errors = validationResult(req);
   
@@ -80,54 +81,54 @@ export const getUserCompetenceById = async (req, res) => {
         return res.status(400).json({ errors: errors.array() });
       }
   
-      const { user_id, competence_id } = req.body;
+      const { user_id, Knowledge_id } = req.body;
   
-      let newUserCompetence;
+      let newUserKnowledge;
       try {
-        const existingUserCompetence = await UserCompetence.findOne({
-          where: { user_id, competence_id },
+        const existingUserKnowledge = await UserKnowledge.findOne({
+          where: { user_id, Knowledge_id },
         });
   
-        if (existingUserCompetence) {
+        if (existingUserKnowledge) {
           return res.status(400).json({
             code: -2,
             message: "Ya existe un esta competencia para este usuario",
           });
         }
-        newUserCompetence = await UserCompetence.create({ user_id, competence_id });
+        newUserKnowledge = await UserKnowledge.create({ user_id, Knowledge_id });
       } catch (error) {
         // Si hay un error de duplicación de clave única (por ejemplo, título duplicado)
         if (error.name === "SequelizeUniqueConstraintError") {
           res.status(400).json({
             code: -61,
-            message: "Duplicate UserCompetence name",
+            message: "Duplicate UserKnowledge name",
           });
         }
       }
   
-      if (!newUserCompetence) {
+      if (!newUserKnowledge) {
         return res.status(404).json({
           code: -6,
-          message: "Error When Adding The UserCompetence",
+          message: "Error When Adding The UserKnowledge",
         });
       }
   
       // Enviar una respuesta al cliente
       res.status(200).json({
         code: 1,
-        message: "UserCompetence Added Successfully",
-        data: newUserCompetence,
+        message: "UserKnowledge Added Successfully",
+        data: newUserKnowledge,
       });
     } catch (error) {
       console.error(error);
       res.status(500).json({
         code: -100,
-        message: "Ha ocurrido un error al añadir la competencia",
+        message: "Ha ocurrido un error al añadir el conocimiento del usuario",
       });
     }
   };
   
-  export const deleteUserCompetence = async (req, res) => {
+  export const deleteUserKnowledge = async (req, res) => {
     try {
       const errors = validationResult(req);
   
@@ -136,29 +137,29 @@ export const getUserCompetenceById = async (req, res) => {
         return res.status(400).json({ errors: errors.array() });
       }
   
-      const { user_id, competence_id } = req.body;
+      const { user_id, Knowledge_id } = req.body;
   
-      const deletedUserCompetence = await UserCompetence.destroy({
-        where: { user_id, competence_id },
+      const deletedUserKnowledge = await UserKnowledge.destroy({
+        where: { user_id, Knowledge_id },
       });
   
-      if (!deletedUserCompetence) {
+      if (!deletedUserKnowledge) {
         return res.status(400).json({
           code: -100,
-          message: "No existe un esta competencia para este usuario",
+          message: "No existe un este conocimiento para este usuario",
         });
       }
           // Enviar una respuesta al cliente
           res.status(200).json({
             code: 1,
-            message: 'UserCompetence Deleted Successfully'
+            message: 'UserKnowledge Deleted Successfully'
           });
   
     } catch (error) {
       console.error(error);
       res.status(500).json({
         code: -100,
-        message: "Ha ocurrido un error al eliminar la competencia del usuario",
+        message: "Ha ocurrido un error al eliminar el comocimiento del usuario",
       });
     }
   };

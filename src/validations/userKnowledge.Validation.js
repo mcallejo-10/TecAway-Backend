@@ -1,15 +1,15 @@
 import { body } from "express-validator";
 
-export const userCompetenceValidator = [
+export const userKnowledgeValidator = [
   body("user_id")
     .exists()
     .withMessage("User_id is required")
     .isInt()
     .withMessage("Invalid user_id"),
 
-  body("competence_id")
+  body("knowledge_id")
     .exists()
-    .withMessage("Competence_id is required")
+    .withMessage("Knowledge_id is required")
     .isInt()
-    .withMessage("Invalid competence_id"),
+    .withMessage("Invalid knowledge_id"),
 ];
