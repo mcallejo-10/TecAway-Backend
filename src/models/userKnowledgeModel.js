@@ -3,7 +3,7 @@ import { sequelize } from '../db.js';
 import User from './userModel.js';
 import Knowledge from './knowledgeModel.js';
 
-const UserKnowledge = sequelize.define('User_Competences', {
+const UserKnowledge = sequelize.define('User_Knowledge', {
   user_id: {
     type: DataTypes.INTEGER(8).UNSIGNED,
     primaryKey: true,
@@ -17,7 +17,7 @@ const UserKnowledge = sequelize.define('User_Competences', {
     primaryKey: true,
     references: {
       model: Knowledge,   // Relación con el modelo GeneralCompetence
-      key: 'id_generalCompetence',
+      key: 'id_knowledge',
     }
   },
 },

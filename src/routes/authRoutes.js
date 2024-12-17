@@ -12,4 +12,5 @@ router.post('/forgot-password', forgotPasswordValidator, forgotPassword);
 router.post('/change-password', changePasswordValidator, changePassword);
 router.get('/logout', logout);
 
+
 export default router;
