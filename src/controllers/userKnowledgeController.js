@@ -138,10 +138,10 @@ export const getUserKnowledgeById = async (req, res) => {
         return res.status(400).json({ errors: errors.array() });
       }
   
-      const { user_id, Knowledge_id } = req.body;
+      const { user_id, knowledge_id } = req.body;
   
       const deletedUserKnowledge = await UserKnowledge.destroy({
-        where: { user_id, Knowledge_id },
+        where: { user_id, knowledge_id },
       });
   
       if (!deletedUserKnowledge) {

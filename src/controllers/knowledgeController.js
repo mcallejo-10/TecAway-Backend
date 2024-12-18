@@ -118,8 +118,7 @@ export const updateKnowledge = async (req, res) => {
     }
 
     const { id } = req.params;
-    const {knowledge, section_id } = req.body;
-      
+    const {knowledge, section_id } = req.body;      
 
     // Buscar un knowledge por su ID en la base de datos
     const currentKnowledge = await Knowledge.findByPk(id);
@@ -135,9 +134,7 @@ export const updateKnowledge = async (req, res) => {
     try {
       await currentKnowledge.update({ knowledge, section_id });
     } catch (error) {
-      console.log('error------------------------', error);
-      
-      // Si hay un error de duplicación de clave única (por ejemplo, título duplicado)
+           // Si hay un error de duplicación de clave única 
       if (error.name === 'SequelizeUniqueConstraintError') {
         res.status(400).json({
           code: -61,
