@@ -10,7 +10,7 @@ export const getKnowledge = async (req, res) => {
       return res.status(400).json({ errors: errors.array() });
     }
 
-    // Obtener todos los usuarios de la base de datos
+    // Obtener todos los knowledges de la base de datos
     const knowledge = await Knowledge.findAll();
 
     // Enviar una respuesta al cliente
@@ -39,7 +39,7 @@ export const getKnowledgeById = async (req, res) => {
 
     const { id } = req.params;
 
-    // Buscar un usuario por su ID en la base de datos
+    // Buscar un knowledge por su ID en la base de datos
     const knowledge = await Knowledge.findByPk(id);
     if (!knowledge) {
       return res.status(404).json({
@@ -72,10 +72,10 @@ export const addKnowledge = async (req, res) => {
       return res.status(400).json({ errors: errors.array() });
     }
 
-    const { knowledge} = req.body;
+    const { knowledge, section_id} = req.body;
     let newKnowledge;
     try {
-      newKnowledge = await Knowledge.create({ knowledge: knowledge });
+      newKnowledge = await Knowledge.create({ knowledge, section_id });
     } catch (error) {
       // Si hay un error de duplicación de clave única (por ejemplo, título duplicado)
       if (error.name === 'SequelizeUniqueConstraintError') {
@@ -118,23 +118,33 @@ export const updateKnowledge = async (req, res) => {
     }
 
     const { id } = req.params;
-    const knowledgeName = req.body.knowledge;
+    const {knowledge, section_id } = req.body;
+      
 
-    // Buscar un usuario por su ID en la base de datos
-    const knowledge = await Knowledge.findByPk(id);
-
-    if (!knowledge) {
+    // Buscar un knowledge por su ID en la base de datos
+    const currentKnowledge = await Knowledge.findByPk(id);
+    
+    if (!currentKnowledge) {
       return res.status(404).json({
         code: -3,
         message: 'Knowledge no encontrado'
       });
     }
 
-    // Actualizar el correo electrónico y la contraseña del usuario
-    knowledge.knowledge = knowledgeName;
-    
-    await knowledge.save();
-
+    // Actualizar el correo electrónico y la contraseña del knowledge
+    try {
+      await currentKnowledge.update({ knowledge, section_id });
+    } catch (error) {
+      console.log('error------------------------', error);
+      
+      // Si hay un error de duplicación de clave única (por ejemplo, título duplicado)
+      if (error.name === 'SequelizeUniqueConstraintError') {
+        res.status(400).json({
+          code: -61,
+          message: 'Duplicate knowledge name'
+        });
+      }
+    }
     // Enviar una respuesta al cliente
     res.status(200).json({
       code: 1,

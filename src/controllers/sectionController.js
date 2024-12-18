@@ -121,11 +121,11 @@ export const updateSection = async (req, res) => {
     }
 
     const { id } = req.params;
-    const sectionName = req.body.section;
-    
+    const sectionName = req.body.section;    
     
    // Buscar un usuario por su ID en la base de datos
-    const section = await Section.findByPk(id);
+    const section = await Section.findByPk(id);    
+    console.log('section------------------------', section);
     
     if (!section) {
       return res.status(404).json({
@@ -135,8 +135,23 @@ export const updateSection = async (req, res) => {
     }
 
     // Actualizar el correo electrónico y la contraseña del usuario
-    section.section = sectionName;   
-    await section.save();
+    // section.section = sectionName;   
+    // await section.save();
+    try {
+      await section.update({section: sectionName} );
+      
+     
+    } catch (error) {
+      console.log('error------------------------', error);
+      
+      // Si hay un error de duplicación de clave única (por ejemplo, título duplicado)
+      if (error.name === 'SequelizeUniqueConstraintError') {
+        res.status(400).json({
+          code: -61,
+          message: 'Duplicate Section name'
+        });
+      }
+    }
 
     // Enviar una respuesta al cliente
     res.status(200).json({
@@ -156,7 +171,7 @@ export const updateSection = async (req, res) => {
 export const deleteSection = async (req, res) => {
   try {
     const errors = validationResult(req);
-    console.log('++++++++++++++++++++++++++++++', errors);
+  
 
     // Si hay errores de validación, responde con un estado 400 Bad Request
     if (!errors.isEmpty()) {
