@@ -3,6 +3,7 @@ import User from '../models/userModel.js';
 import { validationResult } from 'express-validator';
 import fs from 'fs';
 import path from 'path';
+import { log } from 'console';
 //https://www.bezkoder.com/node-js-express-file-upload/
 
 export const getAllUsers = async (req, res) => {
@@ -125,10 +126,72 @@ export const uploadPhoto = async (req, res) => {
         message: "File size cannot be larger than 2MB!",
       });
     }
-
     res.status(500).send({
       message: `Could not upload the file: ${req.file.originalname}. ${err}`,
       error: `${err}`
+    });
+  }
+};
+
+
+
+export const updateUser = async (req, res) => {
+
+  try {
+    const errors = validationResult(req);
+      // Si hay errores de validación, responde con un estado 400 Bad Request
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
+    const id  = req.user.id_user;
+      
+    const {name, email, title, description, cp, distance} = req.body;    
+    const existingUser = await User.findOne({ where: {  email }});
+    console.log('existingUser**********************************', existingUser.email);
+    console.log('req.body.email**********************************', req.body.email);
+    
+    
+    if (existingUser && existingUser.email != req.user.email) {
+      return res.status(400).json({
+        code: -2,
+        message: 'Ya existe un usuario con el mismo correo electrónico'
+      });
+    }
+   // Buscar un usuario por su ID en la base de datos
+    const user = await User.findByPk(id);        
+    if (!user) {
+      return res.status(404).json({
+        code: -3,
+        message: 'Usuario no encontrado'
+      });
+    }
+
+    // Actualizar datos del usuario: nombre, email, título y descripción
+    try {        
+      await user.update({name, email, title, description, cp, distance} );     
+    } catch (error) {
+            
+      // Si hay un error de duplicación de clave única (por ejemplo, título duplicado)
+      if (error.name === 'SequelizeUniqueConstraintError') {
+        res.status(400).json({
+          code: -61,
+          message: 'This email already exists'
+        });
+      }
+    }
+
+    // Enviar una respuesta al cliente
+    res.status(200).json({
+      code: 1,
+      message: 'User Updated Successfully',
+      data: user
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      code: -100,
+      message: 'Ha ocurrido un error al actualizar el usuario'
     });
   }
 };

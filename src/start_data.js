@@ -395,15 +395,15 @@ const insertInitialUserData = async () => {
   ];
 
   const userKnowledgeData = [
-    { user_id: 1, knowledge_id: 81 },
-    { user_id: 1, knowledge_id: 82 },
-    { user_id: 2, knowledge_id: 113 },
-    { user_id: 2, knowledge_id: 91 },
-    { user_id: 3, knowledge_id: 81 },
-    { user_id: 3, knowledge_id: 101 },
-    { user_id: 4, knowledge_id: 84 },
-    { user_id: 4, knowledge_id: 133 },
-    { user_id: 5, knowledge_id: 88 },
+    { user_id: 1, knowledge_id: 1 },
+    { user_id: 1, knowledge_id: 2 },
+    { user_id: 2, knowledge_id: 13 },
+    { user_id: 2, knowledge_id: 1 },
+    { user_id: 3, knowledge_id: 1 },
+    { user_id: 3, knowledge_id: 31 },
+    { user_id: 4, knowledge_id: 4 },
+    { user_id: 4, knowledge_id: 33 },
+    { user_id: 5, knowledge_id: 8 },
   ];
 
 

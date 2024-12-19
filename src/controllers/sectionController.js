@@ -142,8 +142,7 @@ export const updateSection = async (req, res) => {
       
      
     } catch (error) {
-      console.log('error------------------------', error);
-      
+    
       // Si hay un error de duplicación de clave única (por ejemplo, título duplicado)
       if (error.name === 'SequelizeUniqueConstraintError') {
         res.status(400).json({
