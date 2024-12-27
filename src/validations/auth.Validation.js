@@ -45,7 +45,7 @@ export const registerValidator = [
         .withMessage("Description should be at least 30 characters")
 ]
 
-export const forgotPasswordValidator = [
+export const emailValidator = [
     body("email").isEmail()
 ];
 

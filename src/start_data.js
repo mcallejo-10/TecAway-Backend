@@ -411,10 +411,12 @@ const insertInitialUserData = async () => {
   // Insertar datos con opción ignoreDuplicates
   // Para actualizar todas las filas: updateOnDuplicate: Object.keys(User.rawAttributes)
   await User.bulkCreate(userData, { ignoreDuplicates: true });
-  await Knowledge.bulkCreate(knowledgeData, { ignoreDuplicates: true });
   await Section.bulkCreate(sectionData, { ignoreDuplicates: true });
+  await Knowledge.bulkCreate(knowledgeData, { ignoreDuplicates: true });
   await UserKnowledge.bulkCreate(userKnowledgeData, { ignoreDuplicates: true });
 
 };
+
+
 
 export { insertInitialUserData };
