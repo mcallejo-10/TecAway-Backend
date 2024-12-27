@@ -18,7 +18,7 @@ export const checkEmailExists = async (req, res) => {
     }
 
     const userExists = await User.findOne({ where: { email } }); 
-    res.json({ exists: !!userExists});
+    res.json(!!userExists);
     
   } catch (error) {
     console.error(error);

@@ -13,7 +13,7 @@ const router = Router();
 
 // Rutas para obtener y modificar los datos de los usuarios
 router.get('/get-all-users', authenticateToken(['user','admin' ]), getAllUsers);
-router.get('/check-email', emailValidator, checkEmailExists);
+router.post('/check-email', emailValidator, checkEmailExists);
 router.get('/', authenticateToken(['user','admin' ]), getUser);
 router.post('/upload-photo', authenticateToken(['user', 'admin']), uploadFileMiddleware, uploadPhoto);
 router.patch('/', authenticateToken(['user','admin' ]),  updateUser);
