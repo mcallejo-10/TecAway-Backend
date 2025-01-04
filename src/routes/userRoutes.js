@@ -1,6 +1,6 @@
 // src/routes/userRoutes.js
 import { Router } from 'express';
-import { getAllUsers,getUser, uploadPhoto, updateUser, checkEmailExists } from '../controllers/userController.js';
+import { getAllUsers,getUser, uploadPhoto, updateUser, checkEmailExists, getUserById } from '../controllers/userController.js';
 import { authenticateToken } from '../middlewares/authenticateToken.js';
 import { uploadFileMiddleware } from '../middlewares/upload.js';
 import { emailValidator } from '../validations/auth.Validation.js';
@@ -12,6 +12,8 @@ import { emailValidator } from '../validations/auth.Validation.js';
 const router = Router();
 
 // Rutas para obtener y modificar los datos de los usuarios
+router.get('/:id', authenticateToken(['user','admin' ]), getUserById);
+
 router.get('/get-all-users', authenticateToken(['user','admin' ]), getAllUsers);
 router.post('/check-email', emailValidator, checkEmailExists);
 router.get('/', authenticateToken(['user','admin' ]), getUser);

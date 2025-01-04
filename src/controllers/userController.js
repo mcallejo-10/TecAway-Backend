@@ -88,6 +88,48 @@ export const getUser = async (req, res) => {
   }
 };
 
+export const getUserById = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // Buscar un knowledge por su ID en la base de datos
+    const knowledge = await User.findByPk(id);
+    if (!knowledge) {
+      return res.status(404).json({
+        code: -6,
+        message: 'Usuario no encontrado'
+      });
+    }
+    const user_data = {
+      id_user: id,
+      email: req.user.email,
+      password: req.user.password,
+      name: req.user.name,
+      title: req.user.title,
+      description: req.user.description,
+      cp: req.user.cp,
+      distance: req.user.distance,
+      photo: req.user.photo,
+      roles: req.user.roles,
+      created_at: req.user.created_at,
+      updated_at: req.user.updated_at,
+    };
+
+    // Enviar una respuesta al cliente
+    res.status(200).json({
+      code: 1,
+      message: "User Detail",
+      data: user_data,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      code: -100,
+      message: "An error occurred while obtaining the USER",
+    });
+  }
+};
+
 export const uploadPhoto = async (req, res) => {
   try {
     const rutaArchivo = "./src/uploads/"; // Ruta completa al archivo que deseas eliminar
