@@ -58,7 +58,7 @@ const insertInitialUserData = async () => {
   ];
 
   const sectionData = [
-    { section: "Iluminacion" },
+    { section: "General" },
     { section: "Video" },
     { section: "Sonido" },
     { section: "Regiduria" },
@@ -67,50 +67,50 @@ const insertInitialUserData = async () => {
     { section: "Vestuario" },
     { section: "Caracterizacion" },
     { section: "Produccion" },
-    { section: "General" },
+    { section: "Iluminacion" },
   ];
 
   const knowledgeData = [
     // siatemas de iluminacion
     {
       knowledge: "Iluminación",
-      section_id: 1
+      section_id: 10
     },
     {
       knowledge: "LT",
-      section_id: 1
+      section_id: 10
     },
     {
       knowledge: "ETC",
-      section_id: 1
+      section_id: 10
     },
     {
       knowledge: "Avolites",
-      section_id: 1
+      section_id: 10
     },
     {
       knowledge: "GrandMA",
-      section_id: 1
+      section_id: 10
     },
     {
       knowledge: "Chamsys",
-      section_id: 1
+      section_id: 10
     },
     {
       knowledge: "Hog",
-      section_id: 1
+      section_id: 10
     },
     {
       knowledge: "Q::light",
-      section_id: 1
+      section_id: 10
     },
     {
       knowledge: "Robe",
-      section_id: 1
+      section_id: 10
     },
     {
       knowledge: "Dlight",
-      section_id: 1
+      section_id: 10
     },
 
     // video
@@ -368,28 +368,28 @@ const insertInitialUserData = async () => {
       section_id: 9
     },
 
-    //general 10
+    //general 1
     { knowledge: "PRL" ,
-      section_id: 10
+      section_id: 1
     },
 
     { knowledge: "Trabajo en altura",
-      section_id: 10
+      section_id: 1
      },
     { knowledge: "Trabajo en plataformas elevadoras",
-      section_id: 10
+      section_id: 1
      },
     { knowledge: "Carnet de conducir B",
-      section_id: 10
+      section_id: 1
      },
     { knowledge: "Carnet de conducir C",
-      section_id: 10
+      section_id: 1
      },
     { knowledge: "Qlab",
-      section_id: 10
+      section_id: 1
      },
     { knowledge: "Carnet de carretillero",
-      section_id: 10
+      section_id: 1
      },
 
   ];
