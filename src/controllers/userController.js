@@ -2,6 +2,7 @@ import e from "express";
 import User from "../models/userModel.js";
 import { validationResult } from "express-validator";
 import fs from "fs";
+import { log } from "console";
 
 //https://www.bezkoder.com/node-js-express-file-upload/
 
@@ -56,7 +57,7 @@ export const getAllUsers = async (req, res) => {
   }
 };
 
-export const getUser = async (req, res) => {
+export const getMyUser = async (req, res) => {
   try {
     const user_data = {
       id_user: req.user.id_user,
@@ -91,10 +92,13 @@ export const getUser = async (req, res) => {
 export const getUserById = async (req, res) => {
   try {
     const { id } = req.params;
+    console.log("ID: " + id);
+    
 
-    // Buscar un knowledge por su ID en la base de datos
-    const knowledge = await User.findByPk(id);
-    if (!knowledge) {
+    // Buscar un user por su ID en la base de datos
+    const user = await User.findByPk(id);
+        
+    if (!user) {
       return res.status(404).json({
         code: -6,
         message: 'Usuario no encontrado'
@@ -102,18 +106,19 @@ export const getUserById = async (req, res) => {
     }
     const user_data = {
       id_user: id,
-      email: req.user.email,
-      password: req.user.password,
-      name: req.user.name,
-      title: req.user.title,
-      description: req.user.description,
-      cp: req.user.cp,
-      distance: req.user.distance,
-      photo: req.user.photo,
-      roles: req.user.roles,
-      created_at: req.user.created_at,
-      updated_at: req.user.updated_at,
+      email: user.email,
+      password: user.password,
+      name: user.name,
+      title: user.title,
+      description: user.description,
+      cp: user.cp,
+      distance: user.distance,
+      photo: user.photo,
+      roles: user.roles,
+      created_at: user.created_at,
+      updated_at: user.updated_at,
     };
+    
 
     // Enviar una respuesta al cliente
     res.status(200).json({
