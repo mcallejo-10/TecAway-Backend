@@ -3,6 +3,7 @@ import User from "../models/userModel.js";
 import { validationResult } from "express-validator";
 import fs from "fs";
 import { log } from "console";
+import { sequelize } from '../db.js'; // Asegúrate de importar tu instancia de Sequelize
 
 //https://www.bezkoder.com/node-js-express-file-upload/
 
@@ -255,6 +256,87 @@ export const updateUser = async (req, res) => {
     res.status(500).json({
       code: -100,
       message: "Ha ocurrido un error al actualizar el usuario",
+    });
+  }
+};
+
+
+
+export const getUserSectionsAndKnowledge = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // Consulta con JOIN
+    const results = await sequelize.query(
+      `
+      SELECT 
+        u.id_user AS user_id,
+        u.name AS user_name,
+        s.id_section AS section_id,
+        s.section AS section_name,
+        k.id_knowledge AS knowledge_id,
+        k.knowledge AS knowledge_name
+      FROM Users u
+      INNER JOIN User_Knowledges uk ON u.id_user = uk.user_id
+      INNER JOIN Knowledge k ON uk.knowledge_id = k.id_knowledge
+      INNER JOIN Sections s ON k.section_id = s.id_section
+      WHERE u.id_user = :id
+      `,
+      {
+        replacements: { id }, // Parámetros dinámicos
+        type: sequelize.QueryTypes.SELECT, // Indicar que es una consulta SELECT
+      }
+    );
+
+    if (results.length === 0) {
+      return res.status(404).json({
+        code: -6,
+        message: 'No se encontraron secciones ni conocimientos para este usuario',
+      });
+    }
+
+    // Formatear la respuesta
+    const formattedData = {
+      user: {
+        id: results[0].user_id,
+        name: results[0].user_name
+      },
+      sections: [],
+    };
+    
+    // Agrupar los conocimientos por sección
+    const sectionsMap = {};
+    
+    // Recorremos los resultados y agrupamos por section_id
+    results.forEach((row) => {
+      // Si la sección no existe en el mapa, la creamos
+      if (!sectionsMap[row.section_id]) {
+        sectionsMap[row.section_id] = {
+          section_name: row.section_name,
+          section_knowledges: [],
+        };
+      }
+    
+      // Agregar el conocimiento a la sección correspondiente
+      sectionsMap[row.section_id].section_knowledges.push({
+        knowledge_name: row.knowledge_name,
+      });
+    });
+    
+    // Convertir el mapa de secciones a un array y asignarlo al objeto final
+    formattedData.sections = Object.values(sectionsMap);
+    
+    res.status(200).json({
+      code: 1,
+      message: 'Secciones y conocimientos del usuario obtenidos correctamente',
+      data: formattedData,
+    });
+    
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      code: -100,
+      message: 'Ocurrió un error al obtener las secciones y conocimientos',
     });
   }
 };
