@@ -11,8 +11,8 @@ const insertInitialUserData = async () => {
       name: "Ismael",
       title: "Ha de ser un titulo entre 30 y 130 caracteresm",
       description: "lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam nec purus nec nunc  lorem i skjd",
-      town: 8023,
-      can_move: 1000,
+      town: "Barcelona",
+      can_move: true,
       roles: ["user"],
     },
     {
@@ -21,8 +21,8 @@ const insertInitialUserData = async () => {
       name: "Laura",
       title: "Ha de ser un titulo entre 30 y 130 caracteresm",
       description: "lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam nec purus nec nunc  lorem i skjd Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam nec purus nec nunc  lorem i skjd",
-      town: 8023,
-      can_move: 1000,
+      town: "Barcelona",
+      can_move: false,
       roles: ["user"],
     },
     {
@@ -31,8 +31,8 @@ const insertInitialUserData = async () => {
       name: "Maria",
       title: "Ha de ser un titulo entre 30 y 130 caracteresm",
       description: "lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam nec purus nec nunc  lorem i skjd",
-      town: 8023,
-      can_move: 1000,
+      town: "Barcelona",
+      can_move: true,
       roles: ["mod", "admin"],
     },
     {
@@ -41,8 +41,8 @@ const insertInitialUserData = async () => {
       name: "Moderador",
       title: "Ha de ser un titulo entre 30 y 130 caracteresm",
       description: "Aquí un texto de ejemplo: lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam nec purus nec nunc  lorem i skjd",
-      town: 8023,
-      can_move: 1000,
+      town: "Madrid",
+      can_move: true,
       roles: ["admin"],
     },
 
@@ -51,8 +51,8 @@ const insertInitialUserData = async () => {
       password: "$2b$10$tXrqo7VdSPCLAsIUhrVsYejYeMt9FLo9J4OchgCKwuDvpeDK6Xf1q", //pass: ismael123
       name: "Admin",
       surname: "kale",
-      town: 8023,
-      can_move: 1000,
+      town: "Barcelona",
+      can_move: false,
       roles: ["admin"],
     },
   ];
