@@ -23,7 +23,7 @@ export const register = async (req, res) => {
       return res.status(400).json({ errors: errors.array() });
     }
    
-    const { email, password, name, title, description, cp , distance, roles } = req.body;
+    const { email, password, name, title, description, town, can_move, roles } = req.body;
     // Verificar si ya existe un usuario con el mismo correo electrónico
     const existingUser = await User.findOne({ where: { email }});
     if (existingUser) {
@@ -34,7 +34,7 @@ export const register = async (req, res) => {
     }
     // Crear un nuevo usuario
     const hashedPassword = await bcrypt.hash(password, Number(process.env.BCRYPT_SALT));
-    const newUser = new User({ email, password: hashedPassword, name, title, description, cp, distance, roles, status: 1 });
+    const newUser = new User({ email, password: hashedPassword, name, title, description, town, can_move, roles, status: 1 });
   
     await newUser.save();
     

@@ -28,12 +28,12 @@ const User = sequelize.define('User', {
     type: DataTypes.STRING(2400),
     allowNull: false,
   },
-  cp: {
-    type: DataTypes.INTEGER(5),
+  town: {
+    type: DataTypes.STRING(20),
     allowNull: false,
   },
-  distance: {
-    type: DataTypes.INTEGER(8),
+  can_move: {
+    type: DataTypes.BOOLEAN(1),
     allowNull: false,
   },  
   photo: {

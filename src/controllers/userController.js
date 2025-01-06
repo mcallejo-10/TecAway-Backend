@@ -66,8 +66,8 @@ export const getMyUser = async (req, res) => {
       name: req.user.name,
       title: req.user.title,
       description: req.user.description,
-      cp: req.user.cp,
-      distance: req.user.distance,
+      town: req.user.town,
+      can_move: req.user.can_move,
       photo: req.user.photo,
       roles: req.user.roles,
       created_at: req.user.created_at,
@@ -110,8 +110,8 @@ export const getUserById = async (req, res) => {
       name: user.name,
       title: user.title,
       description: user.description,
-      cp: user.cp,
-      distance: user.distance,
+      town: user.town,
+      can_move: user.can_move,
       photo: user.photo,
       roles: user.roles,
       created_at: user.created_at,
@@ -211,7 +211,7 @@ export const updateUser = async (req, res) => {
 
     const id = req.user.id_user;
 
-    const { name, email, title, description, cp, distance } = req.body;
+    const { name, email, title, description, town, can_move } = req.body;
     const existingUser = await User.findOne({ where: { email } });
 
     if (existingUser && existingUser.email != req.user.email) {
@@ -231,7 +231,7 @@ export const updateUser = async (req, res) => {
 
     // Actualizar datos del usuario: nombre, email, título y descripción
     try {
-      await user.update({ name, email, title, description, cp, distance });
+      await user.update({ name, email, title, description, town, can_move });
     } catch (error) {
       // Si hay un error de duplicación de clave única (por ejemplo, título duplicado)
       if (error.name === "SequelizeUniqueConstraintError") {
@@ -270,8 +270,8 @@ export const getUserSectionsAndKnowledge = async (req, res) => {
         u.email AS user_email,
         u.title AS user_title,
         u.description AS user_description,
-        u.cp AS user_cp,
-        u.distance AS user_distance,
+        u.town AS user_town,
+        u.can_move AS user_can_move,
         u.photo AS user_photo,
         s.id_section AS section_id,
         s.section AS section_name,
@@ -304,8 +304,8 @@ export const getUserSectionsAndKnowledge = async (req, res) => {
       email: results[0].user_email,
       title: results[0].user_title,
       description: results[0].user_description,
-      cp: results[0].user_cp,
-      distance: results[0].user_distance,
+      town: results[0].user_town,
+      can_move: results[0].user_can_move,
       photo: results[0].user_photo,
       sections: [],
     };

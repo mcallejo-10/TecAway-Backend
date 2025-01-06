@@ -42,7 +42,20 @@ export const registerValidator = [
         .isString()
         .withMessage("Description should be string")
         .isLength({ min: 30, max: 2400 })
-        .withMessage("Description should be at least 30 characters")
+        .withMessage("Description should be at least 30 characters"),
+
+    body("town")
+        .exists()
+        .withMessage("Town is required")
+        .isString()
+        .withMessage("Town should be string")
+        .isLength({ min: 3, max: 20 })
+        .withMessage("Town should be at least 30 characters"),
+    body("can_move")
+        .exists()
+        .withMessage("Can move is required")
+        .isBoolean()
+        .withMessage("Can move should be boolean"),
 ]
 
 export const emailValidator = [
