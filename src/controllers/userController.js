@@ -3,14 +3,14 @@ import User from "../models/userModel.js";
 import { validationResult } from "express-validator";
 import fs from "fs";
 import { log } from "console";
-import { sequelize } from '../db.js'; // Asegúrate de importar tu instancia de Sequelize
+import { sequelize } from "../db.js"; // Asegúrate de importar tu instancia de Sequelize
 
 //https://www.bezkoder.com/node-js-express-file-upload/
 
 export const checkEmailExists = async (req, res) => {
   try {
     const errors = validationResult(req);
-   
+
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
@@ -19,9 +19,8 @@ export const checkEmailExists = async (req, res) => {
       return res.status(400).json({ error: "Email parameter is required" });
     }
 
-    const userExists = await User.findOne({ where: { email } }); 
+    const userExists = await User.findOne({ where: { email } });
     res.json(!!userExists);
-    
   } catch (error) {
     console.error(error);
     res.status(500).json({
@@ -94,15 +93,14 @@ export const getUserById = async (req, res) => {
   try {
     const { id } = req.params;
     console.log("ID: " + id);
-    
 
     // Buscar un user por su ID en la base de datos
     const user = await User.findByPk(id);
-        
+
     if (!user) {
       return res.status(404).json({
         code: -6,
-        message: 'Usuario no encontrado'
+        message: "Usuario no encontrado",
       });
     }
     const user_data = {
@@ -119,7 +117,6 @@ export const getUserById = async (req, res) => {
       created_at: user.created_at,
       updated_at: user.updated_at,
     };
-    
 
     // Enviar una respuesta al cliente
     res.status(200).json({
@@ -260,8 +257,6 @@ export const updateUser = async (req, res) => {
   }
 };
 
-
-
 export const getUserSectionsAndKnowledge = async (req, res) => {
   try {
     const { id } = req.params;
@@ -272,6 +267,12 @@ export const getUserSectionsAndKnowledge = async (req, res) => {
       SELECT 
         u.id_user AS user_id,
         u.name AS user_name,
+        u.email AS user_email,
+        u.title AS user_title,
+        u.description AS user_description,
+        u.cp AS user_cp,
+        u.distance AS user_distance,
+        u.photo AS user_photo,
         s.id_section AS section_id,
         s.section AS section_name,
         k.id_knowledge AS knowledge_id,
@@ -291,22 +292,27 @@ export const getUserSectionsAndKnowledge = async (req, res) => {
     if (results.length === 0) {
       return res.status(404).json({
         code: -6,
-        message: 'No se encontraron secciones ni conocimientos para este usuario',
+        message:
+          "No se encontraron secciones ni conocimientos para este usuario",
       });
     }
 
     // Formatear la respuesta
     const formattedData = {
-      user: {
-        id: results[0].user_id,
-        name: results[0].user_name
-      },
+      id: results[0].user_id,
+      name: results[0].user_name,
+      email: results[0].user_email,
+      title: results[0].user_title,
+      description: results[0].user_description,
+      cp: results[0].user_cp,
+      distance: results[0].user_distance,
+      photo: results[0].user_photo,
       sections: [],
     };
-    
+
     // Agrupar los conocimientos por sección
     const sectionsMap = {};
-    
+
     // Recorremos los resultados y agrupamos por section_id
     results.forEach((row) => {
       // Si la sección no existe en el mapa, la creamos
@@ -316,27 +322,26 @@ export const getUserSectionsAndKnowledge = async (req, res) => {
           section_knowledges: [],
         };
       }
-    
+
       // Agregar el conocimiento a la sección correspondiente
       sectionsMap[row.section_id].section_knowledges.push({
         knowledge_name: row.knowledge_name,
       });
     });
-    
+
     // Convertir el mapa de secciones a un array y asignarlo al objeto final
     formattedData.sections = Object.values(sectionsMap);
-    
+
     res.status(200).json({
       code: 1,
-      message: 'Secciones y conocimientos del usuario obtenidos correctamente',
+      message: "Secciones y conocimientos del usuario obtenidos correctamente",
       data: formattedData,
     });
-    
   } catch (error) {
     console.error(error);
     res.status(500).json({
       code: -100,
-      message: 'Ocurrió un error al obtener las secciones y conocimientos',
+      message: "Ocurrió un error al obtener las secciones y conocimientos",
     });
   }
 };
