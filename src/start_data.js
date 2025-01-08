@@ -58,7 +58,7 @@ const insertInitialUserData = async () => {
   ];
 
   const sectionData = [
-    { section: "General" },
+    { section: "Conocimientos generales" },
     { section: "Video" },
     { section: "Sonido" },
     { section: "Regiduria" },
@@ -202,7 +202,7 @@ const insertInitialUserData = async () => {
 
     // regiduria 4
     {
-      knowledge: "Regiduria",
+      knowledge: "Regiduría",
       section_id: 4
     },
     {
@@ -232,11 +232,11 @@ const insertInitialUserData = async () => {
 
     // escenografia 5
     {
-      Knowledge: "Escenografia",
+      knowledge: "Escenografía",
       section_id: 5
     },
     {
-      knowledge: "Carpinteria",
+      knowledge: "Carpintería",
       section_id: 5
     },
     {
@@ -330,10 +330,10 @@ const insertInitialUserData = async () => {
     { knowledge: "Patronaje",
       section_id: 7
      },
-    { knowledge: "Confeccion",
+    { knowledge: "Confección",
       section_id: 7
      },
-    { knowledge: "Sastreria",
+    { knowledge: "Sastrería",
       section_id: 7
      },
     { knowledge: "Estilismo",
@@ -344,7 +344,7 @@ const insertInitialUserData = async () => {
      },
     // caracterizacion
     {
-      knowledge: "Caracterizacion",
+      knowledge: "Caracterización",
       section_id: 8
     },
     { knowledge: "Maquillaje",
@@ -364,15 +364,17 @@ const insertInitialUserData = async () => {
     },
 
     // produccion 9
-    { knowledge: "Produccion",
+    { knowledge: "Producción",
       section_id: 9
     },
 
     //general 1
+    { knowledge: "Conocimientos generales",
+      section_id: 1
+    },
     { knowledge: "PRL" ,
       section_id: 1
     },
-
     { knowledge: "Trabajo en altura",
       section_id: 1
      },
