@@ -8,8 +8,8 @@ import { idValidator } from '../validations/generic.Validation.js'
 const router = Router();
 
 // Rutas para obtener y modificar los datos de los conocimientos
-router.get('/', authenticateToken(['user', 'admin']), getKnowledge);
-router.get('/:id', authenticateToken(['user', 'admin']), idValidator, getKnowledgeById);
+router.get('/', getKnowledge);
+router.get('/:id', idValidator, getKnowledgeById);
 router.post('/', authenticateToken(['admin']), knowledgeValidator, addKnowledge);
 router.put('/:id', authenticateToken(['user', 'admin']), idValidator, knowledgeValidator, updateKnowledge);
 router.delete('/:id', authenticateToken(['admin']), idValidator, deleteKnowledge);

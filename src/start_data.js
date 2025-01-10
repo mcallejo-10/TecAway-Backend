@@ -55,22 +55,56 @@ const insertInitialUserData = async () => {
       can_move: false,
       roles: ["admin"],
     },
+
+    {
+      email: "mirandacallejonh@gmail.com",
+      password: "isma123",
+      name: "Miranda",
+      title: "Técnica de luces y con experiencia en sonido",
+      description: "técnica de luces formada en la EMAV. Ccon una amplia trayectoria como técnica en el mundo del teatro. Lorem ipsum On the other hand, we denounce with righteous indignation and dislike men who are so beguiled and demoralized by the charms of pleasure of the moment, so blinded by desire, that they cannot foresee the pain and trouble that are bound to ensue; and equal blame belongs to those who fail in their duty through weakness of will, which is the same as saying through shrinking from toil and pain. These cases are perfectly simple and easy to distinguish.",
+      town: "Barcelona",
+      can_move: true,
+      roles: ["user", "admin"]
+    }
   ];
 
   const sectionData = [
     { section: "Conocimientos generales" },
     { section: "Video" },
     { section: "Sonido" },
-    { section: "Regiduria" },
-    { section: "Escenografia" },
+    { section: "Regiduría" },
+    { section: "Escenografía" },
     { section: "Maquinaria" },
     { section: "Vestuario" },
-    { section: "Caracterizacion" },
-    { section: "Produccion" },
-    { section: "Iluminacion" },
+    { section: "Caracterización" },
+    { section: "Producción" },
+    { section: "Iluminación" },
   ];
 
   const knowledgeData = [
+    //general 1
+    { knowledge: "Conocimientos generales",
+      section_id: 1
+    },
+    { knowledge: "PRL" ,
+      section_id: 1
+    },
+    { knowledge: "Trabajo en altura",
+      section_id: 1
+     },
+    { knowledge: "Trabajo en plataformas elevadoras",
+      section_id: 1
+     },
+    { knowledge: "Carnet de conducir B",
+      section_id: 1
+     },
+    { knowledge: "Carnet de conducir C",
+      section_id: 1
+     },
+
+    { knowledge: "Carnet de carretillero",
+      section_id: 1
+     },
     // siatemas de iluminacion
     {
       knowledge: "Iluminación",
@@ -161,6 +195,9 @@ const insertInitialUserData = async () => {
       knowledge: "Sonido",
       section_id: 3
     },
+    { knowledge: "Qlab",
+      section_id: 3
+     },
     {
       knowledge: "Midas",
       section_id: 3
@@ -368,44 +405,53 @@ const insertInitialUserData = async () => {
       section_id: 9
     },
 
-    //general 1
-    { knowledge: "Conocimientos generales",
-      section_id: 1
-    },
-    { knowledge: "PRL" ,
-      section_id: 1
-    },
-    { knowledge: "Trabajo en altura",
-      section_id: 1
-     },
-    { knowledge: "Trabajo en plataformas elevadoras",
-      section_id: 1
-     },
-    { knowledge: "Carnet de conducir B",
-      section_id: 1
-     },
-    { knowledge: "Carnet de conducir C",
-      section_id: 1
-     },
-    { knowledge: "Qlab",
-      section_id: 1
-     },
-    { knowledge: "Carnet de carretillero",
-      section_id: 1
-     },
 
   ];
 
   const userKnowledgeData = [
     { user_id: 1, knowledge_id: 1 },
     { user_id: 1, knowledge_id: 2 },
-    { user_id: 2, knowledge_id: 13 },
+    { user_id: 1, knowledge_id: 9 },
+
     { user_id: 2, knowledge_id: 1 },
+    { user_id: 2, knowledge_id: 13 },
+    { user_id: 2, knowledge_id: 9 },
+    { user_id: 2, knowledge_id: 56 },
+
     { user_id: 3, knowledge_id: 1 },
+    { user_id: 3, knowledge_id: 29 },
     { user_id: 3, knowledge_id: 31 },
+    { user_id: 3, knowledge_id: 33 },
+    { user_id: 3, knowledge_id: 19 },
+    { user_id: 3, knowledge_id: 21 },
+
+
+    { user_id: 4, knowledge_id: 1 },
     { user_id: 4, knowledge_id: 4 },
+    { user_id: 4, knowledge_id: 31 },
     { user_id: 4, knowledge_id: 33 },
-    { user_id: 5, knowledge_id: 8 },
+    { user_id: 4, knowledge_id: 73 },
+    { user_id: 4, knowledge_id: 75 },
+    { user_id: 4, knowledge_id: 77 },
+
+    { user_id: 5, knowledge_id: 1 },
+    { user_id: 5, knowledge_id: 78 },
+    { user_id: 5, knowledge_id: 39},
+    { user_id: 5, knowledge_id: 41},
+    { user_id: 5, knowledge_id: 45},
+
+    { user_id: 6, knowledge_id: 1 },
+    { user_id: 6, knowledge_id: 3 },
+    { user_id: 6, knowledge_id: 5 },
+    { user_id: 6, knowledge_id: 9 },
+    { user_id: 6, knowledge_id: 10 },
+    { user_id: 6, knowledge_id: 29 },
+    { user_id: 6, knowledge_id: 31 },
+    { user_id: 6, knowledge_id: 32 },
+    { user_id: 6, knowledge_id: 15 },
+    { user_id: 6, knowledge_id: 15 },
+
+
   ];
 
 

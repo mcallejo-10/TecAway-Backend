@@ -12,7 +12,7 @@ import { emailValidator } from '../validations/auth.Validation.js';
 const router = Router();
 
 // Rutas para obtener y modificar los datos de los usuarios
-router.get('/get-all-users', authenticateToken(['user','admin' ]), getAllUsers);
+router.get('/get-all-users', getAllUsers);
 router.post('/check-email', emailValidator, checkEmailExists);
 router.get('/get-user/:id', authenticateToken(['user','admin' ]), getUserById);
 router.get('/', authenticateToken(['user','admin' ]), getMyUser);
