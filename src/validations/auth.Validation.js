@@ -19,8 +19,8 @@ export const registerValidator = [
         .withMessage("Password is required")
         .isString()
         .withMessage("Password should be string")
-        .isLength({ min: 5 })
-        .withMessage("Password should be at least 5 characters")
+        .isLength({ min: 4 })
+        .withMessage("Password should be at least 4 characters")
         .custom(value => {
             if (value == '123456') {
                 throw new Error('Este pass es muy basico');

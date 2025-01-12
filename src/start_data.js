@@ -86,7 +86,7 @@ const insertInitialUserData = async () => {
     { knowledge: "Conocimientos generales",
       section_id: 1
     },
-    { knowledge: "PRL" ,
+    { knowledge: "PRL",
       section_id: 1
     },
     { knowledge: "Trabajo en altura",
@@ -376,9 +376,7 @@ const insertInitialUserData = async () => {
     { knowledge: "Estilismo",
       section_id: 7
      },
-    { knowledge: "Vestuario",
-      section_id: 7
-     },
+
     // caracterizacion
     {
       knowledge: "Caracterización",
@@ -404,6 +402,9 @@ const insertInitialUserData = async () => {
     { knowledge: "Producción",
       section_id: 9
     },
+    { knowledge: "Office",
+      section_id: 9
+    }
 
 
   ];
@@ -411,24 +412,24 @@ const insertInitialUserData = async () => {
   const userKnowledgeData = [
     { user_id: 1, knowledge_id: 1 },
     { user_id: 1, knowledge_id: 2 },
-    { user_id: 1, knowledge_id: 9 },
+    { user_id: 1, knowledge_id: 8 },
 
     { user_id: 2, knowledge_id: 1 },
     { user_id: 2, knowledge_id: 13 },
-    { user_id: 2, knowledge_id: 9 },
+    { user_id: 2, knowledge_id: 8 },
     { user_id: 2, knowledge_id: 56 },
 
     { user_id: 3, knowledge_id: 1 },
-    { user_id: 3, knowledge_id: 29 },
+    { user_id: 3, knowledge_id: 28 },
     { user_id: 3, knowledge_id: 31 },
     { user_id: 3, knowledge_id: 33 },
-    { user_id: 3, knowledge_id: 19 },
+    { user_id: 3, knowledge_id: 18 },
     { user_id: 3, knowledge_id: 21 },
 
 
     { user_id: 4, knowledge_id: 1 },
     { user_id: 4, knowledge_id: 4 },
-    { user_id: 4, knowledge_id: 31 },
+    { user_id: 4, knowledge_id: 28 },
     { user_id: 4, knowledge_id: 33 },
     { user_id: 4, knowledge_id: 73 },
     { user_id: 4, knowledge_id: 75 },
@@ -443,7 +444,7 @@ const insertInitialUserData = async () => {
     { user_id: 6, knowledge_id: 1 },
     { user_id: 6, knowledge_id: 3 },
     { user_id: 6, knowledge_id: 5 },
-    { user_id: 6, knowledge_id: 9 },
+    { user_id: 6, knowledge_id: 8 },
     { user_id: 6, knowledge_id: 10 },
     { user_id: 6, knowledge_id: 29 },
     { user_id: 6, knowledge_id: 31 },
