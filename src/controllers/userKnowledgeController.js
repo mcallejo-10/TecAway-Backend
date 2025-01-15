@@ -3,7 +3,7 @@ import UserKnowledge from "../models/userKnowledgeModel.js";
 import Knowledge from "../models/knowledgeModel.js";
 
 
-export const getUserKnowledge = async (req, res) => {
+export const getAllUserKnowledges = async (req, res) => {
   try {
     const errors = validationResult(req);
 
@@ -56,9 +56,7 @@ export const getUserKnowledgeById = async (req, res) => {
           code: -6,
           message: "Competencia del usuario no encontrada",
         });
-      }
-  
-      // Enviar una respuesta al cliente
+      }  
       res.status(200).json({
         code: 1,
         message: "UserKnowledge Detail",
@@ -82,12 +80,15 @@ export const getUserKnowledgeById = async (req, res) => {
         return res.status(400).json({ errors: errors.array() });
       }
   
-      const { user_id, knowledge_id } = req.body;
+      const knowledge =  { 
+        user_id: req.user.id_user,
+        knowledge_id: req.body
+      };
   
       let newUserKnowledge;
       try {
         const existingUserKnowledge = await UserKnowledge.findOne({
-          where: { user_id, knowledge_id },
+          where: knowledge,
         });
   
         if (existingUserKnowledge) {
@@ -96,7 +97,7 @@ export const getUserKnowledgeById = async (req, res) => {
             message: "Ya existe un esta competencia para este usuario",
           });
         }
-        newUserKnowledge = await UserKnowledge.create({ user_id, knowledge_id });
+        newUserKnowledge = await UserKnowledge.create(knowledge);
       } catch (error) {
         // Si hay un error de duplicación de clave única (por ejemplo, título duplicado)
         if (error.name === "SequelizeUniqueConstraintError") {
