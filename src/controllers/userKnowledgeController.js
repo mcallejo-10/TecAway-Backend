@@ -39,7 +39,7 @@ export const getUserKnowledgeById = async (req, res) => {
         return res.status(400).json({ errors: errors.array() });
       }
   
-      const userId = req.params.id;
+      const userId = req.user.id_user;
       // Buscar un usuario por su ID en la base de datos
       const userKnowledge = await UserKnowledge.findAll({
         where: { user_id: userId },
