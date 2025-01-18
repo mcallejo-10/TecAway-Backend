@@ -7,7 +7,7 @@ const router = Router();
 
 router.get('/', getAllUserKnowledges);
 router.get('/user', authenticateToken(['user', 'admin']), getUserKnowledgeById);
-router.post('/', authenticateToken(['user', 'admin']), userKnowledgeValidator, addUserKnowledge);
+router.post('/', authenticateToken(['user', 'admin']),  addUserKnowledge);
 router.delete('/', authenticateToken(['user', 'admin']), deleteUserKnowledge);
 
 export default router;
