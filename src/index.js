@@ -53,6 +53,6 @@ app.use('/test', testRoutes);
 
 // Iniciar el servidor
 app.listen(PORT, () => {
-  console.log("Servidor iniciado en el puerto 3000");
+  console.log("Servidor iniciado en el puerto " + PORT);
 });
 
