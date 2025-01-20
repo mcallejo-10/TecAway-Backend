@@ -1,13 +1,15 @@
 import { Sequelize } from 'sequelize';
 import dotenv from 'dotenv';
+import { PORT, DB_HOST, DB_USER, DB_PASSWORD, DB_NAME, DB_PORT } from './railwayConfig.js';
+
 
 dotenv.config();
 
 const sequelize = new Sequelize('tecaway', 'root',  '', {
-    username: process.env.USER_NAME,
-    password: process.env.PASSWORD,
-    database: process.env.DATABASE,
-    host: process.env.HOST_NAME,
+    username: DB_USER,
+    password: DB_PASSWORD,
+    database: DB_NAME,
+    host: DB_HOST,
     dialect: 'mysql',
     logging: console.log, // Habilita logs SQL
 

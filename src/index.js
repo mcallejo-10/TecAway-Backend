@@ -11,6 +11,7 @@ import testRoutes from './routes/testRoutes.js';
 import { testConnection } from './db.js';
 import { insertInitialUserData } from './start_data.js';
 import dotenv from 'dotenv';
+import {PORT} from './railwayConfig.js';
 
 dotenv.config({ path: './environment.env' });
 
@@ -47,7 +48,7 @@ app.use('/user-knowledge', userCompetenceRoutes);
 app.use('/test', testRoutes);
 
 // Iniciar el servidor
-app.listen(3000, () => {
-  console.log("Servidor iniciado en el puerto 3000");
+app.listen(PORT, () => {
+  console.log("Servidor iniciado en el puerto 3306");
 });
 
