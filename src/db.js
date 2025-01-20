@@ -5,16 +5,21 @@ import { PORT, DB_HOST, DB_USER, DB_PASSWORD, DB_NAME, DB_PORT } from './railway
 
 dotenv.config();
 
-const sequelize = new Sequelize(DB_NAME, DB_USER, DB_PASSWORD, {
-    // username: DB_USER,
-    // password: DB_PASSWORD,
-    // database: DB_NAME,
-    host: DB_HOST,
-    dialect: 'mysql',
-    logging: console.log, // Habilita logs SQL
-    port: DB_PORT  
-  }
-);
+const sequelize = new Sequelize(process.env.DB_URL, {
+  dialect: 'mysql',
+  logging: console.log, // Habilita logs SQL, si no quieres logs usa 'false'
+});
+
+// const sequelize = new Sequelize(DB_NAME, DB_USER, DB_PASSWORD, {
+//     // username: DB_USER,
+//     // password: DB_PASSWORD,
+//     // database: DB_NAME,
+//     host: DB_HOST,
+//     dialect: 'mysql',
+//     logging: console.log, // Habilita logs SQL
+//     port: DB_PORT  
+//   }
+// );
 
 const syncroModel = async () => {
   try {
