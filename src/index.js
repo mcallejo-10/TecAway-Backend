@@ -37,10 +37,10 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true })); // Para analizar datos de formularios en el cuerpo de la solicitud
 
 await testConnection();
-await insertInitialUserData();
-// if (process.env.INIT_DATA === 'true') {
-//   await insertInitialUserData();
-// }
+// await insertInitialUserData();
+// // if (process.env.INIT_DATA === 'true') {
+// //   await insertInitialUserData();
+// // }
 
 // Configurar rutas
 app.use('/auth', authRoutes);
