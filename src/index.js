@@ -38,6 +38,9 @@ app.use(express.urlencoded({ extended: true })); // Para analizar datos de formu
 
 await testConnection();
 // await insertInitialUserData();
+if (process.env.INIT_DATA === 'true') {
+  await insertInitialUserData();
+}
 
 // Configurar rutas
 app.use('/auth', authRoutes);

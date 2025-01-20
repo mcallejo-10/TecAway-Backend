@@ -33,5 +33,10 @@
   "devDependencies": {
     "@types/cookie": "^1.0.0",
     "nodemon": "^3.1.7"
-  }
+  },
+  
+    "engines": {
+      "node": "20.x"
+    }
+  
 }

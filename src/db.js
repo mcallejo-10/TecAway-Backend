@@ -5,14 +5,14 @@ import { PORT, DB_HOST, DB_USER, DB_PASSWORD, DB_NAME, DB_PORT } from './railway
 
 dotenv.config();
 
-const sequelize = new Sequelize('tecaway', 'root',  '', {
-    username: DB_USER,
-    password: DB_PASSWORD,
-    database: DB_NAME,
+const sequelize = new Sequelize(DB_NAME, DB_USER, DB_PASSWORD, {
+    // username: DB_USER,
+    // password: DB_PASSWORD,
+    // database: DB_NAME,
     host: DB_HOST,
     dialect: 'mysql',
     logging: console.log, // Habilita logs SQL
-
+    port: DB_PORT  
   }
 );
 
