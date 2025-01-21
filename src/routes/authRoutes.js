@@ -2,6 +2,8 @@
 import { Router } from 'express';
 import { register, login, logout, forgotPassword, changePassword, checkAuth } from '../controllers/authController.js';
 import { registerValidator, loginValidator, emailValidator, changePasswordValidator } from '../validations/auth.Validation.js'
+import { authenticateToken } from '../middlewares/authenticateToken.js';
+
 
 const router = Router();
 
