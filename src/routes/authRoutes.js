@@ -11,5 +11,5 @@ router.post('/login', loginValidator, login);
 router.post('/forgot-password', emailValidator, forgotPassword);
 router.post('/change-password', changePasswordValidator, changePassword);
 router.get('/logout', logout);
-router.get('/chack-auth', checkAuth);
+router.get('/check-auth', checkAuth);
 export default router;
