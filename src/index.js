@@ -24,7 +24,7 @@ const app = express();
 // Configura el middleware CORS para que peuda recibir solicitudes de POST, PUT, DELETE, UPDATE, etc.
 app.use(cors({
   credentials: true,  
-  // methods: ['GET', 'POST', 'PUT', 'DELETE'], // Métodos permitidos
+  
   origin: ['http://localhost:4200', 'https://localhost:4200']
 }));
 

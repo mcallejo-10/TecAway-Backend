@@ -6,6 +6,7 @@ export const authenticateToken = (allowedRoles) => async (req, res, next) => {
   try {
     const { cookies } = req;
     const accessToken = cookies.token;
+console.log('cookies', cookies);
 
     if (!accessToken) {
       return res.status(401).json({
