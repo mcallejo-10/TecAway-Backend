@@ -65,6 +65,24 @@ export const register = async (req, res) => {
   }
 };
 
+export const checkAuth = async (req, res) => {
+  try {
+    // Si llegamos aquí es porque el middleware de autenticación pasó
+    res.status(200).json({
+      authenticated: true,
+      user: {
+        name: req.user.name,
+        email: req.user.email
+      }
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(401).json({
+      code: -1,
+      message: 'No autenticado'
+    });
+  }
+};
 
 export const login = async (req, res) => {
   try {
