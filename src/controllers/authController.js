@@ -296,22 +296,54 @@ export const changePassword = async (req, res) => {
   }
 };
 
+
+
 export const logout = async (req, res) => {
+  try {
+    // Borrar la cookie sin especificar dominio
+    const token = serialize('token', '', {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',  // Cambiado a 'lax' para permitir cross-domain
+      maxAge: 0,
+      path: '/'
+    });
 
-  const { cookies } = req;
-  const jwt = cookies.token;
+    res.setHeader('Set-Cookie', token);
+    
+    // Asegurar que los headers CORS están correctamente configurados
+    res.setHeader('Access-Control-Allow-Credentials', 'true');
+    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:4200');
+    
+    res.status(200).json({
+      success: true,
+      message: 'Logged out successfully'
+    });
+  } catch (error) {
+    console.error('Logout error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error during logout'
+    });
+  }
+};
 
-  const token = serialize('token', null, {
-    httpOnly: true,
-    secure: true,
-    sameSite: 'strict',
-    maxAge: -1,
-    path: '/',
-    domain: '.railway.app'
-  });
-  res.setHeader('Set-Cookie', token);
-  res.status(200).json({
-    code: 0,
-    message: 'Logged out - Delete Token',
-  });
-}
+// export const logout = async (req, res) => {
+
+//   const { cookies } = req;
+//   const jwt = cookies.token;
+
+//   const token = serialize('token', null, {
+//     httpOnly: true,
+//     secure: true,
+//     sameSite: 'strict',
+//     maxAge: -1,
+//     path: '/',
+//     domain: '.railway.app'
+//   });
+//   res.setHeader('Set-Cookie', token);
+//   res.status(200).json({
+//     code: 0,
+//     message: 'Logged out - Delete Token',
+//   });
+// }
