@@ -15,10 +15,11 @@ import { log } from 'console';
 const clietURL = process.env.CLIENT_URL;
 const cookieOptions = {
   httpOnly: true,
-  secure: process.env.NODE_ENV === 'production',
-  sameSite: 'lax',
+  secure: true,
+  sameSite: 'none',
   maxAge: 60 * 60 * 24 * 30 * 1000, // 30 días en milisegundos
   path: '/',
+  domain: '.railway.app'
 };
 
 export const register = async (req, res) => {

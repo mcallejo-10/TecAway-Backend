@@ -3,6 +3,9 @@ import jwt from 'jsonwebtoken';
 import User from '../models/userModel.js';
 
 export const authenticateToken = (allowedRoles) => async (req, res, next) => {
+  console.log('Headers:', req.headers);
+  console.log('Cookies:', req.cookies);
+  console.log('All cookies:', req.headers.cookie);
   try {
     const { cookies } = req;
     const accessToken = cookies.token;

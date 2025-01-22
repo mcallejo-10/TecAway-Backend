@@ -22,7 +22,12 @@ dotenv.config({ path: './environment.env' });
 const app = express();
 app.use(cors({
   credentials: true,
-  origin: true, // O específica todos tus dominios 
+  origin: [
+    'http://localhost:4200',
+    'https://localhost:4200',
+    'https://tecaway-backend-production-7c12.up.railway.app'
+    
+  ],
   allowedHeaders: ['Content-Type', 'Authorization'],
   exposedHeaders: ['set-cookie']
 }));
