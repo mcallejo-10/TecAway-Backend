@@ -22,8 +22,7 @@ dotenv.config({ path: './environment.env' });
 const app = express();
 app.use(cors({
   credentials: true,
-  origin: true, // O específica todos tus dominios
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  origin: true, // O específica todos tus dominios 
   allowedHeaders: ['Content-Type', 'Authorization'],
   exposedHeaders: ['set-cookie']
 }));
