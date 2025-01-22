@@ -308,7 +308,7 @@ export const logout = async (req, res) => {
     //   maxAge: 0,
     //   path: '/'
     // });
-    const token = serialize('token', accessToken, cookieOptions);
+    const token = serialize('token', cookieOptions);
     res.setHeader('Set-Cookie', token);
     
     // Asegurar que los headers CORS están correctamente configurados
