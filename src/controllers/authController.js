@@ -301,14 +301,14 @@ export const changePassword = async (req, res) => {
 export const logout = async (req, res) => {
   try {
     // Borrar la cookie sin especificar dominio
-    const token = serialize('token', '', {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',  // Cambiado a 'lax' para permitir cross-domain
-      maxAge: 0,
-      path: '/'
-    });
-
+    // const token = serialize('token', '', {
+    //   httpOnly: true,
+    //   secure: process.env.NODE_ENV === 'production',
+    //   sameSite: 'lax',  // Cambiado a 'lax' para permitir cross-domain
+    //   maxAge: 0,
+    //   path: '/'
+    // });
+    const token = serialize('token', accessToken, cookieOptions);
     res.setHeader('Set-Cookie', token);
     
     // Asegurar que los headers CORS están correctamente configurados
