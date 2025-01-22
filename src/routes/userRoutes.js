@@ -14,11 +14,11 @@ const router = Router();
 // Rutas para obtener y modificar los datos de los usuarios
 router.get('/get-all-users', getAllUsers);
 router.post('/check-email', emailValidator, checkEmailExists);
-router.get('/get-user/:id', authenticateToken(['user','admin' ]), getUserById);
-router.get('/', authenticateToken(['user','admin' ]), getMyUser);
+router.get('/get-user/:id',  getUserById);
+router.get('/', getMyUser);
 router.get('/get-user-info/:id', authenticateToken(['user','admin' ]), getUserSectionsAndKnowledge);
 router.post('/upload-photo', authenticateToken(['user', 'admin']), uploadFileMiddleware, uploadPhoto);
-router.patch('/', authenticateToken(['user','admin' ]),  updateUser);
+router.patch('/', updateUser);
 
 
 export default router;
