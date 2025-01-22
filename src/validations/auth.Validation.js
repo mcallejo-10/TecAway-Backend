@@ -8,8 +8,8 @@ export const loginValidator = [
         .withMessage("Password is required")
         .isString()
         .withMessage("Password should be string")
-        .isLength({ min: 5 })
-        .withMessage("Password should be at least 5 characters")
+        .isLength({ min: 4 })
+        .withMessage("Password should be at least 4 characters")
 ]
 
 export const registerValidator = [
