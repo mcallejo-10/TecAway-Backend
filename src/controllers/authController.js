@@ -267,9 +267,10 @@ export const changePassword = async (req, res) => {
     const token_jwt = serialize('token', accessToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
+      sameSite: 'none',
       maxAge: 60 * 60 * 24 * 30,
       path: '/',
+      
     });
     res.setHeader('Set-Cookie', token_jwt);
 
@@ -302,10 +303,11 @@ export const logout = async (req, res) => {
 
   const token = serialize('token', null, {
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
+    secure: true,
     sameSite: 'strict',
     maxAge: -1,
     path: '/',
+    domain: '.railway.app'
   });
   res.setHeader('Set-Cookie', token);
   res.status(200).json({

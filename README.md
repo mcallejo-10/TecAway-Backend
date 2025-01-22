@@ -1,37 +1,74 @@
-# Backend de Nodejs
+# TecAway Backend
 
-Aquí se encuentra una breve descripción del proyecto.
+TecAway es una aplicación diseñada para facilitar la conexión entre técnicos/as de teatro y quienes buscan profesionales para sus producciones. Este repositorio contiene el backend del proyecto, encargado de gestionar la lógica de negocio, el almacenamiento de datos y las interacciones con la base de datos.
 
-## Instalación
+## Características Principales
 
-Para instalar este proyecto, sigue estos pasos:
+- Autenticación basada en tokens JWT.
+- Gestión de perfiles de usuarios y técnicos/as.
+- Validación y almacenamiento de datos mediante Sequelize y MySQL.
+- Servicio de subida de imágenes con Cloudinary.
+- Configuración y despliegue simplificados en Railway.
 
-1. Clona el repositorio en tu máquina local.
-2. Instala las dependencias utilizando `npm install`.
+## Tecnologías Utilizadas
 
-## Uso
+- **Lenguaje principal:** JavaScript (ES6+)
+- **Framework:** Node.js con Express
+- **Base de datos:** MySQL, manejada con Sequelize
+- **Almacenamiento de archivos:** Cloudinary
+- **Despliegue:** Railway
 
-Para ejecutar el proyecto, utiliza el siguiente comando:
+## Estructura del Proyecto
 
 ```
-npm run start
+src
+├── cloudinaryConfig.js          # Configuración para Cloudinary
+├── controllers                  # Controladores de la lógica de negocio
+│   ├── authController.js
+│   ├── knowledgeController.js
+│   ├── sectionController.js
+│   ├── testController.js
+│   ├── userController.js
+│   └── userKnowledgeController.js
+├── db.js                        # Configuración de la base de datos
+├── index.js                     # Punto de entrada del servidor
+├── middlewares                  # Middlewares personalizados
+│   ├── authenticateToken.js     # Verificación de JWT
+│   └── upload.js                # Gestión de subida de archivos
+├── models                       # Modelos de Sequelize
+│   ├── knowledgeModel.js
+│   ├── recoveryTokenModel.js
+│   ├── sectionModel.js
+│   ├── userKnowledgeModel.js
+│   ├── userModel.js
+│   └── userSectionModel.js
+├── railwayConfig.js             # Configuración para Railway
+├── routes                       # Rutas de la API
+│   ├── authRoutes.js
+│   ├── knowledgeRoutes.js
+│   ├── sectionRoutes.js
+│   ├── testRoutes.js
+│   ├── userKnowledgeRoutes.js
+│   └── userRoutes.js
+├── start_data.js                # Datos iniciales
+├── utils                        # Utilidades generales
+│   ├── cloudinaryService.js     # Servicio para Cloudinary
+│   ├── email
+│   │   ├── sendEmail.js         # Envío de correos electrónicos
+│   │   └── template
+│   │       └── requestResetPassword.handlebars
+│   └── utils.js                 # Funciones auxiliares
+└── validations                  # Validaciones de datos
+    ├── auth.Validation.js
+    ├── generic.Validation.js
+    ├── knowledge.Validation.js
+    ├── section.Validation.js
+    ├── user.Validation.js
+    └── userKnowledge.Validation.js
 ```
-Para ejecutar el proyecto en dev, utiliza el siguiente comando:
 
-```
-npm run dev
-```
+## Despliegue
 
-## Contribución
+Este proyecto está configurado para ser desplegado automáticamente en Railway. Al realizar cambios en el repositorio, Railway gestionará el despliegue de forma automática.
 
-Si quieres contribuir a este proyecto, por favor sigue estos pasos:
 
-1. Haz un fork del repositorio.
-2. Crea una nueva rama (`git checkout -b feature/nueva-funcionalidad`).
-3. Haz tus cambios y haz un commit (`git commit -m "Agregué una nueva funcionalidad"`).
-4. Envía tus cambios al repositorio remoto (`git push origin feature/nueva-funcionalidad`).
-5. Crea un pull request para que tus cambios sean revisados.
-
-## Licencia
-
-Este proyecto está licenciado bajo la Licencia MIT. Ver el archivo `LICENSE` para más información.
