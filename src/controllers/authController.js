@@ -13,6 +13,13 @@ import { esPar, contraseniasCoinciden } from '../utils/utils.js';
 import { log } from 'console';
 
 const clietURL = process.env.CLIENT_URL;
+const cookieOptions = {
+  httpOnly: true,
+  secure: process.env.NODE_ENV === 'production',
+  sameSite: 'lax',
+  maxAge: 60 * 60 * 24 * 30 * 1000, // 30 días en milisegundos
+  path: '/',
+};
 
 export const register = async (req, res) => {
   try {
@@ -41,13 +48,7 @@ export const register = async (req, res) => {
 
     // Generar un token de acceso y lo guardo en un token seguro (httpOnly)
     const accessToken = jwt.sign({ id_user: newUser.id_user, name: newUser.name }, process.env.JWT_SECRET);
-    const token = serialize('token', accessToken, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
-      maxAge: 60 * 60 * 24 * 30,
-      path: '/',
-    });
+    const token = serialize('token', accessToken, cookieOptions);
     res.setHeader('Set-Cookie', token);
 
     // Enviar una respuesta al cliente
@@ -117,13 +118,17 @@ export const login = async (req, res) => {
     // Generar un token de acceso y lo guardo en un token seguro (httpOnly)
     const accessToken = jwt.sign({ id_user: user.id_user, name: user.name }, process.env.JWT_SECRET);
     console.log('JWT_SECRET:', process.env.JWT_SECRET);
-    const token = serialize('token', accessToken, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
-      maxAge: 60 * 60 * 24 * 30,
-      path: '/',
-    });
+    // const token = serialize('token', accessToken, {
+    //   httpOnly: true,
+    //   secure: process.env.NODE_ENV === 'production',
+    //   sameSite: 'lax',
+    //   maxAge: 60 * 60 * 24 * 30,
+    //   path: '/',
+    // });
+
+    
+    // Usar en login, register y changePassword:
+    const token = serialize('token', accessToken, cookieOptions);
     res.setHeader('Set-Cookie', token);
 
     // Enviar una respuesta al cliente

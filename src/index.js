@@ -20,13 +20,19 @@ dotenv.config({ path: './environment.env' });
 
 
 const app = express();
-
-// Configura el middleware CORS para que peuda recibir solicitudes de POST, PUT, DELETE, UPDATE, etc.
 app.use(cors({
-  credentials: true,  
-  
-  origin: ['http://localhost:4200', 'https://localhost:4200']
+  credentials: true,
+  origin: true, // O específica todos tus dominios
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  exposedHeaders: ['set-cookie']
 }));
+// // Configura el middleware CORS para que peuda recibir solicitudes de POST, PUT, DELETE, UPDATE, etc.
+// app.use(cors({
+//   credentials: true,  
+  
+//   origin: ['http://localhost:4200', 'https://localhost:4200']
+// }));
 
 //header and populate req.cookies with an object keyed by the cookie names
 app.use(cookieParser());
@@ -39,9 +45,7 @@ app.use(express.urlencoded({ extended: true })); // Para analizar datos de formu
 
 await testConnection();
 // await insertInitialUserData();
-// // if (process.env.INIT_DATA === 'true') {
-// //   await insertInitialUserData();
-// // }
+
 
 // Configurar rutas
 app.use('/auth', authRoutes);
