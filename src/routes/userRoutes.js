@@ -15,10 +15,10 @@ const router = Router();
 router.get('/get-all-users', getAllUsers);
 router.post('/check-email', emailValidator, checkEmailExists);
 router.get('/get-user/:id',  getUserById);
-router.get('/', getMyUser);
+router.get('/', authenticateToken(['user','admin' ]), getMyUser);
 router.get('/get-user-info/:id', authenticateToken(['user','admin' ]), getUserSectionsAndKnowledge);
 router.post('/upload-photo', authenticateToken(['user', 'admin']), uploadFileMiddleware, uploadPhoto);
-router.patch('/', updateUser);
+router.patch('/', authenticateToken(['user','admin' ]),  updateUser);
 
 
 export default router;
