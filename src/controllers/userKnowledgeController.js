@@ -6,7 +6,6 @@ export const getAllUserKnowledges = async (req, res) => {
   try {
     const errors = validationResult(req);
 
-    // Si hay errores de validación, responde con un estado 400 Bad Request
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
@@ -31,7 +30,6 @@ export const getUserKnowledgeById = async (req, res) => {
   try {
     const errors = validationResult(req);
 
-    // Si hay errores de validación, responde con un estado 400 Bad Request
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
@@ -72,7 +70,6 @@ export const addUserKnowledge = async (req, res) => {
   try {
     const errors = validationResult(req);
 
-    // Si hay errores de validación, responde con un estado 400 Bad Request
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
@@ -96,7 +93,6 @@ export const addUserKnowledge = async (req, res) => {
       }
       newUserKnowledge = await UserKnowledge.create(knowledge);
     } catch (error) {
-      // Si hay un error de duplicación de clave única (por ejemplo, título duplicado)
       if (error.name === "SequelizeUniqueConstraintError") {
         res.status(400).json({
           code: -61,
@@ -128,7 +124,6 @@ export const deleteUserKnowledge = async (req, res) => {
   try {
     const errors = validationResult(req);
 
-    // Si hay errores de validación, responde con un estado 400 Bad Request
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }

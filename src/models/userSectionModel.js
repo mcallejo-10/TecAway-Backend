@@ -8,7 +8,7 @@ const UserSection = sequelize.define('User_Section', {
     type: DataTypes.INTEGER(8).UNSIGNED,
     primaryKey: true,
     references: {
-      model: User,   // Relación con el modelo User
+      model: User,   
       key: 'id_user',
     }
   },
@@ -16,7 +16,7 @@ const UserSection = sequelize.define('User_Section', {
     type: DataTypes.INTEGER(8).UNSIGNED,
     primaryKey: true,
     eferences: {
-      model: Section,   // Relación con el modelo Section
+      model: Section,   
       key: 'id_section',
     }
   },

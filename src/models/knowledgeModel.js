@@ -19,7 +19,7 @@ const Knowledge = sequelize.define('Knowledge', {
     },
 },
     {
-        timestamps: false, // Activa la creación automática de createdAt y updatedAt
+        timestamps: false, 
         updatedAt: 'updated_at',
         createdAt: 'created_at'
     });

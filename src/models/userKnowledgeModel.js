@@ -16,7 +16,7 @@ const UserKnowledge = sequelize.define('User_Knowledge', {
     type: DataTypes.INTEGER(8).UNSIGNED,
     primaryKey: true,
     references: {
-      model: Knowledge,   // Relación con el modelo GeneralCompetence
+      model: Knowledge, 
       key: 'id_knowledge',
     }
   },

@@ -92,8 +92,6 @@ export const addKnowledge = async (req, res) => {
         message: 'Error When Adding The knowledge'
       });
     }
-
-    // Enviar una respuesta al cliente
     res.status(200).json({
       code: 1,
       message: 'Knowledge Added Successfully',
@@ -112,15 +110,13 @@ export const updateKnowledge = async (req, res) => {
   try {
     const errors = validationResult(req);
 
-    // Si hay errores de validación, responde con un estado 400 Bad Request
-    if (!errors.isEmpty()) {
+      if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
 
     const { id } = req.params;
     const {knowledge, section_id } = req.body;      
 
-    // Buscar un knowledge por su ID en la base de datos
     const currentKnowledge = await Knowledge.findByPk(id);
     
     if (!currentKnowledge) {
@@ -130,11 +126,9 @@ export const updateKnowledge = async (req, res) => {
       });
     }
 
-    // Actualizar el correo electrónico y la contraseña del knowledge
     try {
       await currentKnowledge.update({ knowledge, section_id });
     } catch (error) {
-           // Si hay un error de duplicación de clave única 
       if (error.name === 'SequelizeUniqueConstraintError') {
         res.status(400).json({
           code: -61,
@@ -142,7 +136,6 @@ export const updateKnowledge = async (req, res) => {
         });
       }
     }
-    // Enviar una respuesta al cliente
     res.status(200).json({
       code: 1,
       message: 'Knowledge Updated Successfully',
@@ -161,17 +154,14 @@ export const deleteKnowledge = async (req, res) => {
   try {
     const errors = validationResult(req);
 
-    // Si hay errores de validación, responde con un estado 400 Bad Request
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
 
     const { id } = req.params;
 
-    // Buscar un libro por su ID en la base de datos y eliminarlo
     const deletedKnowledge = await Knowledge.destroy({ where: { id_knowledge: id } });
 
-    // Verificar si el libro fue encontrado y eliminado
     if (!deletedKnowledge) {
       return res.status(404).json({
         code: -100,
@@ -179,7 +169,6 @@ export const deleteKnowledge = async (req, res) => {
       });
      }
  
-    // Enviar una respuesta al cliente
     res.status(200).json({
       code: 1,
       message: 'Knowledge Deleted Successfully'

@@ -7,7 +7,6 @@ import { idValidator } from '../validations/generic.Validation.js'
 
 const router = Router();
 
-// Rutas para obtener y modificar los datos de los conocimientos
 router.get('/', getKnowledge);
 router.get('/:id', idValidator, getKnowledgeById);
 router.post('/', authenticateToken(['admin']), knowledgeValidator, addKnowledge);

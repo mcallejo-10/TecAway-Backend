@@ -1,13 +1,8 @@
 import e from "express";
 import User from "../models/userModel.js";
 import { validationResult } from "express-validator";
-
 import { uploadToCloudinary, getOptimizedUrl, getTransformedUrl } from "../utils/cloudinaryService.js";
-
-
-import { sequelize } from "../db.js"; // Asegúrate de importar tu instancia de Sequelize
-
-//https://www.bezkoder.com/node-js-express-file-upload/
+import { sequelize } from "../db.js"; 
 
 export const checkEmailExists = async (req, res) => {
   try {
@@ -36,15 +31,12 @@ export const getAllUsers = async (req, res) => {
   try {
     const errors = validationResult(req);
 
-    // Si hay errores de validación, responde con un estado 400 Bad Request
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
 
-    // Obtener todos los usuarios de la base de datos
     const users = await User.findAll();
 
-    // Enviar una respuesta al cliente
     res.status(200).json({
       code: 1,
       message: "users List",
@@ -76,7 +68,6 @@ export const getMyUser = async (req, res) => {
       updated_at: req.user.updated_at,
     };
 
-    // Enviar una respuesta al cliente
     res.status(200).json({
       code: 1,
       message: "User Detail",
@@ -96,7 +87,6 @@ export const getUserById = async (req, res) => {
     const { id } = req.params;
     console.log("ID: " + id);
 
-    // Buscar un user por su ID en la base de datos
     const user = await User.findByPk(id);
 
     if (!user) {
@@ -120,7 +110,6 @@ export const getUserById = async (req, res) => {
       updated_at: user.updated_at,
     };
 
-    // Enviar una respuesta al cliente
     res.status(200).json({
       code: 1,
       message: "User Detail",
@@ -139,11 +128,9 @@ export const getUserById = async (req, res) => {
 export const updateUser = async (req, res) => {
   try {
     const errors = validationResult(req);
-    // Si hay errores de validación, responde con un estado 400 Bad Request
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
-
     const id = req.user.id_user;
 
     const { name, email, title, description, town, can_move } = req.body;
@@ -155,7 +142,6 @@ export const updateUser = async (req, res) => {
         message: "Ya existe un usuario con el mismo correo electrónico",
       });
     }
-    // Buscar un usuario por su ID en la base de datos
     const user = await User.findByPk(id);
     if (!user) {
       return res.status(404).json({
@@ -163,12 +149,9 @@ export const updateUser = async (req, res) => {
         message: "Usuario no encontrado",
       });
     }
-
-    // Actualizar datos del usuario: nombre, email, título y descripción
     try {
       await user.update({ name, email, title, description, town, can_move });
     } catch (error) {
-      // Si hay un error de duplicación de clave única (por ejemplo, título duplicado)
       if (error.name === "SequelizeUniqueConstraintError") {
         res.status(400).json({
           code: -61,
@@ -176,8 +159,6 @@ export const updateUser = async (req, res) => {
         });
       }
     }
-
-    // Enviar una respuesta al cliente
     res.status(200).json({
       code: 1,
       message: "User Updated Successfully",
@@ -196,7 +177,6 @@ export const getUserSectionsAndKnowledge = async (req, res) => {
   try {
     const { id } = req.params;
 
-    // Consulta con JOIN
     const results = await sequelize.query(
       `
       SELECT 
@@ -219,8 +199,8 @@ export const getUserSectionsAndKnowledge = async (req, res) => {
       WHERE u.id_user = :id
       `,
       {
-        replacements: { id }, // Parámetros dinámicos
-        type: sequelize.QueryTypes.SELECT, // Indicar que es una consulta SELECT
+        replacements: { id }, 
+        type: sequelize.QueryTypes.SELECT, 
       }
     );
 
@@ -232,7 +212,6 @@ export const getUserSectionsAndKnowledge = async (req, res) => {
       });
     }
 
-    // Formatear la respuesta
     const formattedData = {
       id: results[0].user_id,
       name: results[0].user_name,
@@ -245,12 +224,9 @@ export const getUserSectionsAndKnowledge = async (req, res) => {
       sections: [],
     };
 
-    // Agrupar los conocimientos por sección
     const sectionsMap = {};
 
-    // Recorremos los resultados y agrupamos por section_id
     results.forEach((row) => {
-      // Si la sección no existe en el mapa, la creamos
       if (!sectionsMap[row.section_id]) {
         sectionsMap[row.section_id] = {
           section_name: row.section_name,
@@ -258,13 +234,11 @@ export const getUserSectionsAndKnowledge = async (req, res) => {
         };
       }
 
-      // Agregar el conocimiento a la sección correspondiente
       sectionsMap[row.section_id].section_knowledges.push({
         knowledge_name: row.knowledge_name,
       });
     });
 
-    // Convertir el mapa de secciones a un array y asignarlo al objeto final
     formattedData.sections = Object.values(sectionsMap);
 
     res.status(200).json({
@@ -292,14 +266,11 @@ export const uploadPhoto = async (req, res) => {
 
     const publicId = `user_${req.user.id_user}_${Date.now()}`;
     
-    // Usar el buffer directamente desde req.file
     const uploadResult = await uploadToCloudinary(req.file.buffer, publicId);
 
-    // Obtener URLs optimizadas
     const optimizedUrl = getOptimizedUrl(uploadResult.public_id);
     const transformedUrl = getTransformedUrl(uploadResult.public_id);
 
-    // Actualizar la foto del usuario en la base de datos
     await User.update(
       { photo: uploadResult.secure_url },
       { where: { id_user: req.user.id_user } }

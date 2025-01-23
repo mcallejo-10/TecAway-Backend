@@ -7,7 +7,6 @@ import { idValidator } from '../validations/generic.Validation.js'
 
 const router = Router();
 
-// Rutas para obtener y modificar los datos de los usuarios
 router.get('/', getSections);
 router.get('/:id', idValidator, getSectionById);
 router.post('/', authenticateToken(['admin']), sectionValidator, addSection);

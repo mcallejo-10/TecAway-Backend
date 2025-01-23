@@ -6,9 +6,6 @@ import RecoveryToken from '../models/recoveryTokenModel.js';
 import sendEmail from "../utils/email/sendEmail.js";
 import { validationResult } from 'express-validator';
 import { serialize} from "cookie"
-
-
-// Creación de funciones personalizadas
 import { esPar, contraseniasCoinciden } from '../utils/utils.js';
 import { log } from 'console';
 
@@ -40,19 +37,15 @@ export const register = async (req, res) => {
         message: 'Ya existe un usuario con el mismo correo electrónico'
       });
     }
-    // Crear un nuevo usuario
     const hashedPassword = await bcrypt.hash(password, Number(process.env.BCRYPT_SALT));
     const newUser = new User({ email, password: hashedPassword, name, title, description, town, can_move, roles, status: 1 });
   
-    await newUser.save();
-    
+    await newUser.save();    
 
-    // Generar un token de acceso y lo guardo en un token seguro (httpOnly)
     const accessToken = jwt.sign({ id_user: newUser.id_user, name: newUser.name }, process.env.JWT_SECRET);
     const token = serialize('token', accessToken, cookieOptions);
     res.setHeader('Set-Cookie', token);
 
-    // Enviar una respuesta al cliente
     res.status(200).json({
       code: 1,
       message: 'Usuario registrado correctamente',
@@ -69,7 +62,6 @@ export const register = async (req, res) => {
 
 export const checkAuth = async (req, res) => {
   try {
-    // Si llegamos aquí es porque el middleware de autenticación pasó
     res.status(200).json({
       authenticated: true,
       user: {
@@ -91,15 +83,12 @@ export const login = async (req, res) => {
     console.log(req.body);
     const errors = validationResult(req);
     
-
-    // If there are validation errors, respond with a 400 Bad Request status
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
 
     const { email, password } = req.body;
     
-    // Verificar si el correo electrónico y la contraseña son correctos
     const user = await User.findOne({ where: { email } });
     if (!user) {
       return res.status(401).json({
@@ -116,23 +105,12 @@ export const login = async (req, res) => {
       });
     }
     
-    // Generar un token de acceso y lo guardo en un token seguro (httpOnly)
     const accessToken = jwt.sign({ id_user: user.id_user, name: user.name }, process.env.JWT_SECRET);
     console.log('JWT_SECRET:', process.env.JWT_SECRET);
-    // const token = serialize('token', accessToken, {
-    //   httpOnly: true,
-    //   secure: process.env.NODE_ENV === 'production',
-    //   sameSite: 'lax',
-    //   maxAge: 60 * 60 * 24 * 30,
-    //   path: '/',
-    // });
 
-    
-    // Usar en login, register y changePassword:
     const token = serialize('token', accessToken, cookieOptions);
     res.setHeader('Set-Cookie', token);
 
-    // Enviar una respuesta al cliente
     res.status(200).json({
       code: 1,
       message: 'Login OK',
@@ -158,7 +136,6 @@ export const forgotPassword = async (req, res) => {
   try {
     const errors = validationResult(req);
 
-    // If there are validation errors, respond with a 400 Bad Request status
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
@@ -182,7 +159,6 @@ export const forgotPassword = async (req, res) => {
     }).save();
 
     const link = `${clietURL}/change-password?token=${resetToken}&id=${user.id_user}`;
-    console.log('----resetToken:-----------', resetToken);
 
     await sendEmail(
       user.email,
@@ -226,14 +202,12 @@ export const changePassword = async (req, res) => {
   try {
     const errors = validationResult(req);
 
-    // If there are validation errors, respond with a 400 Bad Request status
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
 
     const { token, password } = req.body;
 
-    //Reviso si el Token existe
     let token_row = await RecoveryToken.findOne({ where: { token } });
     if (!token_row) {
       return res.status(404).json({
@@ -242,7 +216,6 @@ export const changePassword = async (req, res) => {
       });
     } 
 
-    // Buscar un usuario por su ID en la base de datos
     const user = await User.findOne({ where: { id_user: token_row.user_id } });
     if (!user) {
       return res.status(404).json({
@@ -252,7 +225,6 @@ export const changePassword = async (req, res) => {
     }
 
 
-    // Actualizar la contraseña del usuario
     user.password = await bcrypt.hash(password, Number(process.env.BCRYPT_SALT));
     await user.save();
     //Elimino el token
@@ -264,17 +236,10 @@ export const changePassword = async (req, res) => {
 
     // Generar un token de acceso y lo guardo en un token seguro (httpOnly)
     const accessToken = jwt.sign({ id_user: user.id_user, name: user.name }, process.env.JWT_SECRET);
-    const token_jwt = serialize('token', accessToken, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'none',
-      maxAge: 60 * 60 * 24 * 30,
-      path: '/',
-      
-    });
+    const token_jwt = serialize('token', cookieOptions);
+
     res.setHeader('Set-Cookie', token_jwt);
 
-    // Enviar una respuesta al cliente
     res.status(200).json({
       code: 1,
       message: 'User Detail',
@@ -300,14 +265,6 @@ export const changePassword = async (req, res) => {
 
 export const logout = async (req, res) => {
   try {
-    // Borrar la cookie sin especificar dominio
-    // const token = serialize('token', '', {
-    //   httpOnly: true,
-    //   secure: process.env.NODE_ENV === 'production',
-    //   sameSite: 'lax',  // Cambiado a 'lax' para permitir cross-domain
-    //   maxAge: 0,
-    //   path: '/'
-    // });
     const token = serialize('token', cookieOptions);
     res.setHeader('Set-Cookie', token);
     
@@ -327,23 +284,3 @@ export const logout = async (req, res) => {
     });
   }
 };
-
-// export const logout = async (req, res) => {
-
-//   const { cookies } = req;
-//   const jwt = cookies.token;
-
-//   const token = serialize('token', null, {
-//     httpOnly: true,
-//     secure: true,
-//     sameSite: 'strict',
-//     maxAge: -1,
-//     path: '/',
-//     domain: '.railway.app'
-//   });
-//   res.setHeader('Set-Cookie', token);
-//   res.status(200).json({
-//     code: 0,
-//     message: 'Logged out - Delete Token',
-//   });
-// }

@@ -57,7 +57,7 @@ const User = sequelize.define('User', {
   },
 },{
   indexes: [{ unique: true, fields: ['email'] }],
-  timestamps: true, // Activa la creación automática de createdAt y updatedAt
+  timestamps: true, 
   updatedAt: 'updated_at',
   createdAt: 'created_at'
 });

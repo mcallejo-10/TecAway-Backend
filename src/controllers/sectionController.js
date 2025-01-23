@@ -115,7 +115,6 @@ export const addSection = async (req, res) => {
 export const updateSection = async (req, res) => {
   try {
     const errors = validationResult(req);
-      // Si hay errores de validación, responde con un estado 400 Bad Request
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
@@ -123,9 +122,7 @@ export const updateSection = async (req, res) => {
     const { id } = req.params;
     const sectionName = req.body.section;    
     
-   // Buscar un usuario por su ID en la base de datos
     const section = await Section.findByPk(id);    
-    console.log('section------------------------', section);
     
     if (!section) {
       return res.status(404).json({
@@ -134,16 +131,12 @@ export const updateSection = async (req, res) => {
       });
     }
 
-    // Actualizar el correo electrónico y la contraseña del usuario
-    // section.section = sectionName;   
-    // await section.save();
     try {
       await section.update({section: sectionName} );
       
      
     } catch (error) {
     
-      // Si hay un error de duplicación de clave única (por ejemplo, título duplicado)
       if (error.name === 'SequelizeUniqueConstraintError') {
         res.status(400).json({
           code: -61,
@@ -152,7 +145,6 @@ export const updateSection = async (req, res) => {
       }
     }
 
-    // Enviar una respuesta al cliente
     res.status(200).json({
       code: 1,
       message: 'Section Updated Successfully',
@@ -169,20 +161,16 @@ export const updateSection = async (req, res) => {
 
 export const deleteSection = async (req, res) => {
   try {
-    const errors = validationResult(req);
-  
+    const errors = validationResult(req); 
 
-    // Si hay errores de validación, responde con un estado 400 Bad Request
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
 
     const { id } = req.params;
 
-    // Buscar una sección por su ID en la base de datos y eliminarlo
     const deletedSection = await Section.destroy({ where: { id_section: id } });
 
-    // Verificar si la sección fue encontrado y eliminado
     if (!deletedSection) {
       return res.status(404).json({
         code: -100,
@@ -190,8 +178,6 @@ export const deleteSection = async (req, res) => {
       });
      }
  
-    
-    // Enviar una respuesta al cliente
     res.status(200).json({
       code: 1,
       message: 'Section Deleted Successfully'

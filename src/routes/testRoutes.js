@@ -5,7 +5,6 @@ import { allAccess, userBoard, moderatorBoard, adminBoard } from '../controllers
 
 const router = Router();
 
-// Rutas para obtener y modificar los datos de los usuarios
 router.get('/all', allAccess);
 router.get('/user', authenticateToken(['user']), userBoard);
 router.get('/mod', authenticateToken(['mod','admin']), moderatorBoard);

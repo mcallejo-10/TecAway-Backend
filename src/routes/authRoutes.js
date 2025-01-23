@@ -7,7 +7,6 @@ import { authenticateToken } from '../middlewares/authenticateToken.js';
 
 const router = Router();
 
-// Rutas para registrarse e iniciar sesión
 router.post('/register', registerValidator, register);
 router.post('/login', loginValidator, login);
 router.post('/forgot-password', emailValidator, forgotPassword);
