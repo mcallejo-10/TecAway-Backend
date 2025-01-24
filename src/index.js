@@ -23,10 +23,10 @@ const app = express();
 app.use(cors({
   credentials: true,
   origin: [
+    'https://tec-away-frontend.vercel.app',
     'http://localhost:4200',
     'https://localhost:4200',
     'https://tecaway-backend-production-7c12.up.railway.app',
-    'https://tec-away-frontend.vercel.app/'
     
   ],
   allowedHeaders: ['Content-Type', 'Authorization'],
