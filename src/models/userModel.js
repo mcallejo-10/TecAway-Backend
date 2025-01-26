@@ -22,19 +22,19 @@ const User = sequelize.define('User', {
   },
   title: {
     type: DataTypes.STRING(130),
-    allowNull: false,
+    allowNull: true,
   },
   description: {
     type: DataTypes.STRING(2400),
-    allowNull: false,
+    allowNull: true,
   },
   town: {
     type: DataTypes.STRING(20),
-    allowNull: false,
+    allowNull: true,
   },
   can_move: {
     type: DataTypes.BOOLEAN(1),
-    allowNull: false,
+    allowNull: true,
   },  
   photo: {
     type: DataTypes.STRING(300),
