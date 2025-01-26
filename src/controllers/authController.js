@@ -265,22 +265,27 @@ export const changePassword = async (req, res) => {
 
 export const logout = async (req, res) => {
   try {
-    const token = serialize('token', cookieOptions);
-    res.setHeader('Set-Cookie', token);
-    
-    // Asegurar que los headers CORS están correctamente configurados
-    res.setHeader('Access-Control-Allow-Credentials', 'true');
-    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:4200');
-    
+    const cookieOptions = {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'none',
+      path: '/',
+      domain: '.railway.app'
+    };
+
+    // Clear the token cookie by setting empty value and immediate expiration
+    res.clearCookie('token', cookieOptions);
+
     res.status(200).json({
-      success: true,
-      message: 'Logged out successfully'
+      code: 1,
+      message: 'Logout successful'
     });
   } catch (error) {
-    console.error('Logout error:', error);
+    console.error(error);
     res.status(500).json({
-      success: false,
-      message: 'Error during logout'
+      code: -100,
+      message: 'Error during logout',
+      error: error
     });
   }
 };
