@@ -4,7 +4,7 @@ const { compile } = pkg;
 import { readFileSync } from "fs";
 import { join } from "path";
 
-const sendEmail = async (email, subject, payload, template) => {
+const sendEmail = async (email, subject, payload, templatePath) => {
 
         // create reusable transporter object using the default SMTP transport
         const transporter = createTransport({
@@ -15,8 +15,7 @@ const sendEmail = async (email, subject, payload, template) => {
                 pass: process.env.EMAIL_PASSWORD, // naturally, replace both with your real credentials or an application-specific password
             },
         });
-        const { pathname: root } = new URL("../"+template, import.meta.url)
-        const source = readFileSync(root.substring(1), "utf8");
+        const source = readFileSync(templatePath, "utf8");
         const compiledTemplate = compile(source);
         const options = () => {
             return {
