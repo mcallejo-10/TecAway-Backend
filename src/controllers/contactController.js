@@ -27,7 +27,7 @@ export const sendContactMessage = async (req, res) => {
             user.email,
             'Tienes un nuevo mensaje a través TecAway',
             payload,
-            'email/sendMessage.handlebars'
+            'email/template/sendMessage.handlebars'
         );
 
         res.status(200).json({
