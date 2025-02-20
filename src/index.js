@@ -7,6 +7,7 @@ import userRoutes from './routes/userRoutes.js';
 import sectionRoutes from './routes/sectionRoutes.js';
 import knowlegdeRoutes from './routes/knowledgeRoutes.js';
 import userCompetenceRoutes from './routes/userKnowledgeRoutes.js';
+import contactRoutes from './routes/contactRoutes.js';
 import testRoutes from './routes/testRoutes.js';
 import { testConnection } from './db.js';
 import { insertInitialUserData } from './start_data.js';
@@ -51,6 +52,7 @@ app.use('/user', userRoutes);
 app.use('/section', sectionRoutes);
 app.use('/knowledge', knowlegdeRoutes);
 app.use('/user-knowledge', userCompetenceRoutes);
+app.use('/api/contact', contactRoutes);
 app.use('/test', testRoutes);
 
 // Iniciar el servidor
