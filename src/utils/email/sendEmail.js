@@ -5,17 +5,20 @@ import { readFileSync } from "fs";
 import { join } from "path";
 
 const sendEmail = async (email, subject, payload, templatePath) => {
-
-        // create reusable transporter object using the default SMTP transport
+    try {
         const transporter = createTransport({
-            host: smtp.gmail.com,
+            host: 'smtp.gmail.com',  // Added quotes here
             port: 587,
             secure: false,
             auth: {
                 user: process.env.EMAIL_USERNAME,
-                pass: process.env.EMAIL_PASSWORD, // naturally, replace both with your real credentials or an application-specific password
+                pass: process.env.EMAIL_PASSWORD,
             },
+            tls: {
+                rejectUnauthorized: false
+            }
         });
+
         const source = readFileSync(templatePath, "utf8");
         const compiledTemplate = compile(source);
         const options = () => {
@@ -31,13 +34,17 @@ const sendEmail = async (email, subject, payload, templatePath) => {
         return new Promise((resolve,reject)=>{
             transporter.sendMail(options(), (error, info) => {
                 if (error) {
+                    console.error('Email error:', error);  // Added error logging
                     reject(error);
                 } else {
                     resolve('OK');
                 }
             });
-        })  
-    
+        });
+    } catch (error) {
+        console.error('SendEmail configuration error:', error);  // Added error logging
+        throw error;
+    }
 };
 
 export default sendEmail;
