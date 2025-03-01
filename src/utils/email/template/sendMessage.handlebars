@@ -1,5 +1,10 @@
 <html>
 <head>
+    <meta name="format-detection" content="email=no"/>
+    <meta name="format-detection" content="date=no"/>
+    <meta name="format-detection" content="address=no"/>
+    <meta name="format-detection" content="telephone=no"/>
+    <meta name="x-apple-disable-message-reformatting"/>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -9,12 +14,16 @@
             margin: 0 auto;
             padding: 20px;
             background-color: #f5f5f5;
+            -ms-text-size-adjust: 100%;
+            -webkit-text-size-adjust: 100%;
         }
         .container {
             background-color: white;
             padding: 30px;
             border-radius: 10px;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            display: block !important;
+            max-width: 100% !important;
         }
         .logo {
             text-align: center;
@@ -31,6 +40,34 @@
             margin: 20px 0;
             white-space: pre-wrap;
             border-radius: 10px;
+            display: block !important;
+            max-height: none !important;
+            overflow: visible !important;
+        }
+        .contact-info {
+            background-color: #f8f9fa;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 15px;
+            border: #FFC107 solid 1px;
+            display: block !important;
+            max-height: none !important;
+            overflow: visible !important;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            color: #666;
+            display: block !important;
+            max-height: none !important;
+            overflow: visible !important;
+        }
+        p {
+            display: block !important;
+            max-height: none !important;
+            overflow: visible !important;
         }
         .sender-info {
             color: #666;
