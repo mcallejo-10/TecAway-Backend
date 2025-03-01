@@ -1,19 +1,77 @@
 <html>
-
 <head>
     <style>
-
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .logo {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .logo img {
+            max-width: 150px;
+            height: auto;
+        }
+        .message-box {
+            background-color: #f8f9fa;
+            border-left: 4px solid #4CAF50;
+            padding: 15px;
+            margin: 20px 0;
+            white-space: pre-wrap;
+        }
+        .sender-info {
+            color: #666;
+            font-style: italic;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            color: #666;
+        }
+        .contact-info {
+            background-color: #f8f9fa;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 15px;
+        }
     </style>
 </head>
-
 <body>
-    <p>Hola {{user.name}}, </p>
-    <p>{{senderName}} te ha dejado un mensaje:</p>
-    <p>{{message}}</p>
-    <p>Puedes responder al siguiente email: {{senderEmail}}</p>
-    <br>
-    <p>Gracias por confiar en TecAwy!</p>
-    
+    <div class="container">
+        <div class="logo">
+            <img src="https://tecaway-frontend.vercel.app/assets/logo-tecaway-8c2d9f6c.png" alt="TecAway Logo">
+        </div>
+        
+        <p>¡Hola {{userName}}!</p>
+        
+        <p class="sender-info">Has recibido un nuevo mensaje de {{senderName}}:</p>
+        
+        <div class="message-box">
+            {{message}}
+        </div>
+        
+        <div class="contact-info">
+            <p>Para responder a este mensaje, puedes escribir a: <strong>{{senderEmail}}</strong></p>
+        </div>
+        
+        <div class="footer">
+            <p>¡Gracias por confiar en TecAway!</p>
+            <small>Conectando talento tecnológico</small>
+        </div>
+    </div>
 </body>
-
 </html>
