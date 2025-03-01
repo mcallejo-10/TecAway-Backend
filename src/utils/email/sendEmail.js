@@ -8,7 +8,7 @@ const sendEmail = async (email, subject, payload, templatePath) => {
 
         // create reusable transporter object using the default SMTP transport
         const transporter = createTransport({
-            host: process.env.EMAIL_HOST,
+            host: smtp.gmail.com,
             port: 587,
             secure: false,
             auth: {
