@@ -26,6 +26,8 @@ export const getAllUserKnowledges = async (req, res) => {
   }
 };
 
+
+
 export const getUserKnowledgeById = async (req, res) => {
   try {
     const errors = validationResult(req);
@@ -106,6 +108,56 @@ export const addUserKnowledge = async (req, res) => {
         message: "Error When Adding The UserKnowledge",
       });
     }
+    res.status(200).json({
+      code: 1,
+      message: "UserKnowledge Added Successfully",
+      data: newUserKnowledge,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      code: -100,
+      message: "Ha ocurrido un error al añadir el conocimiento del usuario",
+    });
+  }
+};
+
+export const addUserKnowledgeByAdmin = async (req, res) => {
+  try {
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
+    const knowledge = {
+      user_id: req.body.user_id,      // Ahora viene del body en lugar de req.user
+      knowledge_id: req.body.knowledge_id,
+    };
+
+    let newUserKnowledge;
+    try {
+      const existingUserKnowledge = await UserKnowledge.findOne({
+        where: knowledge,
+      });
+
+      if (existingUserKnowledge) {
+        return res.status(400).json({
+          code: -2,
+          message: "Ya existe esta competencia para este usuario",
+        });
+      }
+      newUserKnowledge = await UserKnowledge.create(knowledge);
+    } catch (error) {
+      if (error.name === "SequelizeUniqueConstraintError") {
+        return res.status(400).json({
+          code: -61,
+          message: "Duplicate UserKnowledge name",
+        });
+      }
+      throw error; // Propagar otros errores al catch exterior
+    }
+
     res.status(200).json({
       code: 1,
       message: "UserKnowledge Added Successfully",
