@@ -27,10 +27,13 @@ const UserKnowledge = sequelize.define('UserKnowledge', {
   createdAt: 'created_at'
 });
 
+// In UserKnowledge model
 UserKnowledge.associate = function(models) {
   UserKnowledge.belongsTo(models.User, {
     foreignKey: 'user_id',
-    onDelete: 'CASCADE'
+    targetKey: 'id_user',
+    onDelete: 'CASCADE',
+    hooks: true
   });
 };
 

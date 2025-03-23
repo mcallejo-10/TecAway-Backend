@@ -298,11 +298,6 @@ export const uploadPhoto = async (req, res) => {
 
 export const deleteUser = async (req, res) => {
   try {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
-    }
-
     const { id } = req.params;
     const user = await User.findByPk(id);
 
@@ -313,24 +308,19 @@ export const deleteUser = async (req, res) => {
       });
     }
 
-    // Safe delete even if no knowledges exist
-    await UserKnowledge.destroy({
-      where: { user_id: id },
-      silent: true // No lanza error si no encuentra registros
-    });
-
+    // The cascade will handle the UserKnowledge deletion
     await user.destroy();
 
     res.status(200).json({
       code: 1,
-      message: "Usuario y conocimientos asociados eliminados correctamente",
+      message: "Usuario eliminado correctamente",
     });
   } catch (error) {
     console.error('Delete Error:', error);
     res.status(500).json({
       code: -100,
-      message: "Ha ocurrido un error al eliminar el usuario y sus conocimientos",
-      error: error.message // Añadir detalles del error
+      message: "Error al eliminar el usuario",
+      error: error.message
     });
   }
 };
