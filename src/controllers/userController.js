@@ -294,3 +294,35 @@ export const uploadPhoto = async (req, res) => {
     });
   }
 };
+
+export const deleteUser = async (req, res) => {
+  try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
+    const { id } = req.params;
+    const user = await User.findByPk(id);
+
+    if (!user) {
+      return res.status(404).json({
+        code: -4,
+        message: "Usuario no encontrado",
+      });
+    }
+
+    await user.destroy();
+
+    res.status(200).json({
+      code: 1,
+      message: "Usuario eliminado correctamente",
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      code: -100,
+      message: "Ha ocurrido un error al eliminar el usuario",
+    });
+  }
+};
