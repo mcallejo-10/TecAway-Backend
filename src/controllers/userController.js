@@ -256,9 +256,6 @@ export const getUserSectionsAndKnowledge = async (req, res) => {
   }
 };
 
-
-
-
 export const uploadPhoto = async (req, res) => {
   try {
     if (!req.file) {
@@ -308,12 +305,16 @@ export const deleteUser = async (req, res) => {
       });
     }
 
-    // The cascade will handle the UserKnowledge deletion
+    // Manual deletion of associated knowledges
+    await UserKnowledge.destroy({
+      where: { user_id: id }
+    });
+
     await user.destroy();
 
     res.status(200).json({
       code: 1,
-      message: "Usuario eliminado correctamente",
+      message: "Usuario y conocimientos asociados eliminados correctamente",
     });
   } catch (error) {
     console.error('Delete Error:', error);
