@@ -3,6 +3,7 @@ import User from "../models/userModel.js";
 import { validationResult } from "express-validator";
 import { uploadToCloudinary, getOptimizedUrl, getTransformedUrl } from "../utils/cloudinaryService.js";
 import { sequelize } from "../db.js"; 
+import UserKnowledge from '../models/userKnowledgeModel.js';  // Añadir este import
 
 export const checkEmailExists = async (req, res) => {
   try {
@@ -312,17 +313,23 @@ export const deleteUser = async (req, res) => {
       });
     }
 
+    // Delete all associated user knowledges first
+    await UserKnowledge.destroy({
+      where: { user_id: id }
+    });
+
+    // Then delete the user
     await user.destroy();
 
     res.status(200).json({
       code: 1,
-      message: "Usuario eliminado correctamente",
+      message: "Usuario y conocimientos asociados eliminados correctamente",
     });
   } catch (error) {
     console.error(error);
     res.status(500).json({
       code: -100,
-      message: "Ha ocurrido un error al eliminar el usuario",
+      message: "Ha ocurrido un error al eliminar el usuario y sus conocimientos",
     });
   }
 };

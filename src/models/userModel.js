@@ -62,6 +62,11 @@ const User = sequelize.define('User', {
   createdAt: 'created_at'
 });
 
+User.associate = function(models) {
+  User.hasMany(models.UserKnowledge, {
+    foreignKey: 'user_id',
+    onDelete: 'CASCADE'
+  });
+};
 
 export default User;
-
