@@ -313,12 +313,12 @@ export const deleteUser = async (req, res) => {
       });
     }
 
-    // Delete all associated user knowledges first
+    // Safe delete even if no knowledges exist
     await UserKnowledge.destroy({
-      where: { user_id: id }
+      where: { user_id: id },
+      silent: true // No lanza error si no encuentra registros
     });
 
-    // Then delete the user
     await user.destroy();
 
     res.status(200).json({
@@ -326,10 +326,11 @@ export const deleteUser = async (req, res) => {
       message: "Usuario y conocimientos asociados eliminados correctamente",
     });
   } catch (error) {
-    console.error(error);
+    console.error('Delete Error:', error);
     res.status(500).json({
       code: -100,
       message: "Ha ocurrido un error al eliminar el usuario y sus conocimientos",
+      error: error.message // Añadir detalles del error
     });
   }
 };
