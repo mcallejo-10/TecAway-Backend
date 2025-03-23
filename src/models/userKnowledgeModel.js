@@ -3,7 +3,7 @@ import { sequelize } from '../db.js';
 import User from './userModel.js';
 import Knowledge from './knowledgeModel.js';
 
-const UserKnowledge = sequelize.define('UserKnowledge', {
+const UserKnowledge = sequelize.define('User_Knowledge', {
   user_id: {
     type: DataTypes.INTEGER(8).UNSIGNED,
     primaryKey: true,
@@ -27,12 +27,8 @@ const UserKnowledge = sequelize.define('UserKnowledge', {
   createdAt: 'created_at'
 });
 
-UserKnowledge.associate = function(models) {
-  UserKnowledge.belongsTo(models.User, {
-    foreignKey: 'user_id',
-    onDelete: 'CASCADE'
-  });
-};
+
+UserKnowledge.belongsTo(User, { foreignKey: 'user_id' });
 
 UserKnowledge.belongsTo(Knowledge, { foreignKey: 'knowledge_id' });
 

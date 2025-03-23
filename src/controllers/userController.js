@@ -256,9 +256,6 @@ export const getUserSectionsAndKnowledge = async (req, res) => {
   }
 };
 
-
-
-
 export const uploadPhoto = async (req, res) => {
   try {
     if (!req.file) {
@@ -298,11 +295,6 @@ export const uploadPhoto = async (req, res) => {
 
 export const deleteUser = async (req, res) => {
   try {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
-    }
-
     const { id } = req.params;
     const user = await User.findByPk(id);
 
@@ -313,12 +305,11 @@ export const deleteUser = async (req, res) => {
       });
     }
 
-    // Delete all associated user knowledges first
+    // Manual deletion of associated knowledges
     await UserKnowledge.destroy({
       where: { user_id: id }
     });
 
-    // Then delete the user
     await user.destroy();
 
     res.status(200).json({
@@ -326,10 +317,11 @@ export const deleteUser = async (req, res) => {
       message: "Usuario y conocimientos asociados eliminados correctamente",
     });
   } catch (error) {
-    console.error(error);
+    console.error('Delete Error:', error);
     res.status(500).json({
       code: -100,
-      message: "Ha ocurrido un error al eliminar el usuario y sus conocimientos",
+      message: "Error al eliminar el usuario",
+      error: error.message
     });
   }
 };
