@@ -26,8 +26,7 @@ app.use(cors({
     'https://tec-away-frontend.vercel.app',
     'http://localhost:4200',
     'https://localhost:4200',
-    'https://tecaway-backend-production-7c12.up.railway.app',
-    'https://tecaway-backend-devs.up.railway.app',  // Add development URL
+    'https://tecaway-backend-devs.up.railway.app'
   ],
   allowedHeaders: ['Content-Type', 'Authorization'],
   exposedHeaders: ['set-cookie']
