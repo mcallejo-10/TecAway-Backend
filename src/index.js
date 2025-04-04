@@ -19,12 +19,6 @@ import swaggerSpec from './config/swagger.js';
 dotenv.config({ path: './environment.env' });
 
 
-
-
-
-// Modify or add this line
-const PORT = process.env.PORT || 3000;
-
 const app = express();
 app.use(cors({
   credentials: true,
