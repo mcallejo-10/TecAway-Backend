@@ -10,12 +10,12 @@ const swaggerDefinition = {
   },
   servers: [
     {
-      url: `http://localhost:${PORT}`,
-      description: 'Local Development',
-    },
-    {
       url: 'https://tecaway-backend-production-7c12.up.railway.app',
       description: 'Production server',
+    },
+    {
+      url: `http://localhost:${PORT}`,
+      description: 'Local Development',
     }
   ],
 };
