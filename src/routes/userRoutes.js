@@ -211,3 +211,22 @@ export default router;
  *       404:
  *         description: Usuario no encontrado
  */
+/**
+ * /user:
+ *   get:
+ *     summary: Obtiene información del usuario autenticado
+ *     tags: [Usuarios]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Información del usuario actual
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/User'
+ *       401:
+ *         description: No autorizado o token no válido
+ *       404:
+ *         description: Usuario no encontrado
+ */
