@@ -27,7 +27,7 @@ app.use(cors({
     'http://localhost:4200',
     'https://localhost:4200',
     'https://tecaway-backend-production-7c12.up.railway.app',
-    
+    'https://tecaway-backend-devs.up.railway.app',  // Add development URL
   ],
   allowedHeaders: ['Content-Type', 'Authorization'],
   exposedHeaders: ['set-cookie']
