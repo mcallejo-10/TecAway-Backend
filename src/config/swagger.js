@@ -1,4 +1,5 @@
 import swaggerJSDoc from 'swagger-jsdoc';
+import { PORT } from '../railwayConfig.js';
 
 const swaggerDefinition = {
   openapi: '3.0.0',
