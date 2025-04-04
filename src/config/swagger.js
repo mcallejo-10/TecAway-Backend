@@ -9,8 +9,8 @@ const options = {
       description: 'API documentation for TecAway - A platform for managing technical knowledge',
       contact: {
         name: 'TecAway Team',
-        url: 'https://tecaway.com',
-        email: 'info@tecaway.com'
+        url: 'https://tec-away-frontend.vercel.app/',
+        email: 'info.tecaway@gmail.com'
       },
       license: {
         name: 'MIT',
