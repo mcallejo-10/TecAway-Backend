@@ -55,14 +55,16 @@ app.use('/user-knowledge', userCompetenceRoutes);
 app.use('/api/contact', contactRoutes);
 app.use('/test', testRoutes);
 
+// Move this before routes configuration
 const swaggerAuth = basicAuth({
     users: { [process.env.SWAGGER_USER]: process.env.SWAGGER_PASSWORD },
     challenge: true,
     realm: 'TecAway API Documentation'
 });
 
-// Protected Swagger route
-app.use('/api-docs', swaggerAuth, swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+// Protected Swagger route - move this before other routes
+app.use('/api-docs', swaggerAuth, swaggerUi.serve);
+app.get('/api-docs', swaggerUi.setup(swaggerSpec));
 
 // Iniciar el servidor
 app.listen(PORT, () => {
