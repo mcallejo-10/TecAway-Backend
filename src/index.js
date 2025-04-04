@@ -14,11 +14,16 @@ import { insertInitialUserData } from './start_data.js';
 import dotenv from 'dotenv';
 import {PORT} from './railwayConfig.js';
 
+import swaggerUi from 'swagger-ui-express';
+import swaggerSpec from './config/swagger.js';
 dotenv.config({ path: './environment.env' });
 
 
 
 
+
+// Modify or add this line
+const PORT = process.env.PORT || 3000;
 
 const app = express();
 app.use(cors({
@@ -54,6 +59,7 @@ app.use('/knowledge', knowlegdeRoutes);
 app.use('/user-knowledge', userCompetenceRoutes);
 app.use('/api/contact', contactRoutes);
 app.use('/test', testRoutes);
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // Iniciar el servidor
 app.listen(PORT, () => {
