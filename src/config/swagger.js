@@ -10,18 +10,18 @@ const swaggerDefinition = {
   servers: [
     {
       url: `http://localhost:${process.env.PORT || 3000}`,
-      description: 'Development server',
+      description: 'Local Development',
     },
     {
-      url: 'https://tecaway-backend-production-7c12.up.railway.app',
-      description: 'Production server',
+      url: 'https://tecaway-backend-devs.up.railway.app',
+      description: 'Development server',
     }
   ],
 };
 
 const options = {
   swaggerDefinition,
-  apis: ['./src/routes/*.js'], // Path to the API routes
+  apis: ['./src/routes/*.js'],
 };
 
 const swaggerSpec = swaggerJSDoc(options);
