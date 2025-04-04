@@ -14,7 +14,7 @@ const swaggerDefinition = {
       description: 'Local Development',
     },
     {
-      url: 'https://tecaway-backend-devs.up.railway.app',
+      url: 'https://tecaway-backend-production-7c12.up.railway.app',  // URL actualizada
       description: 'Production server',
     }
   ],
