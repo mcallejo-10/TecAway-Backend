@@ -16,6 +16,7 @@ import {PORT} from './railwayConfig.js';
 
 import swaggerUi from 'swagger-ui-express';
 import swaggerSpec from './config/swagger.js';
+
 dotenv.config({ path: './environment.env' });
 
 
@@ -52,6 +53,7 @@ app.use('/knowledge', knowlegdeRoutes);
 app.use('/user-knowledge', userCompetenceRoutes);
 app.use('/api/contact', contactRoutes);
 app.use('/test', testRoutes);
+// Swagger documentation route
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // Iniciar el servidor

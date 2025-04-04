@@ -1,30 +1,67 @@
-import swaggerJSDoc from 'swagger-jsdoc';
-import { PORT } from '../railwayConfig.js';
-
-const swaggerDefinition = {
-  openapi: '3.0.0',
-  info: {
-    title: 'TecAway API',
-    version: '1.0.0',
-    description: 'API documentation for TecAway project',
-  },
-  servers: [
-    {
-      url: 'https://tecaway-backend-production-7c12.up.railway.app',
-      description: 'Production server',
-    },
-    {
-      url: `http://localhost:${PORT}`,
-      description: 'Local Development',
-    }
-  ],
-};
+import swaggerJsdoc from 'swagger-jsdoc';
 
 const options = {
-  swaggerDefinition,
-  apis: ['./src/routes/*.js'],
+  definition: {
+    openapi: '3.0.0',
+    info: {
+      title: 'TecAway API',
+      version: '1.0.0',
+      description: 'API documentation for TecAway - A platform for managing technical knowledge',
+      contact: {
+        name: 'TecAway Team',
+        url: 'https://tecaway.com',
+        email: 'info@tecaway.com'
+      },
+      license: {
+        name: 'MIT',
+        url: 'https://opensource.org/licenses/MIT'
+      }
+    },
+    servers: [
+      {
+        url: 'http://localhost:3000',
+        description: 'Development server'
+      }
+    ],
+    components: {
+      securitySchemes: {
+        bearerAuth: {
+          type: 'http',
+          scheme: 'bearer',
+          bearerFormat: 'JWT'
+        }
+      }
+    },
+    tags: [
+      {
+        name: 'Autenticación',
+        description: 'Endpoints relacionados con autenticación de usuarios'
+      },
+      {
+        name: 'Usuarios',
+        description: 'Operaciones con usuarios'
+      },
+      {
+        name: 'Secciones',
+        description: 'Gestión de secciones de conocimiento'
+      },
+      {
+        name: 'Conocimientos',
+        description: 'Gestión de conocimientos técnicos'
+      },
+      {
+        name: 'Conocimientos de Usuario',
+        description: 'Gestión de conocimientos asociados a usuarios'
+      },
+      {
+        name: 'Contacto',
+        description: 'Endpoints para contacto'
+      }
+    ]
+  },
+  apis: ['./src/routes/*.js']
 };
 
-const swaggerSpec = swaggerJSDoc(options);
+const swaggerSpec = swaggerJsdoc(options);
 
 export default swaggerSpec;
