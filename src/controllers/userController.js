@@ -178,6 +178,17 @@ export const getUserSectionsAndKnowledge = async (req, res) => {
   try {
     const { id } = req.params;
 
+    // Primero verificamos si el usuario existe
+    const user = await User.findByPk(id);
+    
+    if (!user) {
+      return res.status(404).json({
+        code: -6,
+        message: "Usuario no encontrado",
+      });
+    }
+
+    // Obtenemos los datos del usuario con sus conocimientos y secciones (si los tiene)
     const results = await sequelize.query(
       `
       SELECT 
@@ -194,9 +205,9 @@ export const getUserSectionsAndKnowledge = async (req, res) => {
         k.id_knowledge AS knowledge_id,
         k.knowledge AS knowledge_name
       FROM Users u
-      INNER JOIN User_Knowledges uk ON u.id_user = uk.user_id
-      INNER JOIN Knowledge k ON uk.knowledge_id = k.id_knowledge
-      INNER JOIN Sections s ON k.section_id = s.id_section
+      LEFT JOIN User_Knowledges uk ON u.id_user = uk.user_id
+      LEFT JOIN Knowledge k ON uk.knowledge_id = k.id_knowledge
+      LEFT JOIN Sections s ON k.section_id = s.id_section
       WHERE u.id_user = :id
       `,
       {
@@ -205,53 +216,49 @@ export const getUserSectionsAndKnowledge = async (req, res) => {
       }
     );
 
-    if (results.length === 0) {
-      return res.status(404).json({
-        code: -6,
-        message:
-          "No se encontraron secciones ni conocimientos para este usuario",
-      });
-    }
-
+    // Formatear los datos básicos del usuario
     const formattedData = {
-      id: results[0].user_id,
-      name: results[0].user_name,
-      email: results[0].user_email,
-      title: results[0].user_title,
-      description: results[0].user_description,
-      town: results[0].user_town,
-      can_move: results[0].user_can_move,
-      photo: results[0].user_photo,
+      id: user.id_user,
+      name: user.name,
+      email: user.email,
+      title: user.title,
+      description: user.description,
+      town: user.town,
+      can_move: user.can_move,
+      photo: user.photo,
       sections: [],
     };
 
-    const sectionsMap = {};
+    // Si el usuario tiene conocimientos, los procesamos
+    if (results.length > 0 && results[0].section_id) {
+      const sectionsMap = {};
 
-    results.forEach((row) => {
-      if (!sectionsMap[row.section_id]) {
-        sectionsMap[row.section_id] = {
-          section_name: row.section_name,
-          section_knowledges: [],
-        };
-      }
+      results.forEach((row) => {
+        if (!sectionsMap[row.section_id]) {
+          sectionsMap[row.section_id] = {
+            section_name: row.section_name,
+            section_knowledges: [],
+          };
+        }
 
-      sectionsMap[row.section_id].section_knowledges.push({
-        knowledge_name: row.knowledge_name,
+        sectionsMap[row.section_id].section_knowledges.push({
+          knowledge_name: row.knowledge_name,
+        });
       });
-    });
 
-    formattedData.sections = Object.values(sectionsMap);
+      formattedData.sections = Object.values(sectionsMap);
+    }
 
     res.status(200).json({
       code: 1,
-      message: "Secciones y conocimientos del usuario obtenidos correctamente",
+      message: "Información del usuario obtenida correctamente",
       data: formattedData,
     });
   } catch (error) {
     console.error(error);
     res.status(500).json({
       code: -100,
-      message: "Ocurrió un error al obtener las secciones y conocimientos",
+      message: "Ocurrió un error al obtener la información del usuario",
     });
   }
 };
