@@ -25,10 +25,13 @@ const app = express();
 app.use(cors({
   credentials: true,
   origin: [
-    'https://tec-away-frontend.vercel.app',
+    'https://tecaway.es',
+    'https://www.tecaway.es',
+    'https://api.tecaway.es',
+    'https://tec-away-frontend.vercel.app', // mantener por compatibilidad temporal
     'http://localhost:4200',
     'https://localhost:4200',
-    'https://tecaway-backend-production-7c12.up.railway.app'
+    'https://tecaway-backend-production-7c12.up.railway.app' // mantener por compatibilidad temporal
   ],
   allowedHeaders: ['Content-Type', 'Authorization'],
   exposedHeaders: ['set-cookie']
