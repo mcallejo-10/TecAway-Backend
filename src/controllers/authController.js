@@ -16,7 +16,7 @@ const cookieOptions = {
   sameSite: 'none',
   maxAge: 60 * 60 * 24 * 30 * 1000, // 30 días en milisegundos
   path: '/',
-  domain: '.railway.app'
+  domain: '.tecaway.es'
 };
 
 export const register = async (req, res) => {
@@ -236,7 +236,7 @@ export const changePassword = async (req, res) => {
 
     // Generar un token de acceso y lo guardo en un token seguro (httpOnly)
     const accessToken = jwt.sign({ id_user: user.id_user, name: user.name }, process.env.JWT_SECRET);
-    const token_jwt = serialize('token', cookieOptions);
+    const token_jwt = serialize('token', accessToken, cookieOptions);
 
     res.setHeader('Set-Cookie', token_jwt);
 
@@ -270,7 +270,7 @@ export const logout = async (req, res) => {
       secure: true,
       sameSite: 'none',
       path: '/',
-      domain: '.railway.app'
+      domain: '.tecaway.es'
     };
 
     // Clear the token cookie by setting empty value and immediate expiration
