@@ -265,8 +265,29 @@ export const getUserSectionsAndKnowledge = async (req, res) => {
 
 export const uploadPhoto = async (req, res) => {
   try {
+    console.log('=== UPLOAD PHOTO REQUEST ===');
+    console.log('Headers:', req.headers);
+    console.log('File info:', req.file ? {
+      fieldname: req.file.fieldname,
+      originalname: req.file.originalname,
+      mimetype: req.file.mimetype,
+      size: req.file.size
+    } : 'No file received');
+
     if (!req.file) {
-      return res.status(400).json({ code: -101, message: 'Please upload a file!' });
+      return res.status(400).json({ 
+        code: -101, 
+        message: 'No se ha recibido ningún archivo. Por favor, selecciona una imagen.' 
+      });
+    }
+
+    // Validaciones adicionales para iOS
+    const maxSize = 5 * 1024 * 1024; // 5MB
+    if (req.file.size > maxSize) {
+      return res.status(400).json({ 
+        code: -102, 
+        message: 'El archivo es demasiado grande. Máximo 5MB permitido.' 
+      });
     }
 
     const publicId = `user_${req.user.id_user}_${Date.now()}`;
@@ -281,6 +302,8 @@ export const uploadPhoto = async (req, res) => {
       { where: { id_user: req.user.id_user } }
     );
 
+    console.log('Foto subida exitosamente:', uploadResult.secure_url);
+
     return res.status(200).json({
       code: 1,
       message: 'File uploaded successfully',
@@ -292,6 +315,24 @@ export const uploadPhoto = async (req, res) => {
     });
   } catch (error) {
     console.error('Error en la carga de la foto:', error);
+    
+    // Mejor manejo de errores específicos
+    if (error.code === 'LIMIT_FILE_SIZE') {
+      return res.status(400).json({
+        code: -102,
+        message: 'El archivo es demasiado grande. Máximo 5MB permitido.',
+        error: error.message
+      });
+    }
+    
+    if (error.message && error.message.includes('Tipo de archivo no permitido')) {
+      return res.status(400).json({
+        code: -103,
+        message: 'Tipo de archivo no válido. Solo se permiten imágenes.',
+        error: error.message
+      });
+    }
+
     res.status(500).json({
       code: -100,
       message: 'Error uploading file',
