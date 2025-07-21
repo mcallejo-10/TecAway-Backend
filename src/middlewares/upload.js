@@ -1,4 +1,3 @@
-import util from 'util';
 import multer from 'multer';
 
 // Tamaño máximo del archivo (5MB para mejor compatibilidad con fotos de móviles)
@@ -41,7 +40,7 @@ const upload = multer({
       cb(new Error(`Tipo de archivo no permitido: ${file.mimetype}. Solo se permiten imágenes.`), false);
     }
   }
-}).single('file');
+});
 
-// Exportar el middleware como promesa
-export const uploadFileMiddleware = util.promisify(upload);
+// En multer 2.x, ya no necesitamos util.promisify
+export const uploadFileMiddleware = upload.single('file');
