@@ -30,24 +30,41 @@ export const sendContactMessage = async (req, res) => {
         // Calculate absolute path to template
         const templatePath = path.join(__dirname, '..', 'utils', 'email', 'template', 'sendMessage.handlebars');
 
+        console.log('=== CALLING sendEmail function ===');
+        
         // Use the existing sendEmail function
-        await sendEmail(
-            user.email,
-            'Tienes un nuevo mensaje a través TecAway',
-            payload,
-            templatePath
-        );
-
-        res.status(200).json({
-            success: true,
-            message: 'Message sent successfully'
-        });
+        try {
+            const result = await sendEmail(
+                user.email,
+                'Tienes un nuevo mensaje a través TecAway',
+                payload,
+                templatePath
+            );
+            
+            console.log('=== EMAIL SENT SUCCESSFULLY ===');
+            console.log('Result:', result);
+            
+            res.status(200).json({
+                success: true,
+                message: 'Message sent successfully',
+                emailResult: result
+            });
+        } catch (emailError) {
+            console.error('=== EMAIL SENDING FAILED ===');
+            console.error('Email error:', emailError);
+            throw emailError; // Re-throw para que lo capture el catch exterior
+        }
     } catch (error) {
-        console.error('Error details:', error); // Para debugging
+        console.error('=== CONTACT CONTROLLER ERROR ===');
+        console.error('Error name:', error.name);
+        console.error('Error message:', error.message);
+        console.error('Error stack:', error.stack);
+        
         res.status(500).json({
             success: false,
             message: 'Error sending message',
-            error: error.message
+            error: error.message,
+            errorType: error.name
         });
     }
 };

@@ -31,6 +31,8 @@ const sendEmail = async (email, subject, payload, templatePath) => {
             hasPassword: !!process.env.EMAIL_PASSWORD
         });
 
+        console.log('Creating transporter...');
+        
         // Configuración del transporter para nodemailer 7.x
         const transporter = nodemailer.createTransport({
             host: 'smtp.gmail.com',
@@ -43,16 +45,27 @@ const sendEmail = async (email, subject, payload, templatePath) => {
             tls: {
                 rejectUnauthorized: false
             },
+            connectionTimeout: 10000, // 10 segundos
+            greetingTimeout: 10000,
+            socketTimeout: 10000,
             logger: false, // Habilitar para debug
             debug: false // Habilitar para debug
         });
+        
+        console.log('Transporter created successfully');
 
-        // Verificar la conexión (opcional, continuar si falla)
+        // Verificar la conexión con timeout
+        console.log('Verifying SMTP connection...');
         try {
-            await transporter.verify();
-            console.log('SMTP connection verified successfully');
+            const verifyPromise = transporter.verify();
+            const timeoutPromise = new Promise((_, reject) => 
+                setTimeout(() => reject(new Error('SMTP verification timeout')), 5000)
+            );
+            await Promise.race([verifyPromise, timeoutPromise]);
+            console.log('✅ SMTP connection verified successfully');
         } catch (verifyError) {
-            console.warn('SMTP verification failed, but will try to send anyway:', verifyError.message);
+            console.warn('⚠️ SMTP verification failed:', verifyError.message);
+            console.warn('Will attempt to send email anyway...');
         }
 
         // Leer y compilar el template
@@ -72,8 +85,13 @@ const sendEmail = async (email, subject, payload, templatePath) => {
 
         console.log('Mail options prepared, sending email...');
         
-        // Enviar el email - nodemailer 7.x usa async/await nativamente
-        const info = await transporter.sendMail(mailOptions);
+        // Enviar el email con timeout - nodemailer 7.x usa async/await nativamente
+        const sendPromise = transporter.sendMail(mailOptions);
+        const timeoutPromise = new Promise((_, reject) => 
+            setTimeout(() => reject(new Error('Email sending timeout after 30 seconds')), 30000)
+        );
+        
+        const info = await Promise.race([sendPromise, timeoutPromise]);
         
         console.log('✅ Email sent successfully!');
         console.log('Message ID:', info.messageId);
