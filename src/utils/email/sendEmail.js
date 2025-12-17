@@ -1,16 +1,11 @@
-import nodemailer from "nodemailer";
+import { Resend } from 'resend';
 import pkg from "handlebars";
 const { compile } = pkg;
 import { readFileSync, existsSync } from "fs";
-import { join, resolve } from "path";
-import { fileURLToPath } from 'url';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = resolve(__filename, '..');
 
 const sendEmail = async (email, subject, payload, templatePath) => {
     try {
-        console.log('=== SENDING EMAIL ===');
+        console.log('=== SENDING EMAIL WITH RESEND ===');
         console.log('To:', email);
         console.log('Subject:', subject);
         console.log('Template path:', templatePath);
@@ -20,44 +15,19 @@ const sendEmail = async (email, subject, payload, templatePath) => {
             throw new Error(`Template file not found: ${templatePath}`);
         }
 
-        // Verificar que las credenciales estén configuradas
-        if (!process.env.EMAIL_USERNAME || !process.env.EMAIL_PASSWORD) {
-            throw new Error('EMAIL_USERNAME or EMAIL_PASSWORD environment variables are not set');
+        // Verificar que la API key de Resend esté configurada
+        if (!process.env.RESEND_API_KEY) {
+            throw new Error('RESEND_API_KEY environment variable is not set');
         }
 
-        console.log('Email config:', {
-            user: process.env.EMAIL_USERNAME,
-            from: process.env.FROM_EMAIL,
-            hasPassword: !!process.env.EMAIL_PASSWORD
+        console.log('Resend config:', {
+            hasApiKey: !!process.env.RESEND_API_KEY,
+            from: process.env.FROM_EMAIL || 'noreply@tecaway.es'
         });
 
-        console.log('Creating transporter...');
-        
-        // Configuración del transporter compatible con nodemailer 6.x
-        const transporter = nodemailer.createTransport({
-            host: 'smtp.gmail.com',
-            port: 587,
-            secure: false, // false para 587, true para 465
-            auth: {
-                user: process.env.EMAIL_USERNAME,
-                pass: process.env.EMAIL_PASSWORD,
-            },
-            tls: {
-                rejectUnauthorized: false
-            }
-        });
-        
-        console.log('Transporter created successfully');
-
-        // Verificar la conexión (opcional en nodemailer 6.x)
-        console.log('Verifying SMTP connection...');
-        try {
-            await transporter.verify();
-            console.log('✅ SMTP connection verified successfully');
-        } catch (verifyError) {
-            console.warn('⚠️ SMTP verification failed:', verifyError.message);
-            console.warn('Will attempt to send email anyway...');
-        }
+        // Inicializar Resend
+        const resend = new Resend(process.env.RESEND_API_KEY);
+        console.log('Resend client initialized successfully');
 
         // Leer y compilar el template
         console.log('Reading template file...');
@@ -65,44 +35,36 @@ const sendEmail = async (email, subject, payload, templatePath) => {
         console.log('Template read successfully, compiling...');
         const compiledTemplate = compile(source);
         console.log('Template compiled successfully');
-        
-        // Configurar el mensaje
-        const mailOptions = {
-            from: `"TecAway" <${process.env.FROM_EMAIL}>`,
+
+        // Enviar el email con Resend
+        console.log('Sending email via Resend...');
+        const { data, error } = await resend.emails.send({
+            from: `TecAway <${process.env.FROM_EMAIL || 'noreply@tecaway.es'}>`,
             to: email,
             subject: subject,
             html: compiledTemplate(payload),
-        };
+        });
 
-        console.log('Mail options prepared, sending email...');
+        if (error) {
+            throw new Error(`Resend API error: ${error.message}`);
+        }
         
-        // Enviar el email - nodemailer 6.x
-        const info = await transporter.sendMail(mailOptions);
-        
-        console.log('✅ Email sent successfully!');
-        console.log('Message ID:', info.messageId);
-        console.log('Response:', info.response);
-        console.log('Preview URL:', nodemailer.getTestMessageUrl(info));
+        console.log('✅ Email sent successfully via Resend!');
+        console.log('Email ID:', data.id);
         
         return {
             success: true,
-            messageId: info.messageId,
-            response: info.response
+            emailId: data.id,
+            provider: 'resend'
         };
     } catch (error) {
         console.error('=== EMAIL ERROR ===');
         console.error('Error type:', error.name);
-        console.error('Error code:', error.code);
         console.error('Error message:', error.message);
         console.error('Error stack:', error.stack);
         
-        // Errores específicos de nodemailer/SMTP
-        if (error.code === 'EAUTH') {
-            console.error('❌ Authentication failed. Check EMAIL_USERNAME and EMAIL_PASSWORD');
-        } else if (error.code === 'ESOCKET') {
-            console.error('❌ Socket error. Check network connection and SMTP server');
-        } else if (error.code === 'ECONNECTION') {
-            console.error('❌ Connection error. SMTP server may be unreachable');
+        if (error.message.includes('RESEND_API_KEY')) {
+            console.error('❌ Resend API key is missing. Add RESEND_API_KEY to environment variables');
         }
         
         throw error;
