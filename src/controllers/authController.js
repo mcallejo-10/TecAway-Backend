@@ -8,6 +8,8 @@ import { validationResult } from 'express-validator';
 import { serialize} from "cookie"
 import { esPar, contraseniasCoinciden } from '../utils/utils.js';
 import { log } from 'console';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
 const clietURL = process.env.CLIENT_URL;
 const cookieOptions = {
@@ -160,16 +162,21 @@ export const forgotPassword = async (req, res) => {
 
     const link = `${clietURL}/change-password?token=${resetToken}&id=${user.id_user}`;
 
-    await sendEmail(
-      user.email,
-      "Password Reset Request",
-      {
-        name: user.name,
-        link: link,
-      },"/email/template/requestResetPassword.handlebars"
+    // Construir ruta absoluta al template
+    const templatePath = path.join(path.dirname(fileURLToPath(import.meta.url)), '..', 'utils', 'email', 'template', 'requestResetPassword.handlebars');
+
+    try {
+      const emailResult = await sendEmail(
+        user.email,
+        "Password Reset Request",
+        {
+          name: user.name,
+          link: link,
+        },
+        templatePath
+      );
       
-    ).then(response => {
-      console.log("Resultado del envío del correo:", response);
+      console.log("Resultado del envío del correo:", emailResult);
       res.status(200).json({
         code: 100,
         message: 'Send Email OK',
@@ -178,15 +185,14 @@ export const forgotPassword = async (req, res) => {
           link: link
         }
       });
-
-    },error => {
-      console.error (error)
-      res.status(200).json({
+    } catch (error) {
+      console.error('Error enviando email:', error);
+      res.status(500).json({
         code: -80,
         message: 'Send Email KO',
-        data: {error}
+        error: error.message
       });
-    })
+    }
 
   } catch (error) {
     console.error(error);
