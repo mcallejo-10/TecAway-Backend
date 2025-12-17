@@ -34,16 +34,14 @@ const sendEmail = async (email, subject, payload, templatePath) => {
         console.log('Creating transporter...');
         
         // Configuración del transporter para nodemailer 7.x
+        // Intentando puerto 465 (SSL) que puede funcionar mejor en Railway
         const transporter = nodemailer.createTransport({
             host: 'smtp.gmail.com',
-            port: 587,
-            secure: false, // true para puerto 465, false para otros puertos
+            port: 465,
+            secure: true, // true para puerto 465 (SSL)
             auth: {
                 user: process.env.EMAIL_USERNAME,
                 pass: process.env.EMAIL_PASSWORD,
-            },
-            tls: {
-                rejectUnauthorized: false
             },
             connectionTimeout: 10000, // 10 segundos
             greetingTimeout: 10000,
@@ -52,7 +50,7 @@ const sendEmail = async (email, subject, payload, templatePath) => {
             debug: false // Habilitar para debug
         });
         
-        console.log('Transporter created successfully');
+        console.log('Transporter created successfully (using port 465/SSL)');
 
         // Verificar la conexión con timeout
         console.log('Verifying SMTP connection...');
