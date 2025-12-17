@@ -22,7 +22,7 @@ const sendEmail = async (email, subject, payload, templatePath) => {
 
         console.log('Resend config:', {
             hasApiKey: !!process.env.RESEND_API_KEY,
-            from: process.env.FROM_EMAIL || 'noreply@tecaway.es'
+            from: process.env.FROM_EMAIL || 'onboarding@resend.dev'
         });
 
         // Inicializar Resend
@@ -39,7 +39,7 @@ const sendEmail = async (email, subject, payload, templatePath) => {
         // Enviar el email con Resend
         console.log('Sending email via Resend...');
         const { data, error } = await resend.emails.send({
-            from: `TecAway <${process.env.FROM_EMAIL || 'noreply@tecaway.es'}>`,
+            from: `TecAway <${process.env.FROM_EMAIL || 'onboarding@resend.dev'}>`,
             to: email,
             subject: subject,
             html: compiledTemplate(payload),
