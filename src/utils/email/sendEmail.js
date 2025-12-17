@@ -33,33 +33,26 @@ const sendEmail = async (email, subject, payload, templatePath) => {
 
         console.log('Creating transporter...');
         
-        // Configuración del transporter para nodemailer 7.x
-        // Intentando puerto 465 (SSL) que puede funcionar mejor en Railway
+        // Configuración del transporter compatible con nodemailer 6.x
         const transporter = nodemailer.createTransport({
             host: 'smtp.gmail.com',
-            port: 465,
-            secure: true, // true para puerto 465 (SSL)
+            port: 587,
+            secure: false, // false para 587, true para 465
             auth: {
                 user: process.env.EMAIL_USERNAME,
                 pass: process.env.EMAIL_PASSWORD,
             },
-            connectionTimeout: 10000, // 10 segundos
-            greetingTimeout: 10000,
-            socketTimeout: 10000,
-            logger: false, // Habilitar para debug
-            debug: false // Habilitar para debug
+            tls: {
+                rejectUnauthorized: false
+            }
         });
         
-        console.log('Transporter created successfully (using port 465/SSL)');
+        console.log('Transporter created successfully');
 
-        // Verificar la conexión con timeout
+        // Verificar la conexión (opcional en nodemailer 6.x)
         console.log('Verifying SMTP connection...');
         try {
-            const verifyPromise = transporter.verify();
-            const timeoutPromise = new Promise((_, reject) => 
-                setTimeout(() => reject(new Error('SMTP verification timeout')), 5000)
-            );
-            await Promise.race([verifyPromise, timeoutPromise]);
+            await transporter.verify();
             console.log('✅ SMTP connection verified successfully');
         } catch (verifyError) {
             console.warn('⚠️ SMTP verification failed:', verifyError.message);
@@ -83,13 +76,8 @@ const sendEmail = async (email, subject, payload, templatePath) => {
 
         console.log('Mail options prepared, sending email...');
         
-        // Enviar el email con timeout - nodemailer 7.x usa async/await nativamente
-        const sendPromise = transporter.sendMail(mailOptions);
-        const timeoutPromise = new Promise((_, reject) => 
-            setTimeout(() => reject(new Error('Email sending timeout after 30 seconds')), 30000)
-        );
-        
-        const info = await Promise.race([sendPromise, timeoutPromise]);
+        // Enviar el email - nodemailer 6.x
+        const info = await transporter.sendMail(mailOptions);
         
         console.log('✅ Email sent successfully!');
         console.log('Message ID:', info.messageId);
