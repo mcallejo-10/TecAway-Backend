@@ -10,7 +10,6 @@ export const sendContactMessage = async (req, res) => {
     try {
         const { senderName, senderEmail, message, userId } = req.body;
 
-        // Find the registered user
         const user = await User.findByPk(userId);
         if (!user) {
             return res.status(404).json({
@@ -19,7 +18,6 @@ export const sendContactMessage = async (req, res) => {
             });
         }
 
-        // Prepare template data
         const payload = {
             userName: user.name,
             senderName: senderName,
@@ -27,44 +25,26 @@ export const sendContactMessage = async (req, res) => {
             message: message
         };
 
-        // Calculate absolute path to template
         const templatePath = path.join(__dirname, '..', 'utils', 'email', 'template', 'sendMessage.handlebars');
-
-        console.log('=== CALLING sendEmail function ===');
         
-        // Use the existing sendEmail function
-        try {
-            const result = await sendEmail(
-                user.email,
-                'Tienes un nuevo mensaje a través TecAway',
-                payload,
-                templatePath
-            );
-            
-            console.log('=== EMAIL SENT SUCCESSFULLY ===');
-            console.log('Result:', result);
-            
-            res.status(200).json({
-                success: true,
-                message: 'Message sent successfully',
-                emailResult: result
-            });
-        } catch (emailError) {
-            console.error('=== EMAIL SENDING FAILED ===');
-            console.error('Email error:', emailError);
-            throw emailError; // Re-throw para que lo capture el catch exterior
-        }
+        const result = await sendEmail(
+            user.email,
+            'Tienes un nuevo mensaje a través TecAway',
+            payload,
+            templatePath
+        );
+        
+        res.status(200).json({
+            success: true,
+            message: 'Message sent successfully'
+        });
     } catch (error) {
-        console.error('=== CONTACT CONTROLLER ERROR ===');
-        console.error('Error name:', error.name);
-        console.error('Error message:', error.message);
-        console.error('Error stack:', error.stack);
+        console.error('Contact message error:', error.message);
         
         res.status(500).json({
             success: false,
             message: 'Error sending message',
-            error: error.message,
-            errorType: error.name
+            error: error.message
         });
     }
 };
