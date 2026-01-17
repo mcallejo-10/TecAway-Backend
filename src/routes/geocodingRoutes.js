@@ -7,8 +7,16 @@
 
 import express from 'express';
 import geocodingService from '../services/geocodingService.js';
+import { geocodeAllUsers } from '../controllers/geocodeController.js';
 
 const router = express.Router();
+
+/**
+ * GET /api/geocode-all-users
+ * 🚨 TEMPORAL: Geocodifica todos los usuarios existentes
+ * Eliminar después de la migración inicial
+ */
+router.get('/geocode-all-users', geocodeAllUsers);
 
 /**
  * POST /api/geocode
