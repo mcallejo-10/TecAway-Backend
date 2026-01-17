@@ -32,6 +32,28 @@ const User = sequelize.define('User', {
     type: DataTypes.STRING(20),
     allowNull: true,
   },
+  // 🗺️ Coordenadas geográficas para cálculo de distancias
+  latitude: {
+    type: DataTypes.DECIMAL(10, 8), // Ej: 40.41675000
+    allowNull: true,
+    comment: 'Latitud de la ciudad del usuario',
+  },
+  longitude: {
+    type: DataTypes.DECIMAL(11, 8), // Ej: -3.70379000
+    allowNull: true,
+    comment: 'Longitud de la ciudad del usuario',
+  },
+  country: {
+    type: DataTypes.STRING(2),
+    allowNull: false,  // ⭐ OBLIGATORIO
+    defaultValue: 'ES',
+    comment: 'Código ISO del país (ES, AR, MX, etc.) - OBLIGATORIO',
+  },
+  postal_code: {
+    type: DataTypes.STRING(10),
+    allowNull: true,
+    comment: 'Código postal (útil para búsquedas)',
+  },
   can_move: {
     type: DataTypes.BOOLEAN(1),
     allowNull: true,

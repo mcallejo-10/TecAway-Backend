@@ -3,11 +3,12 @@ import { Router } from 'express';
 import { register, login, logout, forgotPassword, changePassword, checkAuth } from '../controllers/authController.js';
 import { registerValidator, loginValidator, emailValidator, changePasswordValidator } from '../validations/auth.Validation.js'
 import { authenticateToken } from '../middlewares/authenticateToken.js';
+import geocodeMiddleware from '../middlewares/geocodeMiddleware.js';
 
 
 const router = Router();
 
-router.post('/register', registerValidator, register);
+router.post('/register', registerValidator, geocodeMiddleware, register);
 router.post('/login', loginValidator, login);
 router.post('/forgot-password', emailValidator, forgotPassword);
 router.post('/change-password', changePasswordValidator, changePassword);

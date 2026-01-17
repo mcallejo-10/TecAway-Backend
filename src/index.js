@@ -9,6 +9,7 @@ import knowlegdeRoutes from './routes/knowledgeRoutes.js';
 import userCompetenceRoutes from './routes/userKnowledgeRoutes.js';
 import contactRoutes from './routes/contactRoutes.js';
 import testRoutes from './routes/testRoutes.js';
+import geocodingRoutes from './routes/geocodingRoutes.js';
 import { testConnection } from './db.js';
 import { insertInitialUserData } from './start_data.js';
 import dotenv from 'dotenv';
@@ -56,6 +57,7 @@ app.use('/section', sectionRoutes);
 app.use('/knowledge', knowlegdeRoutes);
 app.use('/user-knowledge', userCompetenceRoutes);
 app.use('/api/contact', contactRoutes);
+app.use('/api', geocodingRoutes);
 app.use('/test', testRoutes);
 
 // Move this before routes configuration
