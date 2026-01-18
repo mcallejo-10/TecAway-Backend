@@ -111,7 +111,7 @@ router.get('/geocode/autocomplete', async (req, res) => {
  * POST /api/geocode
  * Geocodifica una ciudad a coordenadas
  * 
- * Body: { "location": "Madrid, España" } o { "location": "Barcelona" }
+ * Body: { "location": "Barcelona" }
  * Response: { "latitude": 40.4168, "longitude": -3.7038 }
  * 
  * @swagger
@@ -128,7 +128,7 @@ router.get('/geocode/autocomplete', async (req, res) => {
  *             properties:
  *               location:
  *                 type: string
- *                 example: Madrid, España
+ *                 example: Barcelona
  *             required:
  *               - location
  *     responses:
@@ -191,8 +191,8 @@ router.post('/geocode', async (req, res) => {
  * POST /api/geocode/batch
  * Geocodifica múltiples ciudades (respetando rate limit)
  * 
- * Body: { locations: [{ town: "Madrid", country: "ES" }, ...] }
- * Response: [{ town: "Madrid", country: "ES", coordinates: {...} }, ...]
+ * Body: { "locations": ["Madrid", "Barcelona", "Valencia"] }
+ * Response: [{ "location": "Madrid", "coordinates": {...} }, ...]
  */
 router.post('/geocode/batch', async (req, res) => {
   try {

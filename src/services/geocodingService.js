@@ -239,23 +239,20 @@ class GeocodingService {
   /**
    * 📦 Geocodifica múltiples ciudades respetando rate limit
    * 
-   * @param {Array<{town: string, country?: string}>} locations
-   * @returns {Promise<Array<{town: string, country: string, coordinates: object | null}>>}
+   * @param {Array<string>} locations - Array de ubicaciones (ej: ["Madrid", "Barcelona"])
+   * @returns {Promise<Array<{location: string, coordinates: object | null}>>}
    * 
    * @example
-   * const results = await geocodingService.geocodeBatch([
-   *   { town: 'Madrid', country: 'ES' },
-   *   { town: 'Barcelona', country: 'ES' }
-   * ]);
+   * const results = await geocodingService.geocodeBatch(['Madrid', 'Barcelona']);
+   * // [{ location: 'Madrid', coordinates: {...} }, { location: 'Barcelona', coordinates: {...} }]
    */
   async geocodeBatch(locations) {
     const results = [];
 
     for (const location of locations) {
-      const coordinates = await this.geocodeTown(location.town, location.country);
+      const coordinates = await this.geocodeLocation(location);
       results.push({
-        town: location.town,
-        country: location.country || '',
+        location,
         coordinates
       });
     }
