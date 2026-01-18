@@ -11,11 +11,108 @@ import geocodingService from '../services/geocodingService.js';
 const router = express.Router();
 
 /**
+ * GET /api/geocode/autocomplete
+ * Autocompletado de ciudades y países
+ * 
+ * Query: ?query=Barc
+ * Response: [{ display_name: "Barcelona, España", latitude: 41.3851, longitude: 2.1734, city: "Barcelona", country: "España" }, ...]
+ * 
+ * @swagger
+ * /api/geocode/autocomplete:
+ *   get:
+ *     summary: Autocompletado de ciudades
+ *     tags: [Geocoding]
+ *     parameters:
+ *       - in: query
+ *         name: query
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Texto de búsqueda (mínimo 2 caracteres)
+ *         example: Barc
+ *       - in: query
+ *         name: limit
+ *         required: false
+ *         schema:
+ *           type: integer
+ *           default: 5
+ *         description: Número máximo de resultados
+ *         example: 5
+ *     responses:
+ *       200:
+ *         description: Lista de ubicaciones sugeridas
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   display_name:
+ *                     type: string
+ *                     example: Barcelona, Cataluña, España
+ *                   city:
+ *                     type: string
+ *                     example: Barcelona
+ *                   country:
+ *                     type: string
+ *                     example: España
+ *                   latitude:
+ *                     type: number
+ *                     example: 41.3851
+ *                   longitude:
+ *                     type: number
+ *                     example: 2.1734
+ *       400:
+ *         description: Parámetros inválidos
+ */
+router.get('/geocode/autocomplete', async (req, res) => {
+  try {
+    const { query, limit } = req.query;
+
+    // Validación
+    if (!query || typeof query !== 'string') {
+      return res.status(400).json({ 
+        error: 'El parámetro "query" es obligatorio' 
+      });
+    }
+
+    if (query.length < 2) {
+      return res.status(400).json({ 
+        error: 'El parámetro "query" debe tener al menos 2 caracteres' 
+      });
+    }
+
+    const maxResults = limit ? parseInt(limit) : 5;
+    if (isNaN(maxResults) || maxResults < 1 || maxResults > 20) {
+      return res.status(400).json({ 
+        error: 'El parámetro "limit" debe ser un número entre 1 y 20' 
+      });
+    }
+
+    console.log(`🔍 Autocompletado para: "${query}" (max: ${maxResults})`);
+
+    // Buscar sugerencias
+    const suggestions = await geocodingService.autocomplete(query, maxResults);
+
+    // Respuesta exitosa
+    res.json(suggestions);
+
+  } catch (error) {
+    console.error('❌ Error en autocompletado:', error);
+    res.status(500).json({ 
+      error: 'Error interno del servidor',
+      message: error.message 
+    });
+  }
+});
+
+/**
  * POST /api/geocode
  * Geocodifica una ciudad a coordenadas
  * 
- * Body: { town: "Madrid", country: "ES" }
- * Response: { latitude: 40.4168, longitude: -3.7038 }
+ * Body: { "location": "Madrid, España" } o { "location": "Barcelona" }
+ * Response: { "latitude": 40.4168, "longitude": -3.7038 }
  * 
  * @swagger
  * /api/geocode:
@@ -29,15 +126,25 @@ const router = express.Router();
  *           schema:
  *             type: object
  *             properties:
- *               town:
+ *               location:
  *                 type: string
- *                 example: Madrid
- *               country:
- *                 type: string
- *                 example: ES
+ *                 example: Madrid, España
+ *             required:
+ *               - location
  *     responses:
  *       200:
  *         description: Coordenadas obtenidas
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 latitude:
+ *                   type: number
+ *                   example: 40.4168
+ *                 longitude:
+ *                   type: number
+ *                   example: -3.7038
  *       404:
  *         description: Ubicación no encontrada
  *       400:
@@ -45,33 +152,30 @@ const router = express.Router();
  */
 router.post('/geocode', async (req, res) => {
   try {
-    const { town, country } = req.body;
+    const { location } = req.body;
 
     // Validación
-    if (!town) {
+    if (!location || typeof location !== 'string') {
       return res.status(400).json({ 
-        error: 'El campo "town" es obligatorio' 
+        error: 'El campo "location" es obligatorio y debe ser una cadena de texto' 
       });
     }
 
-    console.log(`📍 Request de geocodificación: ${town}, ${country || 'sin país'}`);
+    console.log(`📍 Request de geocodificación: ${location}`);
 
-    // Geocodificar
-    const coordinates = await geocodingService.geocodeTown(town, country);
+    // Geocodificar usando el método genérico
+    const coordinates = await geocodingService.geocodeLocation(location);
 
     if (!coordinates) {
       return res.status(404).json({ 
-        error: `No se encontró la ubicación: ${town}`,
-        town,
-        country: country || null
+        error: `No se encontró la ubicación: ${location}`
       });
     }
 
-    // Respuesta exitosa
+    // Respuesta exitosa - solo latitud y longitud
     res.json({
-      town,
-      country: country || null,
-      ...coordinates
+      latitude: coordinates.latitude,
+      longitude: coordinates.longitude
     });
 
   } catch (error) {

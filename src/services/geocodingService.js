@@ -24,7 +24,135 @@ class GeocodingService {
   }
 
   /**
-   * 🌍 Geocodifica una ciudad a coordenadas
+   * 🔍 Autocompletado de ciudades y países
+   * 
+   * @param {string} query - Texto de búsqueda (ej: "Barc", "Madri")
+   * @param {number} limit - Número máximo de resultados (default: 5, max: 20)
+   * @returns {Promise<Array<{display_name: string, city: string, country: string, latitude: number, longitude: number}>>}
+   * 
+   * @example
+   * const suggestions = await geocodingService.autocomplete('Barc', 5);
+   * // [{ display_name: "Barcelona, Cataluña, España", city: "Barcelona", country: "España", latitude: 41.3851, longitude: 2.1734 }, ...]
+   */
+  async autocomplete(query, limit = 5) {
+    try {
+      // Respetar límite de 1 request/segundo
+      await this.rateLimit();
+
+      const url = `${this.baseUrl}/search?` +
+        `q=${encodeURIComponent(query)}` +
+        `&format=json` +
+        `&limit=${Math.min(limit, 20)}` +
+        `&addressdetails=1` +
+        `&featuretype=city`;
+
+      console.log(`🔍 Buscando autocompletado para: ${query}`);
+
+      const response = await fetch(url, {
+        headers: {
+          'User-Agent': this.userAgent
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+
+      if (!data || data.length === 0) {
+        console.log(`ℹ️ No se encontraron resultados para: ${query}`);
+        return [];
+      }
+
+      // Formatear resultados
+      const suggestions = data.map(item => {
+        const address = item.address || {};
+        return {
+          display_name: item.display_name,
+          city: address.city || address.town || address.village || address.hamlet || '',
+          state: address.state || '',
+          country: address.country || '',
+          latitude: parseFloat(item.lat),
+          longitude: parseFloat(item.lon)
+        };
+      });
+
+      console.log(`✅ Encontrados ${suggestions.length} resultados para: ${query}`);
+      return suggestions;
+
+    } catch (error) {
+      console.error('❌ Error en autocompletado:', error.message);
+      return [];
+    }
+  }
+
+  /**
+   * 🌍 Geocodifica una ubicación (formato libre) a coordenadas
+   * 
+   * @param {string} location - Ubicación en formato libre (ej: "Madrid, España", "Barcelona")
+   * @returns {Promise<{latitude: number, longitude: number} | null>}
+   * 
+   * @example
+   * const coords = await geocodingService.geocodeLocation('Madrid, España');
+   * // { latitude: 40.4168, longitude: -3.7038 }
+   */
+  async geocodeLocation(location) {
+    // 1️⃣ Verificar si está en cache
+    const cacheKey = location.toLowerCase().trim();
+    if (this.cache.has(cacheKey)) {
+      console.log(`📍 Cache hit para: ${cacheKey}`);
+      return this.cache.get(cacheKey);
+    }
+
+    try {
+      // 2️⃣ Respetar límite de 1 request/segundo
+      await this.rateLimit();
+
+      const url = `${this.baseUrl}/search?` +
+        `q=${encodeURIComponent(location)}` +
+        `&format=json` +
+        `&limit=1` +
+        `&addressdetails=1`;
+
+      console.log(`🌍 Geocodificando: ${location}`);
+
+      const response = await fetch(url, {
+        headers: {
+          'User-Agent': this.userAgent
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+
+      if (data && data.length > 0) {
+        const result = {
+          latitude: parseFloat(data[0].lat),
+          longitude: parseFloat(data[0].lon)
+        };
+
+        // Guardar en cache
+        this.cache.set(cacheKey, result);
+        
+        console.log(`✅ Geocodificado: ${location} -> ${result.latitude}, ${result.longitude}`);
+        return result;
+      }
+
+      console.warn(`⚠️ No se encontraron resultados para: ${location}`);
+      return null;
+
+    } catch (error) {
+      console.error('❌ Error en geocodificación:', error.message);
+      return null;
+    }
+  }
+
+  /**
+   * 🌍 Geocodifica una ciudad a coordenadas (método legacy)
    * 
    * @param {string} town - Nombre de la ciudad (ej: "Madrid", "Barcelona")
    * @param {string} country - Código del país (ej: "ES", "AR", "MX")
