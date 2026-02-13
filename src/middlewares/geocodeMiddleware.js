@@ -17,67 +17,69 @@ import geocodingService from '../services/geocodingService.js';
  * @param {NextFunction} next - Express next middleware
  * 
  * Lógica:
- * - Solo geocodifica si hay 'town' y NO hay coordenadas
+ * - Solo geocodifica si hay 'city' y NO hay coordenadas
  * - No bloquea la petición si falla el geocoding
  * - Enriquece req.body con latitude y longitude
  */
 async function geocodeUserLocation(req, res, next) {
   try {
-    // 1️⃣ Verificar que haya país (obligatorio)
-    if (!req.body.country) {
-      // Si no hay país, intentar detectar
-      req.body.country = req.body.town ? detectCountry(req.body) : 'ES';
-    }
-
-    // 2️⃣ Solo geocodificar si hay ciudad (town es opcional)
-    if (!req.body.town) {
-      console.log('ℹ️ Usuario sin ciudad específica, solo país:', req.body.country);
-      return next(); // No hay ciudad, continuar sin geocodificar
-    }
-
-    // 3️⃣ Verificar si ya tiene coordenadas (no sobrescribir)
+    // 1️⃣ Verificar si ya tiene coordenadas válidas (del autocomplete del frontend)
     const hasCoordinates = 
       req.body.latitude !== undefined && 
       req.body.latitude !== null &&
       req.body.longitude !== undefined && 
-      req.body.longitude !== null;
+      req.body.longitude !== null &&
+      !isNaN(req.body.latitude) &&
+      !isNaN(req.body.longitude);
 
     if (hasCoordinates) {
-      console.log('📍 Usuario ya tiene coordenadas, saltando geocodificación');
-      return next(); // Ya tiene coordenadas, no geocodificar
+      console.log('✅ Coordenadas recibidas del frontend (autocomplete):', 
+        `${req.body.latitude}, ${req.body.longitude}`);
+      return next(); // Ya tiene coordenadas válidas, continuar
     }
 
-    // 4️⃣ Geocodificar la ciudad
-    console.log(`🗺️ Geocodificando automáticamente: ${req.body.town}`);
-    
-    // Usar country del body o detectar automáticamente si no está presente
-    const country = req.body.country || detectCountry(req.body);
+    // 2️⃣ FALLBACK: Si no hay coordenadas, intentar geocodificar
+    // (esto no debería pasar si el frontend usa el autocomplete correctamente)
+    console.warn('⚠️ No hay coordenadas en la petición, geocodificando como fallback...');
+
+    if (!req.body.city) {
+      console.log('❌ No hay ciudad para geocodificar');
+      return next(); // Dejar que el validator rechace la petición
+    }
+
+    // Asegurar que hay país
+    if (!req.body.country) {
+      req.body.country = detectCountry(req.body);
+    }
+
+    // 3️⃣ Geocodificar como fallback
+    console.log(`🗺️ Geocodificando (fallback): ${req.body.city}, ${req.body.country}`);
     
     const coordinates = await geocodingService.geocodeTown(
-      req.body.town,
-      country
+      req.body.city,
+      req.body.country
     );
 
-    // 5️⃣ Agregar coordenadas a req.body si se geocodificó correctamente
+    // 4️⃣ Agregar coordenadas si se geocodificó correctamente
     if (coordinates) {
       req.body.latitude = coordinates.latitude;
       req.body.longitude = coordinates.longitude;
       
       console.log(
-        `✅ Geocodificado: ${req.body.town} (${country}) -> ` +
+        `✅ Geocodificado (fallback): ${req.body.city} (${req.body.country}) -> ` +
         `${coordinates.latitude}, ${coordinates.longitude}`
       );
     } else {
-      console.warn(`⚠️ No se pudo geocodificar: ${req.body.town}`);
-      // No bloqueamos la petición, continuar sin coordenadas
+      console.warn(`⚠️ No se pudo geocodificar: ${req.body.city}`);
+      // El validator rechazará la petición por falta de coordenadas
     }
 
     next();
 
   } catch (error) {
-    // 6️⃣ Si hay error, registrar pero NO bloquear la petición
+    // Si hay error, registrar pero NO bloquear (el validator se encargará)
     console.error('❌ Error en middleware de geocodificación:', error.message);
-    next(); // Continuar aunque falle el geocoding
+    next();
   }
 }
 
@@ -99,7 +101,7 @@ function detectCountry(userData) {
   }
 
   // 2️⃣ Detectar por nombre de ciudad (básico)
-  const town = userData.town?.toLowerCase() || '';
+  const city = userData.city?.toLowerCase() || '';
 
   // Ciudades españolas comunes
   const spanishCities = [
@@ -107,7 +109,7 @@ function detectCountry(userData) {
     'málaga', 'murcia', 'palma', 'bilbao', 'alicante',
     'córdoba', 'valladolid', 'vigo', 'gijón', 'hospitalet'
   ];
-  if (spanishCities.some(city => town.includes(city))) {
+  if (spanishCities.some((knownCity) => city.includes(knownCity))) {
     return 'ES';
   }
 
@@ -116,7 +118,7 @@ function detectCountry(userData) {
     'buenos aires', 'córdoba', 'rosario', 'mendoza', 
     'tucumán', 'la plata', 'mar del plata', 'salta'
   ];
-  if (argentinianCities.some(city => town.includes(city))) {
+  if (argentinianCities.some((knownCity) => city.includes(knownCity))) {
     return 'AR';
   }
 
@@ -125,7 +127,7 @@ function detectCountry(userData) {
     'méxico', 'cdmx', 'guadalajara', 'monterrey', 'puebla',
     'tijuana', 'león', 'juárez', 'zapopan', 'mérida'
   ];
-  if (mexicanCities.some(city => town.includes(city))) {
+  if (mexicanCities.some((knownCity) => city.includes(knownCity))) {
     return 'MX';
   }
 

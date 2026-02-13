@@ -26,23 +26,23 @@ Sistema de geocodificación para convertir ciudades en coordenadas geográficas 
 ### 2. **Modelo de Usuario Actualizado** (`src/models/userModel.js`)
 Se agregaron 4 campos nuevos:
 ```javascript
-latitude: DECIMAL(10, 8)      // Ej: 40.41675000 (solo si hay town)
-longitude: DECIMAL(11, 8)     // Ej: -3.70379000 (solo si hay town)
+latitude: DECIMAL(10, 8)      // Ej: 40.41675000 (solo si hay city)
+longitude: DECIMAL(11, 8)     // Ej: -3.70379000 (solo si hay city)
 country: VARCHAR(2)           // ⭐ OBLIGATORIO - Código ISO (ES, AR, MX, etc.)
 postal_code: VARCHAR(10)      // Código postal (opcional)
 ```
 
 **Lógica:**
 - `country`: **OBLIGATORIO** - Siempre se debe especificar
-- `town`: **OPCIONAL** - Solo si el técnico trabaja en una ciudad específica
-- `latitude/longitude`: **AUTOMÁTICAS** - Solo se generan si hay `town`
+- `city`: **OPCIONAL** - Solo si el técnico trabaja en una ciudad específica
+- `latitude/longitude`: **AUTOMÁTICAS** - Solo se generan si hay `city`
 
 ### 3. **Migración de Base de Datos** (`migrations/20250110000000-add-geolocation-to-users.cjs`)
 Script SQL para agregar las columnas a la tabla Users existente.
 
 ### 4. **Middleware de Geocodificación Automática** (`src/middlewares/geocodeMiddleware.js`)
 - Se ejecuta automáticamente en registro y actualización de usuarios
-- Solo geocodifica si hay `town` y NO hay coordenadas
+- Solo geocodifica si hay `city` y NO hay coordenadas
 - No bloquea la petición si falla
 - Detecta el país automáticamente
 
@@ -64,42 +64,42 @@ Para geocodificar usuarios existentes que ya tienen ciudad pero no coordenadas.
 ### Flujo Automático (al crear/actualizar usuario):
 
 ```
-1. Usuario envía datos → { country: "ES", town: "Madrid", ... }
-2. Middleware verifica → ¿Hay town? → SÍ
+1. Usuario envía datos → { country: "ES", city: "Madrid", ... }
+2. Middleware verifica → ¿Hay city? → SÍ
 3. Servicio geocodifica → Nominatim API
-4. Coordenadas agregadas → { country: "ES", town: "Madrid", latitude: 40.4168, longitude: -3.7038 }
+4. Coordenadas agregadas → { country: "ES", city: "Madrid", latitude: 40.4168, longitude: -3.7038 }
 5. Controlador guarda → Base de datos
 ```
 
 **Si NO hay ciudad:**
 ```
-1. Usuario envía datos → { country: "ES", ... }  (sin town)
+1. Usuario envía datos → { country: "ES", ... }  (sin city)
 2. Middl 1: Técnico local
-{ country: "ES", town: "Madrid" }
+{ country: "ES", city: "Madrid" }
 
 // Output (automático)
 {
   country: "ES",
-  town: "Madrid",
+  city: "Madrid",
   latitude: 40.4168,
   longitude: -3.7038
 }
 
 // Input 2: Técnico nacional
-{ country: "ES" }  // Sin town
+{ country: "ES" }  // Sin city
 
 // Output (automático)
 {
   country: "ES",
-  town: null,
+  city: null,
   latitude: null,
   longitude: null
 // Input
-{ town: "Madrid" }
+{ city: "Madrid" }
 
 // Output (automático)
 {
-  town: "Madrid",
+  city: "Madrid",
   latitude: 40.4168,
   longitude: -3.7038
 }
@@ -170,7 +170,7 @@ El script:
   "password": "123456",
   "name": "Juan",
   "country": "ES",        // ⭐ OBLIGATORIO
-  "town": "Barcelona"     // OPCIONAL
+  "city": "Barcelona"     // OPCIONAL
 }
 // Backend automáticamente agrega:
 // latitude: 41.3851, longitude: 2.1734
@@ -183,14 +183,14 @@ El script:
   "country": "AR",        // ⭐ OBLIGATORIO
   "can_move": true
 }
-// Sin town → sin coordenadas (trabaja en todo el país)
+// Sin city → sin coordenadas (trabaja en todo el país)
 ```
 
 **Al actualizar un usuario:**
 ```javascript
 // PATCH /user
 {
-  "town": "Valencia"
+  "city": "Valencia"
   // Backend automáticamente geocodifica
 }
 ```
@@ -199,11 +199,11 @@ El script:
 
 ```typescript
 // Si el frontend necesita geocodificar antes de enviar
-const geocode = async (town: string, country: string = 'ES') => {
+const geocode = async (city: string, country: string = 'ES') => {
   const response = await fetch('http://localhost:3000/api/geocode', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ town, country })
+    body: JSON.stringify({ city, country })
   });
   
   const data = await response.json();
@@ -264,7 +264,7 @@ POST /api/geocode
 Content-Type: application/json
 
 {
-  "town": "Madrid",
+  "city": "Madrid",
   "country": "ES"  // Opcional
 }
 ```
@@ -272,7 +272,7 @@ Content-Type: application/json
 **Respuesta:**
 ```json
 {
-  "town": "Madrid",
+  "city": "Madrid",
   "country": "ES",
   "latitude": 40.4168,
   "longitude": -3.7038
@@ -287,8 +287,8 @@ Content-Type: application/json
 
 {
   "locations": [
-    { "town": "Madrid", "country": "ES" },
-    { "town": "Barcelona", "country": "ES" }
+    { "city": "Madrid", "country": "ES" },
+    { "city": "Barcelona", "country": "ES" }
   ]
 }
 ```
@@ -301,12 +301,12 @@ Content-Type: application/json
   "failed": 0,
   "results": [
     {
-      "town": "Madrid",
+      "city": "Madrid",
       "country": "ES",
       "coordinates": { "latitude": 40.4168, "longitude": -3.7038 }
     },
     {
-      "town": "Barcelona",
+      "city": "Barcelona",
       "country": "ES",
       "coordinates": { "latitude": 41.3851, "longitude": 2.1734 }
     }
@@ -376,7 +376,7 @@ DELETE /api/geocode/cache
 # Geocodificar Madrid
 curl -X POST http://localhost:3000/api/geocode \
   -H "Content-Type: application/json" \
-  -d '{"town": "Madrid", "country": "ES"}'
+  -d '{"city": "Madrid", "country": "ES"}'
 
 # Calcular distancia Madrid-Barcelona
 curl -X POST http://localhost:3000/api/geocode/distance \
@@ -400,7 +400,7 @@ curl -X POST http://localhost:3000/auth/register \
     "email": "test@example.com",
     "password": "123456",
     "name": "Test User",
-    "town": "Barcelona",
+    "city": "Barcelona",
     "roles": ["user"]
   }'
 

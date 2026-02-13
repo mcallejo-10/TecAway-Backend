@@ -61,7 +61,7 @@ export const getMyUser = async (req, res) => {
       name: req.user.name,
       title: req.user.title,
       description: req.user.description,
-      town: req.user.town,
+      city: req.user.city,
       country: req.user.country,
       postal_code: req.user.postal_code,
       can_move: req.user.can_move,
@@ -105,7 +105,7 @@ export const getUserById = async (req, res) => {
       name: user.name,
       title: user.title,
       description: user.description,
-      town: user.town,
+      city: user.city,
       country: user.country,
       postal_code: user.postal_code,
       can_move: user.can_move,
@@ -138,7 +138,7 @@ export const updateUser = async (req, res) => {
     }
     const id = req.user.id_user;
 
-    const { name, email, title, description, town, can_move } = req.body;
+    const { name, email, title, description, city, can_move } = req.body;
     const existingUser = await User.findOne({ where: { email } });
 
     if (existingUser && existingUser.email != req.user.email) {
@@ -155,7 +155,7 @@ export const updateUser = async (req, res) => {
       });
     }
     try {
-      await user.update({ name, email, title, description, town, can_move });
+      await user.update({ name, email, title, description, city, can_move });
     } catch (error) {
       if (error.name === "SequelizeUniqueConstraintError") {
         res.status(400).json({
@@ -201,7 +201,7 @@ export const getUserSectionsAndKnowledge = async (req, res) => {
         u.email AS user_email,
         u.title AS user_title,
         u.description AS user_description,
-        u.town AS user_town,
+        u.city AS user_city,
         u.country AS user_country,
         u.can_move AS user_can_move,
         u.photo AS user_photo,
@@ -228,7 +228,7 @@ export const getUserSectionsAndKnowledge = async (req, res) => {
       email: user.email,
       title: user.title,
       description: user.description,
-      town: user.town,
+      city: user.city,
       country: user.country,
       can_move: user.can_move,
       photo: user.photo,

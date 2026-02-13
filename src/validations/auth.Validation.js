@@ -44,18 +44,47 @@ export const registerValidator = [
         .isLength({ min: 30, max: 2400 })
         .withMessage("Description should be at least 30 characters"),
 
-    body("town")
+    body("city")
         .exists()
-        .withMessage("Town is required")
+        .withMessage("City is required")
         .isString()
-        .withMessage("Town should be string")
+        .withMessage("City should be string")
         .isLength({ min: 3, max: 20 })
-        .withMessage("Town should be at least 30 characters"),
-    body("can_move")
+        .withMessage("City should be between 3 and 20 characters"),
+
+    body("country")
         .exists()
-        .withMessage("Can move is required")
+        .withMessage("Country is required")
+        .isString()
+        .withMessage("Country should be string")
+        .isLength({ min: 2, max: 2 })
+        .withMessage("Country should be a 2-character ISO code"),
+
+    body("latitude")
+        .exists()
+        .withMessage("Latitude is required (from autocomplete)")
+        .isFloat({ min: -90, max: 90 })
+        .withMessage("Latitude should be a valid decimal between -90 and 90"),
+
+    body("longitude")
+        .exists()
+        .withMessage("Longitude is required (from autocomplete)")
+        .isFloat({ min: -180, max: 180 })
+        .withMessage("Longitude should be a valid decimal between -180 and 180"),
+    body("can_move")
+        .optional()
         .isBoolean()
         .withMessage("Can move should be boolean"),
+    
+    body("roles")
+        .optional()
+        .custom((value) => {
+            if (Array.isArray(value)) {
+                return value.every((role) => typeof role === 'string');
+            }
+            return typeof value === 'string';
+        })
+        .withMessage("Roles should be a string or array of strings"),
 ]
 
 export const emailValidator = [

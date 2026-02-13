@@ -12,13 +12,13 @@ export interface User {
     description?: string;
     
     // 📍 Ubicación geográfica
-    town?: string;              // ⭐ OPCIONAL - Ciudad específica (ej: "Barcelona")
+    city?: string;              // ⭐ OPCIONAL - Ciudad específica (ej: "Barcelona")
     country: string;            // ⭐ OBLIGATORIO - Código ISO país (ej: "ES", "AR", "MX")
     can_move?: boolean;
     
-    // 📍 Coordenadas (automáticas desde backend, solo si hay town)
-    latitude?: number;          // Generado automáticamente si hay town
-    longitude?: number;         // Generado automáticamente si hay town
+    // 📍 Coordenadas (automáticas desde backend, solo si hay city)
+    latitude?: number;          // Generado automáticamente si hay city
+    longitude?: number;         // Generado automáticamente si hay city
     postal_code?: string;       // Opcional
     
     photo?: string;
@@ -33,7 +33,7 @@ export interface User {
 ### **1️⃣ Técnico Local (con ciudad específica)**
 ```json
 {
-  "town": "Barcelona",
+  "city": "Barcelona",
   "country": "ES",
   "can_move": false
   // → Backend geocodifica: latitude: 41.3851, longitude: 2.1734
@@ -44,7 +44,7 @@ export interface User {
 ### **2️⃣ Técnico Nacional (sin ciudad, trabaja en todo el país)**
 ```json
 {
-  "town": null,  // ⭐ Sin ciudad específica
+  "city": null,  // ⭐ Sin ciudad específica
   "country": "ES",
   "can_move": true
   // → Sin coordenadas (latitude/longitude = null)
@@ -55,7 +55,7 @@ export interface User {
 ### **3️⃣ Técnico que se Desplaza**
 ```json
 {
-  "town": "Madrid",
+  "city": "Madrid",
   "country": "ES",
   "can_move": true
   // → Backend geocodifica Madrid como base
@@ -67,7 +67,7 @@ export interface User {
 
 ### Antes (problemático):
 ```html
-<input name="town" placeholder="Ubicación" />
+<input name="city" placeholder="Ubicación" />
 <!-- ❌ Usuarios escribían: "CABA", "Capital federal", "Argentina" -->
 ```
 
@@ -83,7 +83,7 @@ export interface User {
 </select>
 
 <!-- Ciudad (OPCIONAL) -->
-<input name="town" placeholder="Ciudad (opcional, ej: Barcelona)" />
+<input name="city" placeholder="Ciudad (opcional, ej: Barcelona)" />
 <small>💡 Deja vacío si trabajas en todo el país</small>
 
 <!-- Checkbox de desplazamiento -->
@@ -135,9 +135,9 @@ export class UserFormComponent {
     name: ['', Validators.required],
     email: ['', [Validators.required, Validators.email]],
     country: ['ES', Validators.required],  // ⭐ OBLIGATORIO
-    town: [''],  // ⭐ OPCIONAL
+    city: [''],  // ⭐ OPCIONAL
     can_move: [false]
-    // latitude/longitude NO se envían, el backend los genera solo si hay town
+    // latitude/longitude NO se envían, el backend los genera solo si hay city
   });
   
   onSubmit() {
@@ -168,7 +168,7 @@ export class UserFormComponent {
   </select>
   
   <!-- Ciudad (OPCIONAL) -->
-  <input formControlName="town" placeholder="Ciudad (opcional)" />
+  <input formControlName="city" placeholder="Ciudad (opcional)" />
   <small class="hint">
     💡 Deja vacío si ofreces servicios en todo {{ selectedCountryName }}
   </small>
@@ -181,8 +181,8 @@ export class UserFormComponent {
   <button type="submit">Registrar</button>
 </form>
 ```
-NO necesitas validar que town y country estén juntos
-// porque country es obligatorio y town es opcional
+NO necesitas validar que city y country estén juntos
+// porque country es obligatorio y city es opcional
 
 // Solo validar que country esté presente
 countryValidator(): ValidatorFn {
@@ -196,10 +196,10 @@ countryValidator(): ValidatorFn {
     // Validar que sea código ISO válido (2 letras mayúsculas)
     if (!/^[A-Z]{2}$/.test(country)) {
       return { invalidCountryCode
-      return { townWithoutCountry: true };
+      return { cityWithoutCountry: true };
     }
-    if (country && !town) {
-      return { countryWithoutTown: true };
+    if (country && !city) {
+      return { countryWithoutcity: true };
     }
     
     return null;
@@ -218,10 +218,10 @@ import { Component, Input } from '@angular/core';
   template: `
     <d
       <!-- Mostrar ubicación según lo que tenga -->
-      <p *ngIf="user.town && user.country">
-        📍 {{ user.town }}, {{ getCountryName(user.country) }}
+      <p *ngIf="user.city && user.country">
+        📍 {{ user.city }}, {{ getCountryName(user.country) }}
       </p>
-      <p *ngIf="!user.town && user.country">
+      <p *ngIf="!user.city && user.country">
         🌍 {{ getCountryName(user.country) }} (Nacional)
       </p>
       
@@ -391,8 +391,8 @@ node scripts/normalize-user-locations.js
 ```
 
 Esto convertirá:
-- ✅ "Capital federal" → town: "Buenos Aires", country: "AR"
-- ✅ "CABA" → town: "Buenos Aires", country: "AR"
-- ✅ "Argentina" → town: null, country: "AR" (necesita completar)
-- ✅ "barcelona" → town: "Barcelona", country: "ES"
-- ✅ "Madrid" → town: "Madrid", country: "ES"
+- ✅ "Capital federal" → city: "Buenos Aires", country: "AR"
+- ✅ "CABA" → city: "Buenos Aires", country: "AR"
+- ✅ "Argentina" → city: null, country: "AR" (necesita completar)
+- ✅ "barcelona" → city: "Barcelona", country: "ES"
+- ✅ "Madrid" → city: "Madrid", country: "ES"

@@ -154,7 +154,7 @@ class GeocodingService {
   /**
    * 🌍 Geocodifica una ciudad a coordenadas (método legacy)
    * 
-   * @param {string} town - Nombre de la ciudad (ej: "Madrid", "Barcelona")
+   * @param {string} city - Nombre de la ciudad (ej: "Madrid", "Barcelona")
    * @param {string} country - Código del país (ej: "ES", "AR", "MX")
    * @returns {Promise<{latitude: number, longitude: number} | null>}
    * 
@@ -162,9 +162,9 @@ class GeocodingService {
    * const coords = await geocodingService.geocodeTown('Madrid', 'ES');
    * // { latitude: 40.4168, longitude: -3.7038 }
    */
-  async geocodeTown(town, country = '') {
+  async geocodeTown(city, country = '') {
     // 1️⃣ Verificar si está en cache
-    const cacheKey = `${town}_${country}`.toLowerCase();
+    const cacheKey = `${city}_${country}`.toLowerCase();
     if (this.cache.has(cacheKey)) {
       console.log(`📍 Cache hit para: ${cacheKey}`);
       return this.cache.get(cacheKey);
@@ -174,7 +174,7 @@ class GeocodingService {
       //  Respetar límite de 1 request/segundo
       await this.rateLimit();
 
-      const query = country ? `${town}, ${country}` : town;
+      const query = country ? `${city}, ${country}` : city;
       const url = `${this.baseUrl}/search?` +
         `q=${encodeURIComponent(query)}` +
         `&format=json` +
