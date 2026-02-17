@@ -102,3 +102,65 @@ export const changePasswordValidator = [
         .isLength({ min: 5 })
         .withMessage("Password should be at least 5 characters")
 ];
+
+export const updateUserValidator = [
+    body("email")
+        .optional()
+        .isEmail()
+        .withMessage("Email must be valid if provided"),
+    
+    body("name")
+        .optional()
+        .isString()
+        .withMessage("Name should be string"),
+    
+    body("title")
+        .optional()
+        .isString()
+        .withMessage("Title should be string")
+        .if(() => false) // Solo validar length si está presente
+        .isLength({ min: 20, max: 130 })
+        .withMessage("Title should be between 20 and 130 characters"),
+
+    body("description")
+        .optional()
+        .isString()
+        .withMessage("Description should be string")
+        .if(() => false) // Solo validar length si está presente
+        .isLength({ min: 30, max: 2400 })
+        .withMessage("Description should be between 30 and 2400 characters"),
+
+    // Ubicación: igual de estricto que en registro
+    body("city")
+        .exists()
+        .withMessage("City is required (from autocomplete)")
+        .isString()
+        .withMessage("City should be string")
+        .isLength({ min: 3, max: 20 })
+        .withMessage("City should be between 3 and 20 characters"),
+
+    body("country")
+        .exists()
+        .withMessage("Country is required")
+        .isString()
+        .withMessage("Country should be string")
+        .isLength({ min: 2, max: 2 })
+        .withMessage("Country should be a 2-character ISO code"),
+
+    body("latitude")
+        .exists()
+        .withMessage("Latitude is required (from autocomplete)")
+        .isFloat({ min: -90, max: 90 })
+        .withMessage("Latitude should be a valid decimal between -90 and 90"),
+
+    body("longitude")
+        .exists()
+        .withMessage("Longitude is required (from autocomplete)")
+        .isFloat({ min: -180, max: 180 })
+        .withMessage("Longitude should be a valid decimal between -180 and 180"),
+
+    body("can_move")
+        .optional()
+        .isBoolean()
+        .withMessage("Can move should be boolean"),
+];

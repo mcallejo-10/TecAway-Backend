@@ -12,7 +12,7 @@ import {
 } from '../controllers/userController.js';
 import { authenticateToken } from '../middlewares/authenticateToken.js';
 import { uploadFileMiddleware } from '../middlewares/upload.js';
-import { emailValidator } from '../validations/auth.Validation.js';
+import { emailValidator, updateUserValidator } from '../validations/auth.Validation.js';
 import geocodeMiddleware from '../middlewares/geocodeMiddleware.js';
 
 const router = Router();
@@ -23,7 +23,7 @@ router.get('/get-user/:id',  getUserById);
 router.get('/', authenticateToken(['user','admin' ]), getMyUser);
 router.get('/get-user-info/:id', getUserSectionsAndKnowledge);
 router.post('/upload-photo', authenticateToken(['user', 'admin']), uploadFileMiddleware, uploadPhoto);
-router.patch('/', authenticateToken(['user','admin']), geocodeMiddleware, updateUser);
+router.patch('/', authenticateToken(['user','admin']), updateUserValidator, geocodeMiddleware, updateUser);
 router.delete('/:id', authenticateToken(['admin', 'user']),deleteUser);
 
 

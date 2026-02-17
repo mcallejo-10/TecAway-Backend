@@ -273,7 +273,124 @@ export class RegisterComponent {
 }
 ```
 
-## 📋 Lista de Códigos ISO Comunes
+## � Endpoints disponibles
+
+### 1️⃣ Autocomplete de Ciudades
+
+```
+GET /api/geocode/autocomplete?query=Barcelona&limit=5
+```
+
+**Response 200 OK:**
+```json
+[
+  {
+    "display_name": "Barcelona, Cataluña, España",
+    "city": "Barcelona",
+    "country": "ES",
+    "latitude": 41.3851,
+    "longitude": 2.1734
+  }
+]
+```
+
+### 2️⃣ Registrar Usuario
+
+```
+POST /auth/register
+Content-Type: application/json
+```
+
+**Request:**
+```json
+{
+  "email": "user@example.com",
+  "password": "segura123",
+  "name": "Juan García",
+  "title": "Técnico de iluminación profesional especializado",
+  "description": "Más de 5 años de experiencia en iluminación...",
+  "city": "Barcelona",
+  "country": "ES",
+  "latitude": 41.3851,
+  "longitude": 2.1734,
+  "can_move": true,
+  "roles": ["user"]
+}
+```
+
+**Response 200 OK:**
+```json
+{
+  "code": 1,
+  "message": "Usuario registrado correctamente"
+}
+```
+
+### 3️⃣ Actualizar Perfil del Usuario
+
+```
+PATCH /user
+Authorization: Bearer <token>
+Content-Type: application/json
+```
+
+**Request (solo actualizar ubicación):**
+```json
+{
+  "city": "Madrid",
+  "country": "ES",
+  "latitude": 40.4168,
+  "longitude": -3.7038,
+  "can_move": true
+}
+```
+
+**Request (actualizar múltiples campos):**
+```json
+{
+  "name": "Juan García López",
+  "title": "Técnico senior de iluminación",
+  "description": "Experiencia avanzada en iluminación de conciertos...",
+  "city": "Barcelona",
+  "country": "ES",
+  "latitude": 41.3851,
+  "longitude": 2.1734,
+  "can_move": true
+}
+```
+
+**Response 200 OK:**
+```json
+{
+  "code": 1,
+  "message": "User Updated Successfully",
+  "data": {
+    "id_user": 1,
+    "name": "Juan García López",
+    "email": "user@example.com",
+    "city": "Barcelona",
+    "country": "ES",
+    "latitude": 41.3851,
+    "longitude": 2.1734,
+    "can_move": true,
+    "updated_at": "2026-02-17T10:30:00Z"
+  }
+}
+```
+
+**Response 400 Bad Request (falta ubicación):**
+```json
+{
+  "errors": [
+    {
+      "param": "city",
+      "msg": "City is required (from autocomplete)"
+    }
+  ]
+}
+```
+
+## �📋 Lista de Códigos ISO Comunes
 
 ```typescript
 export const COUNTRIES = [
@@ -384,6 +501,147 @@ Content-Type: application/json
 2. Confía en las coordenadas (las obtuviste del autocomplete)
 3. Crea el usuario en BD
 4. Devuelve 200 + token en cookie
+
+---
+
+## 🔄 Flujo de Actualización de Perfil
+
+Es prácticamente igual al de registro, pero con algunos campos opcionales:
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│ USUARIO: Hace click en "Editar Perfil"                          │
+└─────────────────────────────────────────────────────────────────┘
+                              ↓
+┌─────────────────────────────────────────────────────────────────┐
+│ FRONTEND: Carga datos actuales del usuario                      │
+│                                                                 │
+│ this.userForm.patchValue({                                     │
+│   name: currentUser.name,                                       │
+│   email: currentUser.email,                                     │
+│   title: currentUser.title,                                     │
+│   city: currentUser.city,                                       │
+│   country: currentUser.country,                                 │
+│   ...                                                           │
+│ })                                                              │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+                              ↓
+┌─────────────────────────────────────────────────────────────────┐
+│ USUARIO: Modifica ubicación                                     │
+│                                                                 │
+│ 1. Escribe nueva ciudad                                         │
+│ 2. Frontend llama: GET /api/geocode/autocomplete?query=...     │
+│ 3. Usuario elige opción → Obtiene nuevas coords                │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+                              ↓
+┌─────────────────────────────────────────────────────────────────┐
+│ USUARIO: Click en "Guardar cambios"                             │
+│                                                                 │
+│ PATCH /user                                                     │
+│ {                                                               │
+│   "name": "Nuevo nombre",                                       │
+│   "title": "Nuevo título",                                      │
+│   "city": "Nueva Ciudad",      ← Del autocomplete               │
+│   "country": "ES",             ← Del autocomplete               │
+│   "latitude": 41.3851,         ← Del autocomplete               │
+│   "longitude": 2.1734          ← Del autocomplete               │
+│ }                                                               │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+                              ↓
+┌─────────────────────────────────────────────────────────────────┐
+│ BACKEND: Validar + Actualizar                                   │
+│                                                                 │
+│ 1. Verificar JWT válido ✓                                       │
+│ 2. Validar campos (city+country+coords siempre obligatorios)   │
+│ 3. Si email cambió → verificar que sea único                    │
+│ 4. Actualizar BD                                                │
+│ 5. Devolver 200 OK + datos actualizados                        │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+                              ↓
+┌─────────────────────────────────────────────────────────────────┐
+│ FRONTEND: Mostrar confirmación                                  │
+│                                                                 │
+│ 200 OK → "Perfil actualizado correctamente"                    │
+│ 400    → Mostrar errores de validación                         │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+**Código TypeScript para actualizar:**
+
+```typescript
+export class EditProfileComponent {
+  userForm: FormGroup;
+  
+  constructor(private http: HttpClient, private fb: FormBuilder) {
+    this.userForm = this.fb.group({
+      name: [''],
+      email: [''],
+      title: [''],
+      description: [''],
+      cityInput: [''],
+      city: ['', Validators.required],
+      country: ['', Validators.required],
+      latitude: ['', Validators.required],
+      longitude: ['', Validators.required],
+      can_move: [false]
+    });
+  }
+
+  // Buscar ciudades al escribir
+  onCitySearch(event: any) {
+    const query = event.target.value;
+    if (query.length < 2) return;
+    
+    this.http.get(`/api/geocode/autocomplete?query=${query}&limit=5`)
+      .subscribe((options: any) => {
+        this.cityOptions = options;
+      });
+  }
+
+  // Usuario elige ciudad
+  selectCity(option: any) {
+    this.userForm.patchValue({
+      city: option.city,
+      country: option.country,
+      latitude: option.latitude,
+      longitude: option.longitude,
+      cityInput: `${option.city}, ${option.country}`
+    });
+  }
+
+  // Guardar cambios
+  onSave() {
+    if (this.userForm.invalid) {
+      alert('Completa todos los campos de ubicación');
+      return;
+    }
+
+    const formData = this.userForm.value;
+    
+    // PATCH /user (actualizar perfil)
+    this.http.patch('/user', formData, {
+      headers: new HttpHeaders({
+        'Authorization': `Bearer ${this.getToken()}`
+      })
+    }).subscribe(
+      (response: any) => {
+        console.log('✅ Perfil actualizado');
+        // Actualizar datos locales
+        this.currentUser = response.data;
+      },
+      (error: any) => {
+        console.error('❌ Error:', error);
+        // Mostrar errores de validación
+      }
+    );
+  }
+}
+```
 
 ---
 

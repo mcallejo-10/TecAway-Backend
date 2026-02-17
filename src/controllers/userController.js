@@ -138,15 +138,20 @@ export const updateUser = async (req, res) => {
     }
     const id = req.user.id_user;
 
-    const { name, email, title, description, city, can_move } = req.body;
-    const existingUser = await User.findOne({ where: { email } });
-
-    if (existingUser && existingUser.email != req.user.email) {
-      return res.status(400).json({
-        code: -2,
-        message: "Ya existe un usuario con el mismo correo electrónico",
-      });
+    // Extraer campos que pueden actualizarse
+    const { name, email, title, description, city, country, latitude, longitude, can_move } = req.body;
+    
+    // Validar que email sea único (si lo está intentando cambiar)
+    if (email && email !== req.user.email) {
+      const existingUser = await User.findOne({ where: { email } });
+      if (existingUser) {
+        return res.status(400).json({
+          code: -2,
+          message: "Ya existe un usuario con el mismo correo electrónico",
+        });
+      }
     }
+
     const user = await User.findByPk(id);
     if (!user) {
       return res.status(404).json({
@@ -154,21 +159,41 @@ export const updateUser = async (req, res) => {
         message: "Usuario no encontrado",
       });
     }
+
+    // Construir objeto de actualización con solo los campos que vinieron
+    const updateData = {};
+    if (name !== undefined) updateData.name = name;
+    if (email !== undefined) updateData.email = email;
+    if (title !== undefined) updateData.title = title;
+    if (description !== undefined) updateData.description = description;
+    if (city !== undefined) updateData.city = city;
+    if (country !== undefined) updateData.country = country;
+    if (latitude !== undefined) updateData.latitude = latitude;
+    if (longitude !== undefined) updateData.longitude = longitude;
+    if (can_move !== undefined) updateData.can_move = can_move;
+
     try {
-      await user.update({ name, email, title, description, city, can_move });
+      await user.update(updateData);
+      
+      console.log(`✅ Usuario ${id} actualizado:`, {
+        city: city ? `${city} (${country})` : "sin cambios",
+        hasCoordinates: latitude && longitude ? "sí" : "no"
+      });
+
+      res.status(200).json({
+        code: 1,
+        message: "User Updated Successfully",
+        data: user,
+      });
     } catch (error) {
       if (error.name === "SequelizeUniqueConstraintError") {
-        res.status(400).json({
+        return res.status(400).json({
           code: -61,
           message: "This email already exists",
         });
       }
+      throw error;
     }
-    res.status(200).json({
-      code: 1,
-      message: "User Updated Successfully",
-      data: user,
-    });
   } catch (error) {
     console.error(error);
     res.status(500).json({
