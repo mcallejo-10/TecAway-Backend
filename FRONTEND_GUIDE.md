@@ -1,5 +1,109 @@
 # 🔄 Actualización del Frontend para Geocodificación
 
+## � Flujo Completo de Datos (Frontend ↔ Backend)
+
+### **Registro de Usuario**
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│ FRONTEND: Usuario rellena formulario                             │
+│                                                                 │
+│ 1. Usuario escribe ciudad en input                              │
+│ 2. Frontend llama: GET /api/geocode/autocomplete?query=Barc     │
+│ 3. Backend devuelve: [{city, country, latitude, longitude}]    │
+│ 4. Usuario elige una opción del dropdown                        │
+│ 5. Frontend obtiene coordenadas de esa opción                   │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+                              ↓
+┌─────────────────────────────────────────────────────────────────┐
+│ FRONTEND: Validaciones locales (UX)                              │
+│                                                                 │
+│ ✓ City es requerido (del dropdown)                              │
+│ ✓ Country es requerido (código ISO, ej: ES)                     │
+│ ✓ Latitude y Longitude vienen del dropdown (nunca null)        │
+│ ✓ Title tiene 20-130 caracteres                                 │
+│ ✓ Description tiene 30-2400 caracteres                          │
+│ ✓ Email es válido                                               │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+                              ↓
+┌─────────────────────────────────────────────────────────────────┐
+│ FRONTEND: Envía POST /auth/register con:                         │
+│                                                                 │
+│ {                                                               │
+│   "email": "user@example.com",              ← Frontend valida   │
+│   "password": "segura123",                  ← Frontend valida   │
+│   "name": "Juan García",                    ← Frontend valida   │
+│   "title": "Técnico de iluminación",        ← Frontend valida   │
+│   "description": "Experiencia en...",       ← Frontend valida   │
+│   "city": "Barcelona",                      ← Del autocomplete   │
+│   "country": "ES",                          ← Del autocomplete   │
+│   "latitude": 41.3851,                      ← Del autocomplete   │
+│   "longitude": 2.1734,                      ← Del autocomplete   │
+│   "can_move": true,                         ← Usuario elige      │
+│   "roles": ["user"]                         ← Default o usuario  │
+│ }                                                               │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+                              ↓
+┌─────────────────────────────────────────────────────────────────┐
+│ BACKEND: Validaciones (express-validator)                       │
+│                                                                 │
+│ Validator                       Status                          │
+│ ─────────────────────────────── ────────────────────────────   │
+│ Email es válido                 ✓ express-validator            │
+│ Password min 4 chars            ✓ express-validator            │
+│ Name es string                  ✓ express-validator            │
+│ Title: 20-130 chars             ✓ express-validator            │
+│ Description: 30-2400 chars      ✓ express-validator            │
+│ City: 3-20 chars                ✓ express-validator (EXISTS)   │
+│ Country: 2 chars ISO            ✓ express-validator (EXISTS)   │
+│ Latitude: -90 a 90              ✓ express-validator (EXISTS)    │
+│ Longitude: -180 a 180           ✓ express-validator (EXISTS)    │
+│                                                                 │
+│ Si falla validación → 400 Bad Request + errores                │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+                              ↓
+┌─────────────────────────────────────────────────────────────────┐
+│ BACKEND: Middleware de Geocodificación                          │
+│                                                                 │
+│ 1. Verifica: ¿Ya hay coordenadas válidas en req.body?          │
+│    SÍ → Skip geocoding (confía en el autocomplete del front)    │
+│    NO → Intenta geocodificar fallback (nunca debería pasar)    │
+│                                                                 │
+│ 2. Si fallback falla → Continúa sin coords                     │
+│    (El validator luego rechazará por coords requeridas)        │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+                              ↓
+┌─────────────────────────────────────────────────────────────────┐
+│ BACKEND: Controller (authController.register)                   │
+│                                                                 │
+│ 1. Verifica: ¿Email ya existe?                                  │
+│    SÍ → 400 "Email ya registrado"                              │
+│    NO → Continúa                                               │
+│                                                                 │
+│ 2. Hash password con bcrypt($BCRYPT_SALT)                      │
+│                                                                 │
+│ 3. Crea usuario con todos los datos (incluidas coords)         │
+│                                                                 │
+│ 4. Genera JWT token                                            │
+│                                                                 │
+│ 5. Devuelve: 200 OK + token en cookie                          │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+                              ↓
+┌─────────────────────────────────────────────────────────────────┐
+│ FRONTEND: Recibe respuesta                                       │
+│                                                                 │
+│ 200 OK          → Usuario registrado, redirige a dashboard      │
+│ 400 Bad Request → Muestra errores de validación al usuario      │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+```
+
 ## 📝 Interfaz de Usuario Actualizada
 
 ```typescript
@@ -12,13 +116,11 @@ export interface User {
     description?: string;
     
     // 📍 Ubicación geográfica
-    city?: string;              // ⭐ OPCIONAL - Ciudad específica (ej: "Barcelona")
+    city: string;               // ⭐ OBLIGATORIO - Ciudad (ej: "Barcelona")
     country: string;            // ⭐ OBLIGATORIO - Código ISO país (ej: "ES", "AR", "MX")
+    latitude: number;           // ⭐ OBLIGATORIO - Viene del autocomplete
+    longitude: number;          // ⭐ OBLIGATORIO - Viene del autocomplete
     can_move?: boolean;
-    
-    // 📍 Coordenadas (automáticas desde backend, solo si hay city)
-    latitude?: number;          // Generado automáticamente si hay city
-    longitude?: number;         // Generado automáticamente si hay city
     postal_code?: string;       // Opcional
     
     photo?: string;
@@ -28,69 +130,147 @@ export interface User {
 }
 ```
 
-## 📊 Casos de Uso
-
-### **1️⃣ Técnico Local (con ciudad específica)**
-```json
-{
-  "city": "Barcelona",
-  "country": "ES",
-  "can_move": false
-  // → Backend geocodifica: latitude: 41.3851, longitude: 2.1734
-  // → Frontend muestra: "📍 Barcelona, España - A 504 km"
-}
-```
-
-### **2️⃣ Técnico Nacional (sin ciudad, trabaja en todo el país)**
-```json
-{
-  "city": null,  // ⭐ Sin ciudad específica
-  "country": "ES",
-  "can_move": true
-  // → Sin coordenadas (latitude/longitude = null)
-  // → Frontend muestra: "🌍 España (Nacional)"
-}
-```
-
-### **3️⃣ Técnico que se Desplaza**
-```json
-{
-  "city": "Madrid",
-  "country": "ES",
-  "can_move": true
-  // → Backend geocodifica Madrid como base
-  // → Frontend muestra: "📍 Madrid, España (se desplaza)"
-}
-```
-
-## 🎨 Cambios en el Formulario de Registro/Edición
+## 🎨 Formulario de Registro (Paso a Paso)
 
 ### Antes (problemático):
 ```html
 <input name="city" placeholder="Ubicación" />
-<!-- ❌ Usuarios escribían: "CABA", "Capital federal", "Argentina" -->
+<!-- ❌ Problemas:
+     - Usuarios escribían: "CABA", "Capital federal", "Argentina"
+     - Inconsistencia de datos
+     - No se podía filtrar por distancia sin coords
+-->
 ```
 
-### Ahora (flexible y claro):
+### Ahora (flujo validado):
 ```html
-<!-- País (OBLIGATORIO - dropdown) -->
-<select name="country" required>
-  <option value="">Selecciona un país *</option>
+<!-- 1️⃣ PAÍS: Select obligatorio (el usuario elige código ISO) -->
+<label>País de trabajo *</label>
+<select name="country" required [(ngModel)]="selectedCountry">
+  <option value="">Selecciona un país</option>
   <option value="ES">🇪🇸 España</option>
   <option value="AR">🇦🇷 Argentina</option>
   <option value="MX">🇲🇽 México</option>
   <!-- ... más países -->
 </select>
 
-<!-- Ciudad (OPCIONAL) -->
-<input name="city" placeholder="Ciudad (opcional, ej: Barcelona)" />
-<small>💡 Deja vacío si trabajas en todo el país</small>
+<!-- 2️⃣ CIUDAD: Input con autocompletado (obligatorio) -->
+<label>Ciudad (autocompleta mientras escribes) *</label>
+<input 
+  name="cityInput" 
+  placeholder="Escribe una ciudad (ej: Barcelona)" 
+  [(ngModel)]="cityInput"
+  (input)="onCitySearch($event)"
+  required
+/>
 
-<!-- Checkbox de desplazamiento -->
+<!-- 3️⃣ DROPDOWN: Opciones del autocomplete -->
+<ul *ngIf="cityOptions.length > 0" class="autocomplete-dropdown">
+  <li *ngFor="let option of cityOptions" 
+      (click)="selectCity(option)">
+    {{ option.city }}, {{ option.country }}
+  </li>
+</ul>
+
+<!-- 4️⃣ FEEDBACK: Ciudad seleccionada con coordenadas -->
+<div *ngIf="selectedCity" class="selected-city">
+  ✅ Seleccionado: {{ selectedCity.city }}, {{ selectedCity.country }}
+  📍 Coordenadas: {{ selectedCity.latitude }}, {{ selectedCity.longitude }}
+</div>
+
+<!-- 5️⃣ DESPLAZAMIENTO: Checkbox opcional -->
 <label>
-  <input type="checkbox" name="can_move" />
-  Dispuesto a desplazarme
+  <input type="checkbox" name="can_move" [(ngModel)]="can_move" />
+  Dispuesto a desplazarme a otras ciudades
 </label>
+
+<!-- SUBMIT: Enviará city+country+latitude+longitude al backend -->
+<button (click)="onRegister()" [disabled]="!selectedCity">
+  Registrate
+</button>
+```
+
+### TypeScript Component Logic:
+
+```typescript
+export class RegisterComponent {
+  selectedCountry = 'ES';
+  cityInput = '';
+  cityOptions: any[] = [];
+  selectedCity: any = null;
+  can_move = false;
+  
+  constructor(private http: HttpClient) {}
+
+  // PASO 1: Usuario escribe ciudad → Llama autocomplete del backend
+  onCitySearch(event: any) {
+    const query = event.target.value;
+    
+    if (query.length < 2) {
+      this.cityOptions = [];
+      return;
+    }
+
+    // 🌐 Llama: GET /api/geocode/autocomplete?query=Barc&limit=5
+    this.http.get(`/api/geocode/autocomplete?query=${query}&limit=5`)
+      .subscribe((options: any) => {
+        this.cityOptions = options;
+        console.log('Opciones recibidas del backend:', options);
+        // [
+        //   { city: "Barcelona", country: "ES", latitude: 41.3851, longitude: 2.1734 },
+        //   { city: "Barce (pueblo)", country: "IT", latitude: 44.0206, longitude: 8.0650 }
+        // ]
+      });
+  }
+
+  // PASO 2: Usuario elige una opción del dropdown
+  selectCity(option: any) {
+    this.selectedCity = {
+      city: option.city,
+      country: option.country,
+      latitude: option.latitude,      // ← Backend te lo da en autocomplete
+      longitude: option.longitude     // ← Backend te lo da en autocomplete
+    };
+    this.cityInput = `${option.city}, ${option.country}`;
+    this.cityOptions = [];
+  }
+
+  // PASO 3: Usuario hace click en "Registrate"
+  onRegister() {
+    if (!this.selectedCity) {
+      alert('Por favor, selecciona una ciudad del dropdown');
+      return;
+    }
+
+    const userData = {
+      email: this.email,
+      password: this.password,
+      name: this.name,
+      title: this.title,
+      description: this.description,
+      city: this.selectedCity.city,
+      country: this.selectedCity.country,
+      latitude: this.selectedCity.latitude,        // ← Del autocomplete
+      longitude: this.selectedCity.longitude,      // ← Del autocomplete
+      can_move: this.can_move,
+      roles: ['user']
+    };
+
+    // 🌐 Llama: POST /auth/register
+    this.http.post('/auth/register', userData)
+      .subscribe(
+        (response: any) => {
+          console.log('✅ Registrado correctamente');
+          this.router.navigate(['/dashboard']);
+        },
+        (error: any) => {
+          console.error('❌ Error en registro:', error);
+          // Error 400: mostrar validaciones
+          // Error 500: error del servidor
+        }
+      );
+  }
+}
 ```
 
 ## 📋 Lista de Códigos ISO Comunes
@@ -113,286 +293,185 @@ export const COUNTRIES = [
 ];
 ```
 
-## 🔧 Ejemplo de Componente Angular
+## � Endpoints que el Frontend Necesita
 
-```typescript
-// user-form.component.ts
-import { Component } from '@angular/core';
+### 1️⃣ Autocomplete de Ciudades (Mientras escribe)
 
-@Component({
-  selector: 'app-user-form',
-  templateUrl: './user-form.component.html'
-})
-export class UserFormComponent {
-  countries = [
-    { code: 'ES', name: 'España', flag: '🇪🇸' },
-    { code: 'AR', name: 'Argentina', flag: '🇦🇷' },
-    { code: 'MX', name: 'México', flag: '🇲🇽' },
-    // ... más
-  ];
-  
-  userForm = this.fb.group({
-    name: ['', Validators.required],
-    email: ['', [Validators.required, Validators.email]],
-    country: ['ES', Validators.required],  // ⭐ OBLIGATORIO
-    city: [''],  // ⭐ OPCIONAL
-    can_move: [false]
-    // latitude/longitude NO se envían, el backend los genera solo si hay city
-  });
-  
-  onSubmit() {
-    const userData = this.userForm.value;
-    // El backend automáticamente agregará latitude/longitude
-    this.userService.register(userData).subscribe(
-      response => {
-        console.log('Usuario registrado con coordenadas:', response);
-        // response incluirá: { ...userData, latitude: 40.4168, longitude: -3.7038 }
-      }
-    );
-  }
-}
+```
+GET /api/geocode/autocomplete?query=Barc&limit=5
 ```
 
-```html
-<!-- user-form.component.html -->
-<form [formGroup]="userForm" (ngSubmit)="onSubmit()">
-  <input formControlName="name" placeholder="Nombre" />
-  <input formControlName="email" placeholder="Email" />
-  
-  <!-- País (OBLIGATORIO) -->
-  <select formControlName="country" required>
-    <option value="">Selecciona país *</option>
-    <option *ngFor="let country of countries" [value]="country.code">
-      {{ country.flag }} {{ country.name }}
-    </option>
-  </select>
-  
-  <!-- Ciudad (OPCIONAL) -->
-  <input formControlName="city" placeholder="Ciudad (opcional)" />
-  <small class="hint">
-    💡 Deja vacío si ofreces servicios en todo {{ selectedCountryName }}
-  </small>
-  
-  <label>
-    <input type="checkbox" formControlName="can_move" />
-    Dispuesto a desplazarme
-  </label>
-  
-  <button type="submit">Registrar</button>
-</form>
-```
-NO necesitas validar que city y country estén juntos
-// porque country es obligatorio y city es opcional
-
-// Solo validar que country esté presente
-countryValidator(): ValidatorFn {
-  return (control: AbstractControl): ValidationErrors | null => {
-    const country = control.get('country')?.value;
-    
-    if (!country) {
-      return { countryRequired: true };
-    }
-    
-    // Validar que sea código ISO válido (2 letras mayúsculas)
-    if (!/^[A-Z]{2}$/.test(country)) {
-      return { invalidCountryCode
-      return { cityWithoutCountry: true };
-    }
-    if (country && !city) {
-      return { countryWithoutcity: true };
-    }
-    
-    return null;
-  };
-}
-```
-
-## 📊 Mostrar Distancia en Tarjetas de Usuarios
-
-```typescript
-// user-card.component.ts
-import { Component, Input } from '@angular/core';
-
-@Component({
-  selector: 'app-user-card',
-  template: `
-    <d
-      <!-- Mostrar ubicación según lo que tenga -->
-      <p *ngIf="user.city && user.country">
-        📍 {{ user.city }}, {{ getCountryName(user.country) }}
-      </p>
-      <p *ngIf="!user.city && user.country">
-        🌍 {{ getCountryName(user.country) }} (Nacional)
-      </p>
-      
-      <!-- Mostrar distancia SOLO si ambos tienen coordenadas -->
-      <p *ngIf="distance !== null" class="distance">
-        📏 A {{ distance }} km de ti
-      </p>
-      
-      <!-- Indicar si se desplaza -->
-      <span *ngIf="user.can_move" class="badge">
-        🚗 Se desplaza
-      </span- Mostrar distancia si hay coordenadas -->
-      <p *ngIf="distance !== null" class="distance">
-        📏 A {{ distance }} km de ti
-      </p>
-    </div>
-  `
-})
-export class UserCardComponent {
-  @Input() user!: User;
-  @Input() currentUser!: User;
-  
-  get distance(): number | null {
-    if (!this.user.latitude || !this.user.longitude ||
-        !this.currentUser.latitude || !this.currentUser.longitude) {
-      return null;
-    }
-    
-    return this.calculateDistance(
-      this.currentUser.latitude,
-      this.currentUser.longitude,
-      this.user.latitude,
-      this.user.longitude
-    );
-  }
-  
-  calculateDistance(lat1: number, lon1: number, lat2: number, lon2: number): number {
-    const R = 6371; // Radio de la Tierra en km
-    const dLat = this.toRadians(lat2 - lat1);
-    const dLon = this.toRadians(lon2 - lon1);
-    
-    const a = 
-      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-      Math.cos(this.toRadians(lat1)) * Math.cos(this.toRadians(lat2)) *
-      Math.sin(dLon / 2) * Math.sin(dLon / 2);
-    
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    return Math.round(R * c * 10) / 10; // Redondear a 1 decimal
-  }
-  showNationalUsers: boolean = true; // ⭐ Mostrar usuarios sin ciudad específica
-  
-  get filteredUsers(): User[] {
-    return this.users.filter(user => {
-      // 1. Filtrar por país (opcional)
-      // if (user.country !== this.selectedCountry) return false;
-      
-      // 2. Si el usuario no tiene coordenadas (trabaja a nivel nacional)
-      if (!user.latitude || !user.longitude) {
-        return this.showNationalUsers; // Mostrar según preferencia
-      }
-      
-      // 3. Si yo (currentUser) no tengo coordenadas, mostrar todos
-      if (!this.currentUser.latitude || !this.currentUser.longitude) {
-        return true;
-      }
-      
-      // 4. Calcular distancia y filtrar
-      const distance = this.calculateDistance(
-        this.currentUser.latitude,
-        this.currentUser.longitude,
-        user.latitude,
-        user.longitude
-      );
-      
-      return distance <= this.maxDistance;
-    });
-  }
-  
-  get sortedUsers(): User[] {
-    return this.filteredUsers.sort((a, b) => {
-      // Usuarios sin coordenadas van al final
-      if (!a.latitude && b.latitude) return 1;
-      if (a.latitude && !b.latitude) return -1;
-      if (!a.latitude && !b.latitude) return 0;
-      
-      // Ordenar por distancia
-      const distA = this.calculateDistance(
-        this.currentUser.latitude!,
-        this.currentUser.longitude!,
-        a.latitude!,
-        a.longitude!
-      );
-      const distB = this.calculateDistance(
-        this.currentUser.latitude!,
-        this.currentUser.longitude!,
-        b.latitude!,
-        b.longitude!
-      );
-      return distA - distB;
-    });
-  }
-  
-  // ... método calculateDistance igual que arriba
-}
-```
-
-```html
-<!-- user-list.component.html -->
-<div class="filters">
-  <label>
-    Mostrar técnicos a menos de:
-    <input type="range" [(ngModel)]="maxDistance" min="10" max="500" step="10">
-    {{ maxDistance }} km
-  </label>
-  
-  <label>
-    <input type="checkbox" [(ngModel)]="showNationalUsers">
-    Incluir técnicos de cobertura nacional
-  </label>
-</div>
-Flexible:** Técnicos locales o nacionales
-2. **País obligatorio:** Siempre sabes de dónde es el técnico
-3. **Ciudad opcional:** Algunos trabajan en todo el país
-4. **Datos limpios:** Dropdown evita "CABA", "Capital federal", etc.
-5. **Geocodificación precisa:** "Buenos Aires, AR" vs "Buenos Aires, CR"
-6. **UX mejorada:** Usuario ve banderas 🇪🇸 🇦🇷
-7. **Validación fácil:** Solo 2 letras en mayúsculas
-8. **Estándar ISO:** Compatible con cualquier API/librería
-9. **Búsqueda mixta:** Combina técnicos locales + nacionales
-    [currentUser]="currentUser">
-  </app-user-card>
-</div>
-
-<p *ngIf="sortedUsers.length === 0">
-  No hay técnicos disponibles con los filtros seleccionados
-    <input type="range" [(ngModel)]="maxDistance" min="10" max="500" step="10">
-    {{ maxDistance }} km
-  </label>
-</div>
-
-<div class="user-grid">
-  <app-user-card 
-    *ngFor="let user of nearbyUsers"
-    [user]="user"
-    [currentUser]="currentUser">
-  </app-user-card>
-</div>
-
-<p *ngIf="nearbyUsers.length === 0">
-  No hay técnicos en un radio de {{ maxDistance }} km
-</p>
-```
-
-## ✅ Ventajas del Nuevo Sistema
-
-1. **Datos limpios:** Dropdown de países evita "CABA", "Capital federal", etc.
-2. **Geocodificación precisa:** "Buenos Aires, AR" vs "Buenos Aires, CR" (Costa Rica)
-3. **UX mejorada:** Usuario ve banderas 🇪🇸 🇦🇷 en lugar de códigos
-4. **Validación fácil:** Solo 2 letras en mayúsculas
-5. **Estándar ISO:** Compatible con cualquier API/librería
-
-## 🚨 Migración de Usuarios Existentes
-
-Los 7 usuarios actuales se normalizarán automáticamente con:
+**Request:**
 ```bash
-node scripts/normalize-user-locations.js
+curl "http://localhost:3000/api/geocode/autocomplete?query=Barcelona&limit=5"
 ```
 
-Esto convertirá:
-- ✅ "Capital federal" → city: "Buenos Aires", country: "AR"
-- ✅ "CABA" → city: "Buenos Aires", country: "AR"
-- ✅ "Argentina" → city: null, country: "AR" (necesita completar)
-- ✅ "barcelona" → city: "Barcelona", country: "ES"
-- ✅ "Madrid" → city: "Madrid", country: "ES"
+**Response 200 OK:**
+```json
+[
+  {
+    "display_name": "Barcelona, Cataluña, España",
+    "city": "Barcelona",
+    "country": "ES",
+    "latitude": 41.3851,
+    "longitude": 2.1734
+  },
+  {
+    "display_name": "Barcelona, DTTO Metropolitano, Venezuela",
+    "city": "Barcelona",
+    "country": "VE",
+    "latitude": 10.1307,
+    "longitude": -64.6901
+  }
+]
+```
+
+**¿Qué hace el frontend?**
+- Muestra ambas opciones en dropdown
+- Usuario elige la correcta
+- Frontend obtiene city+country+latitude+longitude de esa opción
+
+### 2️⃣ Registrar Usuario
+
+```
+POST /auth/register
+Content-Type: application/json
+```
+
+**Request (lo que DEBE enviar el frontend):**
+```json
+{
+  "email": "user@example.com",
+  "password": "segura123",
+  "name": "Juan García",
+  "title": "Técnico de iluminación profesional especializado",
+  "description": "Más de 5 años de experiencia en iluminación para eventos, teatros y conciertos",
+  "city": "Barcelona",
+  "country": "ES",
+  "latitude": 41.3851,
+  "longitude": 2.1734,
+  "can_move": true,
+  "roles": ["user"]
+}
+```
+
+**Response 200 OK:**
+```json
+{
+  "code": 1,
+  "message": "Usuario registrado correctamente"
+}
+```
+
+**Response 400 Bad Request (validación fallida):**
+```json
+{
+  "errors": [
+    {
+      "param": "city",
+      "msg": "City is required"
+    },
+    {
+      "param": "latitude",
+      "msg": "Latitude is required (from autocomplete)"
+    }
+  ]
+}
+```
+
+**¿Qué hace el backend?**
+1. Valida que city+country+latitude+longitude existan y sean válidos
+2. Confía en las coordenadas (las obtuviste del autocomplete)
+3. Crea el usuario en BD
+4. Devuelve 200 + token en cookie
+
+---
+
+## 🎯 Resumen: Responsabilidades
+
+| Paso | Quién | Qué Hace | Validación |
+|------|------|----------|-----------|
+| 1 | Frontend | Usuario escribe ciudad | - |
+| 2 | Frontend | Llama `/api/geocode/autocomplete` | - |
+| 3 | Backend | Busca ciudades en Nominatim (OpenStreetMap) | ✓ Validate query |
+| 4 | Backend | Devuelve opciones con coords | - |
+| 5 | Frontend | Muestra dropdown al usuario | ✓ Check not empty |
+| 6 | Frontend | Usuario elige opción | ✓ Check selected |
+| 7 | Frontend | Obtiene city+country+lat+lon de la opción | - |
+| 8 | Frontend | Rellena formulario con esos datos | ✓ Validate format |
+| 9 | Frontend | Usuario rellena title, description, etc. | ✓ Validate length |
+| 10 | Frontend | Llama `POST /auth/register` con todos los datos | - |
+| 11 | Backend | Valida TODOS los campos | ✓ express-validator |
+| 12 | Backend | Verifica email único | ✓ Check BD |
+| 13 | Backend | Crea usuario | - |
+| 14 | Backend | Devuelve 200 OK + token | - |
+| 15 | Frontend | Guarda token en cookie, redirige a dashboard | - |
+
+---
+
+## 💡 Casos de Uso
+
+### Caso 1: Usuario elige bien (Flow exitoso)
+```
+Usuario: "Quiero registrarme en Barcelona"
+         ↓
+Frontend: GET /api/geocode/autocomplete?query=Barcel
+         ↓
+Backend: [{city: "Barcelona", country: "ES", latitude: 41.3851, longitude: 2.1734}, ...]
+         ↓
+User: Elige "Barcelona, ES"
+         ↓
+Frontend: POST /auth/register {city: "Barcelona", country: "ES", latitude: 41.3851, longitude: 2.1734, ...}
+         ↓
+Backend: ✅ Valida todo, crea usuario
+         ↓
+Frontend: ✅ Muestra "Registrado correctamente"
+```
+
+### Caso 2: Usuario intenta meter ciudad inventada
+```
+User: Intenta escribir "XyZCity" (ciudad que no existe)
+         ↓
+Frontend: GET /api/geocode/autocomplete?query=XyZCity
+         ↓
+Backend: [] (array vacío, no encontrada)
+         ↓
+Frontend: Dropdown vacío, button "Registrate" deshabilitado
+         ↓
+User: No puede continuar
+         ↓
+User: Intenta escribir "Barcelona" correctamente → funciona
+```
+
+### Caso 3: Usuario intenta hackear mandando coords falsas
+```
+User: Intenta POST /auth/register {city: "Barcelona", latitude: 999, ...}
+         ↓
+Backend: ❌ Valida: "Latitude should be a valid decimal between -90 and 90"
+         ↓
+Backend: Devuelve 400 Bad Request
+         ↓
+Frontend: Muestra error al usuario
+```
+
+---
+
+## 📋 Lista de Códigos ISO Comunes
+
+```typescript
+export const COUNTRIES = [
+  { code: 'ES', name: 'España', flag: '🇪🇸' },
+  { code: 'AR', name: 'Argentina', flag: '🇦🇷' },
+  { code: 'MX', name: 'México', flag: '🇲🇽' },
+  { code: 'CL', name: 'Chile', flag: '🇨🇱' },
+  { code: 'CO', name: 'Colombia', flag: '🇨🇴' },
+  { code: 'PE', name: 'Perú', flag: '🇵🇪' },
+  { code: 'UY', name: 'Uruguay', flag: '🇺🇾' },
+  { code: 'VE', name: 'Venezuela', flag: '🇻🇪' },
+  { code: 'EC', name: 'Ecuador', flag: '🇪🇨' },
+  { code: 'BO', name: 'Bolivia', flag: '🇧🇴' },
+  { code: 'PY', name: 'Paraguay', flag: '🇵🇾' },
+  { code: 'US', name: 'Estados Unidos', flag: '🇺🇸' },
+  // ... más según necesites
+];
+```
