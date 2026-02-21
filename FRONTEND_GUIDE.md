@@ -6,22 +6,22 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│ FRONTEND: Usuario rellena formulario                             │
+│ FRONTEND: Usuario rellena formulario                            │
 │                                                                 │
 │ 1. Usuario escribe ciudad en input                              │
 │ 2. Frontend llama: GET /api/geocode/autocomplete?query=Barc     │
-│ 3. Backend devuelve: [{city, country, latitude, longitude}]    │
+│ 3. Backend devuelve: [{city, country, latitude, longitude}]     │
 │ 4. Usuario elige una opción del dropdown                        │
 │ 5. Frontend obtiene coordenadas de esa opción                   │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
                               ↓
 ┌─────────────────────────────────────────────────────────────────┐
-│ FRONTEND: Validaciones locales (UX)                              │
+│ FRONTEND: Validaciones locales (UX)                             │
 │                                                                 │
 │ ✓ City es requerido (del dropdown)                              │
-│ ✓ Country es requerido (código ISO, ej: ES)                     │
-│ ✓ Latitude y Longitude vienen del dropdown (nunca null)        │
+│ ✓ Country es requerido (nombre completo, ej: España)            │
+│ ✓ Latitude y Longitude vienen del dropdown (nunca null)         │
 │ ✓ Title tiene 20-130 caracteres                                 │
 │ ✓ Description tiene 30-2400 caracteres                          │
 │ ✓ Email es válido                                               │
@@ -29,7 +29,7 @@
 └─────────────────────────────────────────────────────────────────┘
                               ↓
 ┌─────────────────────────────────────────────────────────────────┐
-│ FRONTEND: Envía POST /auth/register con:                         │
+│ FRONTEND: Envía POST /auth/register con:                        │
 │                                                                 │
 │ {                                                               │
 │   "email": "user@example.com",              ← Frontend valida   │
@@ -37,12 +37,12 @@
 │   "name": "Juan García",                    ← Frontend valida   │
 │   "title": "Técnico de iluminación",        ← Frontend valida   │
 │   "description": "Experiencia en...",       ← Frontend valida   │
-│   "city": "Barcelona",                      ← Del autocomplete   │
-│   "country": "ES",                          ← Del autocomplete   │
-│   "latitude": 41.3851,                      ← Del autocomplete   │
-│   "longitude": 2.1734,                      ← Del autocomplete   │
-│   "can_move": true,                         ← Usuario elige      │
-│   "roles": ["user"]                         ← Default o usuario  │
+│   "city": "Barcelona",                      ← Del autocomplete  │
+│   "country": "España",                      ← Del autocomplete  │
+│   "latitude": 41.3851,                      ← Del autocomplete  │
+│   "longitude": 2.1734,                      ← Del autocomplete  │
+│   "can_move": true,                         ← Usuario elige     │
+│   "roles": ["user"]                         ← Default o usuario │
 │ }                                                               │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
@@ -51,30 +51,30 @@
 │ BACKEND: Validaciones (express-validator)                       │
 │                                                                 │
 │ Validator                       Status                          │
-│ ─────────────────────────────── ────────────────────────────   │
-│ Email es válido                 ✓ express-validator            │
-│ Password min 4 chars            ✓ express-validator            │
-│ Name es string                  ✓ express-validator            │
-│ Title: 20-130 chars             ✓ express-validator            │
-│ Description: 30-2400 chars      ✓ express-validator            │
-│ City: 3-20 chars                ✓ express-validator (EXISTS)   │
-│ Country: 2 chars ISO            ✓ express-validator (EXISTS)   │
+│ ─────────────────────────────── ────────────────────────────    │
+│ Email es válido                 ✓ express-validator             │
+│ Password min 4 chars            ✓ express-validator             │
+│ Name es string                  ✓ express-validator             │
+│ Title: 20-130 chars             ✓ express-validator             │
+│ Description: 30-2400 chars      ✓ express-validator             │
+│ City: 3-20 chars                ✓ express-validator (EXISTS)    │
+│ Country: 2-30 chars (nombre)    ✓ express-validator (EXISTS)    │
 │ Latitude: -90 a 90              ✓ express-validator (EXISTS)    │
 │ Longitude: -180 a 180           ✓ express-validator (EXISTS)    │
 │                                                                 │
-│ Si falla validación → 400 Bad Request + errores                │
+│ Si falla validación → 400 Bad Request + errores                 │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
                               ↓
 ┌─────────────────────────────────────────────────────────────────┐
 │ BACKEND: Middleware de Geocodificación                          │
 │                                                                 │
-│ 1. Verifica: ¿Ya hay coordenadas válidas en req.body?          │
+│ 1. Verifica: ¿Ya hay coordenadas válidas en req.body?           │
 │    SÍ → Skip geocoding (confía en el autocomplete del front)    │
-│    NO → Intenta geocodificar fallback (nunca debería pasar)    │
+│    NO → Intenta geocodificar fallback (nunca debería pasar)     │
 │                                                                 │
-│ 2. Si fallback falla → Continúa sin coords                     │
-│    (El validator luego rechazará por coords requeridas)        │
+│ 2. Si fallback falla → Continúa sin coords                      │
+│    (El validator luego rechazará por coords requeridas)         │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
                               ↓
@@ -82,21 +82,21 @@
 │ BACKEND: Controller (authController.register)                   │
 │                                                                 │
 │ 1. Verifica: ¿Email ya existe?                                  │
-│    SÍ → 400 "Email ya registrado"                              │
-│    NO → Continúa                                               │
+│    SÍ → 400 "Email ya registrado"                               │
+│    NO → Continúa                                                │
 │                                                                 │
-│ 2. Hash password con bcrypt($BCRYPT_SALT)                      │
+│ 2. Hash password con bcrypt($BCRYPT_SALT)                       │
 │                                                                 │
-│ 3. Crea usuario con todos los datos (incluidas coords)         │
+│ 3. Crea usuario con todos los datos (incluidas coords)          │
 │                                                                 │
-│ 4. Genera JWT token                                            │
+│ 4. Genera JWT token                                             │
 │                                                                 │
-│ 5. Devuelve: 200 OK + token en cookie                          │
+│ 5. Devuelve: 200 OK + token en cookie                           │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
                               ↓
 ┌─────────────────────────────────────────────────────────────────┐
-│ FRONTEND: Recibe respuesta                                       │
+│ FRONTEND: Recibe respuesta                                      │
 │                                                                 │
 │ 200 OK          → Usuario registrado, redirige a dashboard      │
 │ 400 Bad Request → Muestra errores de validación al usuario      │
@@ -117,7 +117,7 @@ export interface User {
     
     // 📍 Ubicación geográfica
     city: string;               // ⭐ OBLIGATORIO - Ciudad (ej: "Barcelona")
-    country: string;            // ⭐ OBLIGATORIO - Código ISO país (ej: "ES", "AR", "MX")
+    country: string;            // ⭐ OBLIGATORIO - Nombre país (ej: "España", "Argentina")
     latitude: number;           // ⭐ OBLIGATORIO - Viene del autocomplete
     longitude: number;          // ⭐ OBLIGATORIO - Viene del autocomplete
     can_move?: boolean;
@@ -144,13 +144,13 @@ export interface User {
 
 ### Ahora (flujo validado):
 ```html
-<!-- 1️⃣ PAÍS: Select obligatorio (el usuario elige código ISO) -->
+<!-- 1️⃣ PAÍS: Select obligatorio (el usuario elige nombre completo) -->
 <label>País de trabajo *</label>
 <select name="country" required [(ngModel)]="selectedCountry">
   <option value="">Selecciona un país</option>
-  <option value="ES">🇪🇸 España</option>
-  <option value="AR">🇦🇷 Argentina</option>
-  <option value="MX">🇲🇽 México</option>
+  <option value="España">🇪🇸 España</option>
+  <option value="Argentina">🇦🇷 Argentina</option>
+  <option value="México">🇲🇽 México</option>
   <!-- ... más países -->
 </select>
 
@@ -194,7 +194,7 @@ export interface User {
 
 ```typescript
 export class RegisterComponent {
-  selectedCountry = 'ES';
+  selectedCountry = 'España';
   cityInput = '';
   cityOptions: any[] = [];
   selectedCity: any = null;
@@ -217,8 +217,8 @@ export class RegisterComponent {
         this.cityOptions = options;
         console.log('Opciones recibidas del backend:', options);
         // [
-        //   { city: "Barcelona", country: "ES", latitude: 41.3851, longitude: 2.1734 },
-        //   { city: "Barce (pueblo)", country: "IT", latitude: 44.0206, longitude: 8.0650 }
+        //   { city: "Barcelona", country: "España", latitude: 41.3851, longitude: 2.1734 },
+        //   { city: "Barce (pueblo)", country: "Italia", latitude: 44.0206, longitude: 8.0650 }
         // ]
       });
   }
@@ -287,7 +287,7 @@ GET /api/geocode/autocomplete?query=Barcelona&limit=5
   {
     "display_name": "Barcelona, Cataluña, España",
     "city": "Barcelona",
-    "country": "ES",
+    "country": "España",
     "latitude": 41.3851,
     "longitude": 2.1734
   }
@@ -310,7 +310,7 @@ Content-Type: application/json
   "title": "Técnico de iluminación profesional especializado",
   "description": "Más de 5 años de experiencia en iluminación...",
   "city": "Barcelona",
-  "country": "ES",
+  "country": "España",
   "latitude": 41.3851,
   "longitude": 2.1734,
   "can_move": true,
@@ -338,7 +338,7 @@ Content-Type: application/json
 ```json
 {
   "city": "Madrid",
-  "country": "ES",
+  "country": "España",
   "latitude": 40.4168,
   "longitude": -3.7038,
   "can_move": true
@@ -352,7 +352,7 @@ Content-Type: application/json
   "title": "Técnico senior de iluminación",
   "description": "Experiencia avanzada en iluminación de conciertos...",
   "city": "Barcelona",
-  "country": "ES",
+  "country": "España",
   "latitude": 41.3851,
   "longitude": 2.1734,
   "can_move": true
@@ -369,7 +369,7 @@ Content-Type: application/json
     "name": "Juan García López",
     "email": "user@example.com",
     "city": "Barcelona",
-    "country": "ES",
+    "country": "España",
     "latitude": 41.3851,
     "longitude": 2.1734,
     "can_move": true,
@@ -390,22 +390,22 @@ Content-Type: application/json
 }
 ```
 
-## �📋 Lista de Códigos ISO Comunes
+## �📋 Lista de Países Comunes
 
 ```typescript
 export const COUNTRIES = [
-  { code: 'ES', name: 'España', flag: '🇪🇸' },
-  { code: 'AR', name: 'Argentina', flag: '🇦🇷' },
-  { code: 'MX', name: 'México', flag: '🇲🇽' },
-  { code: 'CL', name: 'Chile', flag: '🇨🇱' },
-  { code: 'CO', name: 'Colombia', flag: '🇨🇴' },
-  { code: 'PE', name: 'Perú', flag: '🇵🇪' },
-  { code: 'UY', name: 'Uruguay', flag: '🇺🇾' },
-  { code: 'VE', name: 'Venezuela', flag: '🇻🇪' },
-  { code: 'EC', name: 'Ecuador', flag: '🇪🇨' },
-  { code: 'BO', name: 'Bolivia', flag: '🇧🇴' },
-  { code: 'PY', name: 'Paraguay', flag: '🇵🇾' },
-  { code: 'US', name: 'Estados Unidos', flag: '🇺🇸' },
+  { name: 'España', flag: '🇪🇸' },
+  { name: 'Argentina', flag: '🇦🇷' },
+  { name: 'México', flag: '🇲🇽' },
+  { name: 'Chile', flag: '🇨🇱' },
+  { name: 'Colombia', flag: '🇨🇴' },
+  { name: 'Perú', flag: '🇵🇪' },
+  { name: 'Uruguay', flag: '🇺🇾' },
+  { name: 'Venezuela', flag: '🇻🇪' },
+  { name: 'Ecuador', flag: '🇪🇨' },
+  { name: 'Bolivia', flag: '🇧🇴' },
+  { name: 'Paraguay', flag: '🇵🇾' },
+  { name: 'Estados Unidos', flag: '🇺🇸' },
   // ... más según necesites
 ];
 ```
@@ -429,14 +429,14 @@ curl "http://localhost:3000/api/geocode/autocomplete?query=Barcelona&limit=5"
   {
     "display_name": "Barcelona, Cataluña, España",
     "city": "Barcelona",
-    "country": "ES",
+    "country": "España",
     "latitude": 41.3851,
     "longitude": 2.1734
   },
   {
     "display_name": "Barcelona, DTTO Metropolitano, Venezuela",
     "city": "Barcelona",
-    "country": "VE",
+    "country": "Venezuela",
     "latitude": 10.1307,
     "longitude": -64.6901
   }
@@ -464,7 +464,7 @@ Content-Type: application/json
   "title": "Técnico de iluminación profesional especializado",
   "description": "Más de 5 años de experiencia en iluminación para eventos, teatros y conciertos",
   "city": "Barcelona",
-  "country": "ES",
+  "country": "España",
   "latitude": 41.3851,
   "longitude": 2.1734,
   "can_move": true,
@@ -516,7 +516,7 @@ Es prácticamente igual al de registro, pero con algunos campos opcionales:
 ┌─────────────────────────────────────────────────────────────────┐
 │ FRONTEND: Carga datos actuales del usuario                      │
 │                                                                 │
-│ this.userForm.patchValue({                                     │
+│ this.userForm.patchValue({                                      │
 │   name: currentUser.name,                                       │
 │   email: currentUser.email,                                     │
 │   title: currentUser.title,                                     │
@@ -544,7 +544,7 @@ Es prácticamente igual al de registro, pero con algunos campos opcionales:
 │   "name": "Nuevo nombre",                                       │
 │   "title": "Nuevo título",                                      │
 │   "city": "Nueva Ciudad",      ← Del autocomplete               │
-│   "country": "ES",             ← Del autocomplete               │
+│   "country": "España",         ← Del autocomplete               │
 │   "latitude": 41.3851,         ← Del autocomplete               │
 │   "longitude": 2.1734          ← Del autocomplete               │
 │ }                                                               │
@@ -555,18 +555,18 @@ Es prácticamente igual al de registro, pero con algunos campos opcionales:
 │ BACKEND: Validar + Actualizar                                   │
 │                                                                 │
 │ 1. Verificar JWT válido ✓                                       │
-│ 2. Validar campos (city+country+coords siempre obligatorios)   │
+│ 2. Validar campos (city+country+coords siempre obligatorios)    │
 │ 3. Si email cambió → verificar que sea único                    │
 │ 4. Actualizar BD                                                │
-│ 5. Devolver 200 OK + datos actualizados                        │
+│ 5. Devolver 200 OK + datos actualizados                         │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
                               ↓
 ┌─────────────────────────────────────────────────────────────────┐
 │ FRONTEND: Mostrar confirmación                                  │
 │                                                                 │
-│ 200 OK → "Perfil actualizado correctamente"                    │
-│ 400    → Mostrar errores de validación                         │
+│ 200 OK → "Perfil actualizado correctamente"                     │
+│ 400    → Mostrar errores de validación                          │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
@@ -675,11 +675,11 @@ Usuario: "Quiero registrarme en Barcelona"
          ↓
 Frontend: GET /api/geocode/autocomplete?query=Barcel
          ↓
-Backend: [{city: "Barcelona", country: "ES", latitude: 41.3851, longitude: 2.1734}, ...]
+Backend: [{city: "Barcelona", country: "España", latitude: 41.3851, longitude: 2.1734}, ...]
          ↓
-User: Elige "Barcelona, ES"
+User: Elige "Barcelona, España"
          ↓
-Frontend: POST /auth/register {city: "Barcelona", country: "ES", latitude: 41.3851, longitude: 2.1734, ...}
+Frontend: POST /auth/register {city: "Barcelona", country: "España", latitude: 41.3851, longitude: 2.1734, ...}
          ↓
 Backend: ✅ Valida todo, crea usuario
          ↓
@@ -714,22 +714,22 @@ Frontend: Muestra error al usuario
 
 ---
 
-## 📋 Lista de Códigos ISO Comunes
+## 📋 Lista de Países Comunes
 
 ```typescript
 export const COUNTRIES = [
-  { code: 'ES', name: 'España', flag: '🇪🇸' },
-  { code: 'AR', name: 'Argentina', flag: '🇦🇷' },
-  { code: 'MX', name: 'México', flag: '🇲🇽' },
-  { code: 'CL', name: 'Chile', flag: '🇨🇱' },
-  { code: 'CO', name: 'Colombia', flag: '🇨🇴' },
-  { code: 'PE', name: 'Perú', flag: '🇵🇪' },
-  { code: 'UY', name: 'Uruguay', flag: '🇺🇾' },
-  { code: 'VE', name: 'Venezuela', flag: '🇻🇪' },
-  { code: 'EC', name: 'Ecuador', flag: '🇪🇨' },
-  { code: 'BO', name: 'Bolivia', flag: '🇧🇴' },
-  { code: 'PY', name: 'Paraguay', flag: '🇵🇾' },
-  { code: 'US', name: 'Estados Unidos', flag: '🇺🇸' },
+  { name: 'España', flag: '🇪🇸' },
+  { name: 'Argentina', flag: '🇦🇷' },
+  { name: 'México', flag: '🇲🇽' },
+  { name: 'Chile', flag: '🇨🇱' },
+  { name: 'Colombia', flag: '🇨🇴' },
+  { name: 'Perú', flag: '🇵🇪' },
+  { name: 'Uruguay', flag: '🇺🇾' },
+  { name: 'Venezuela', flag: '🇻🇪' },
+  { name: 'Ecuador', flag: '🇪🇨' },
+  { name: 'Bolivia', flag: '🇧🇴' },
+  { name: 'Paraguay', flag: '🇵🇾' },
+  { name: 'Estados Unidos', flag: '🇺🇸' },
   // ... más según necesites
 ];
 ```

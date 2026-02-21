@@ -87,7 +87,7 @@ async function geocodeUserLocation(req, res, next) {
  * Detecta el país basado en la ciudad o datos del usuario
  * 
  * @param {Object} userData - Datos del usuario (req.body)
- * @returns {string} Código del país (ES, AR, MX, etc.)
+ * @returns {string} Nombre del pais (ej: Espana, Argentina, Mexico)
  * 
  * Puedes mejorar esta función según tu lógica de negocio:
  * - Agregar un campo 'country' en el formulario de registro
@@ -97,7 +97,7 @@ async function geocodeUserLocation(req, res, next) {
 function detectCountry(userData) {
   // 1️⃣ Si el usuario ya tiene un campo 'country', usarlo
   if (userData.country) {
-    return userData.country.toUpperCase();
+    return userData.country.trim();
   }
 
   // 2️⃣ Detectar por nombre de ciudad (básico)
@@ -110,7 +110,7 @@ function detectCountry(userData) {
     'córdoba', 'valladolid', 'vigo', 'gijón', 'hospitalet'
   ];
   if (spanishCities.some((knownCity) => city.includes(knownCity))) {
-    return 'ES';
+    return 'Espana';
   }
 
   // Ciudades argentinas comunes
@@ -119,7 +119,7 @@ function detectCountry(userData) {
     'tucumán', 'la plata', 'mar del plata', 'salta'
   ];
   if (argentinianCities.some((knownCity) => city.includes(knownCity))) {
-    return 'AR';
+    return 'Argentina';
   }
 
   // Ciudades mexicanas comunes
@@ -128,11 +128,11 @@ function detectCountry(userData) {
     'tijuana', 'león', 'juárez', 'zapopan', 'mérida'
   ];
   if (mexicanCities.some((knownCity) => city.includes(knownCity))) {
-    return 'MX';
+    return 'Mexico';
   }
 
   // 3️⃣ Por defecto, España (ajusta según tu región principal)
-  return 'ES';
+  return 'Espana';
 }
 
 export default geocodeUserLocation;

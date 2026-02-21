@@ -43,10 +43,10 @@ const User = sequelize.define('User', {
     comment: 'Longitud de la ciudad del usuario',
   },
   country: {
-    type: DataTypes.STRING(2),
+    type: DataTypes.STRING(30),
     allowNull: false,
-    defaultValue: 'ES',
-    comment: 'Código ISO del país (ES, AR, MX, etc.) - OBLIGATORIO',
+    defaultValue: 'Espana',
+    comment: 'Nombre completo del pais (ej: Espana, Argentina, Mexico) - OBLIGATORIO',
   },
   postal_code: {
     type: DataTypes.STRING(10),

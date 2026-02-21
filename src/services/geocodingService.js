@@ -155,11 +155,11 @@ class GeocodingService {
    * 🌍 Geocodifica una ciudad a coordenadas (método legacy)
    * 
    * @param {string} city - Nombre de la ciudad (ej: "Madrid", "Barcelona")
-   * @param {string} country - Código del país (ej: "ES", "AR", "MX")
+  * @param {string} country - Nombre del pais (ej: "Espana", "Argentina", "Mexico")
    * @returns {Promise<{latitude: number, longitude: number} | null>}
    * 
    * @example
-   * const coords = await geocodingService.geocodeTown('Madrid', 'ES');
+  * const coords = await geocodingService.geocodeTown('Madrid', 'Espana');
    * // { latitude: 40.4168, longitude: -3.7038 }
    */
   async geocodeTown(city, country = '') {

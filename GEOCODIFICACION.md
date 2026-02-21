@@ -28,12 +28,12 @@ Se agregaron 4 campos nuevos:
 ```javascript
 latitude: DECIMAL(10, 8)      // Ej: 40.41675000 (solo si hay city)
 longitude: DECIMAL(11, 8)     // Ej: -3.70379000 (solo si hay city)
-country: VARCHAR(2)           // ⭐ OBLIGATORIO - Código ISO (ES, AR, MX, etc.)
+country: VARCHAR(30)          // ⭐ OBLIGATORIO - Nombre del pais (Espana, Argentina, Mexico)
 postal_code: VARCHAR(10)      // Código postal (opcional)
 ```
 
 **Lógica:**
-- `country`: **OBLIGATORIO** - Siempre se debe especificar
+- `country`: **OBLIGATORIO** - Siempre se debe especificar el nombre completo
 - `city`: **OPCIONAL** - Solo si el técnico trabaja en una ciudad específica
 - `latitude/longitude`: **AUTOMÁTICAS** - Solo se generan si hay `city`
 
@@ -64,33 +64,33 @@ Para geocodificar usuarios existentes que ya tienen ciudad pero no coordenadas.
 ### Flujo Automático (al crear/actualizar usuario):
 
 ```
-1. Usuario envía datos → { country: "ES", city: "Madrid", ... }
+1. Usuario envía datos → { country: "España", city: "Madrid", ... }
 2. Middleware verifica → ¿Hay city? → SÍ
 3. Servicio geocodifica → Nominatim API
-4. Coordenadas agregadas → { country: "ES", city: "Madrid", latitude: 40.4168, longitude: -3.7038 }
+4. Coordenadas agregadas → { country: "España", city: "Madrid", latitude: 40.4168, longitude: -3.7038 }
 5. Controlador guarda → Base de datos
 ```
 
 **Si NO hay ciudad:**
 ```
-1. Usuario envía datos → { country: "ES", ... }  (sin city)
+1. Usuario envía datos → { country: "España", ... }  (sin city)
 2. Middl 1: Técnico local
-{ country: "ES", city: "Madrid" }
+{ country: "España", city: "Madrid" }
 
 // Output (automático)
 {
-  country: "ES",
+  country: "España",
   city: "Madrid",
   latitude: 40.4168,
   longitude: -3.7038
 }
 
 // Input 2: Técnico nacional
-{ country: "ES" }  // Sin city
+{ country: "España" }  // Sin city
 
 // Output (automático)
 {
-  country: "ES",
+  country: "España",
   city: null,
   latitude: null,
   longitude: null
@@ -142,9 +142,9 @@ node scripts/geocode-existing-users.js
 ```
 
 El script de normalización limpia:
-- "Capital federal", "CABA" → "Buenos Aires", AR
-- "barcelona" → "Barcelona", ES
-- "Madrid" → "Madrid", ES
+- "Capital federal", "CABA" → "Buenos Aires", Argentina
+- "barcelona" → "Barcelona", España
+- "Madrid" → "Madrid", España
 - etc.
 
 El script:
@@ -169,7 +169,7 @@ El script:
   "email": "user@example.com",
   "password": "123456",
   "name": "Juan",
-  "country": "ES",        // ⭐ OBLIGATORIO
+  "country": "España",    // ⭐ OBLIGATORIO
   "city": "Barcelona"     // OPCIONAL
 }
 // Backend automáticamente agrega:
@@ -180,7 +180,7 @@ El script:
   "email": "tech@example.com",
   "password": "123456",
   "name": "María",
-  "country": "AR",        // ⭐ OBLIGATORIO
+  "country": "Argentina", // ⭐ OBLIGATORIO
   "can_move": true
 }
 // Sin city → sin coordenadas (trabaja en todo el país)
@@ -199,7 +199,7 @@ El script:
 
 ```typescript
 // Si el frontend necesita geocodificar antes de enviar
-const geocode = async (city: string, country: string = 'ES') => {
+const geocode = async (city: string, country: string = 'España') => {
   const response = await fetch('http://localhost:3000/api/geocode', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -265,7 +265,7 @@ Content-Type: application/json
 
 {
   "city": "Madrid",
-  "country": "ES"  // Opcional
+  "country": "España"  // Opcional
 }
 ```
 
@@ -273,7 +273,7 @@ Content-Type: application/json
 ```json
 {
   "city": "Madrid",
-  "country": "ES",
+  "country": "España",
   "latitude": 40.4168,
   "longitude": -3.7038
 }
@@ -287,8 +287,8 @@ Content-Type: application/json
 
 {
   "locations": [
-    { "city": "Madrid", "country": "ES" },
-    { "city": "Barcelona", "country": "ES" }
+    { "city": "Madrid", "country": "España" },
+    { "city": "Barcelona", "country": "España" }
   ]
 }
 ```
@@ -302,12 +302,12 @@ Content-Type: application/json
   "results": [
     {
       "city": "Madrid",
-      "country": "ES",
+      "country": "España",
       "coordinates": { "latitude": 40.4168, "longitude": -3.7038 }
     },
     {
       "city": "Barcelona",
-      "country": "ES",
+      "country": "España",
       "coordinates": { "latitude": 41.3851, "longitude": 2.1734 }
     }
   ]
@@ -347,7 +347,7 @@ GET /api/geocode/cache/stats
 {
   "message": "Estadísticas de cache de geocodificación",
   "size": 15,
-  "entries": ["madrid_es", "barcelona_es", "valencia_es", ...],
+  "entries": ["madrid_espana", "barcelona_espana", "valencia_espana", ...],
   "note": "La cache se reinicia cuando se reinicia el servidor"
 }
 ```
@@ -376,7 +376,7 @@ DELETE /api/geocode/cache
 # Geocodificar Madrid
 curl -X POST http://localhost:3000/api/geocode \
   -H "Content-Type: application/json" \
-  -d '{"city": "Madrid", "country": "ES"}'
+  -d '{"city": "Madrid", "country": "España"}'
 
 # Calcular distancia Madrid-Barcelona
 curl -X POST http://localhost:3000/api/geocode/distance \

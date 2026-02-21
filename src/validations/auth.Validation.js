@@ -57,8 +57,8 @@ export const registerValidator = [
         .withMessage("Country is required")
         .isString()
         .withMessage("Country should be string")
-        .isLength({ min: 2, max: 2 })
-        .withMessage("Country should be a 2-character ISO code"),
+        .isLength({ min: 2, max: 30 })
+        .withMessage("Country should be between 2 and 30 characters"),
 
     body("latitude")
         .exists()
@@ -144,8 +144,8 @@ export const updateUserValidator = [
         .withMessage("Country is required")
         .isString()
         .withMessage("Country should be string")
-        .isLength({ min: 2, max: 2 })
-        .withMessage("Country should be a 2-character ISO code"),
+        .isLength({ min: 2, max: 30 })
+        .withMessage("Country should be between 2 and 30 characters"),
 
     body("latitude")
         .exists()

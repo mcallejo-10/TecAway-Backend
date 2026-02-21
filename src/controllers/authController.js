@@ -49,7 +49,7 @@ export const register = async (req, res) => {
       city, 
       latitude, 
       longitude, 
-      country: country || 'ES',
+      country: country || 'Espana',
       can_move, 
       roles, 
       status: 1 
