@@ -1,7 +1,7 @@
 {
-  "name": "backend-gpttest",
+  "name": "tecaway-backend",
   "version": "1.0.0",
-  "description": "Descripción del proyecto",
+  "description": "API REST de TecAway: conecta técnicos/as de teatro con producciones que buscan profesionales",
   "main": "src/index.js",
   "type": "module",
   "scripts": {
@@ -10,9 +10,12 @@
   },
   "keywords": [
     "Node.js",
-    "Express"
+    "Express",
+    "Sequelize",
+    "MySQL",
+    "TecAway"
   ],
-  "author": "Tu nombre",
+  "author": "Miranda Callejón",
   "license": "MIT",
   "dependencies": {
     "bcrypt": "^6.0.0",
